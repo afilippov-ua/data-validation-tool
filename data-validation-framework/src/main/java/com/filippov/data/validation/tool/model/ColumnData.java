@@ -1,7 +1,7 @@
 package com.filippov.data.validation.tool.model;
 
 import com.filippov.data.validation.tool.datasource.DatasourceColumn;
-import jdk.internal.net.http.common.Pair;
+import org.javatuples.Pair;
 
 public class ColumnData {
     private DatasourceColumn primaryKey;
