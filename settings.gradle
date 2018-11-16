@@ -1,3 +1,4 @@
 rootProject.name = 'data-validation-tool'
 include 'data-validation-framework'
+include 'utils'
 
