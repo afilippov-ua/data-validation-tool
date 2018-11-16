@@ -1,16 +1,10 @@
-plugins {
-    id 'java'
-}
-
-group 'com.filippov.data.validation.tool'
-version '0.0.1-SNAPSHOT'
-
-sourceCompatibility = 1.8
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    implementation libs.javatuples
+    compileOnly libs.lombok
+    annotationProcessor libs.lombok
+
+    testImplementation libs.assertj
+    testImplementation libs.jupiterparams
+    testImplementation libs.jupiterapi
+    testRuntimeOnly libs.jupiterengine
 }
