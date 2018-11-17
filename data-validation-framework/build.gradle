@@ -1,11 +1,8 @@
 dependencies {
     compile project(':utils')
 
-    implementation libs.javatuples
     implementation libs.lombok
-    implementation libs.guava
     implementation libs.jacksondatatype
-    implementation libs.javaslang
 
     annotationProcessor libs.lombok
 

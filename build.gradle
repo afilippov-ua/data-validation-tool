@@ -53,10 +53,7 @@ allprojects {
                 jupiterapi     : 'org.junit.jupiter:junit-jupiter-api:5.3.1',
                 jupiterparams  : 'org.junit.jupiter:junit-jupiter-params:5.3.1',
                 jerseyclient   : 'org.glassfish.jersey.core:jersey-client:2.27',
-                javatuples     : 'org.javatuples:javatuples:1.2',
                 jacksondatatype: 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.7',
-                guava          : 'com.google.guava:guava:22.0',
-                javaslang      : ['io.javaslang:javaslang:2.0.2', 'io.javaslang:javaslang-jackson:2.0.2']
         ]
     }
 }
