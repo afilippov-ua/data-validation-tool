@@ -11,9 +11,9 @@ public interface DataStorage {
 
     ColumnData getData(Query query);
 
-    void preloadAsync(Query query);
+    void preloadInBackground(Query query);
 
-    void stopAsyncPreloading(Query query);
+    void stopBackgroundPreloading();
 
     void deleteCache(Query query);
 }

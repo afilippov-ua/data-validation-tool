@@ -3,6 +3,7 @@ dependencies {
 
     implementation libs.lombok
     implementation libs.jacksondatatype
+    implementation libs.logback
 
     annotationProcessor libs.lombok
 

@@ -38,6 +38,12 @@ public class PriorityThreadPoolExecutor extends ThreadPoolExecutor {
         return new ComparableFutureTask<>(callable, priority);
     }
 
+    public void remove(Priority priority) {
+        getQueue().removeIf(runnable ->
+                (runnable instanceof ComparableFutureTask)
+                        && (((ComparableFutureTask) runnable).getPriority() == priority));
+    }
+
     static class ComparableFutureTask<V> extends FutureTask<V> implements Runnable, Comparable<ComparableFutureTask<V>> {
         private Priority priority;
 
