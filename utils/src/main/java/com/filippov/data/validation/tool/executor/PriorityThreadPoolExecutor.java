@@ -1,4 +1,4 @@
-package com.filippov.executor;
+package com.filippov.data.validation.tool.executor;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;

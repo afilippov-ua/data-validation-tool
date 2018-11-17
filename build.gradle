@@ -45,15 +45,17 @@ allprojects {
 
     ext {
         libs = [
-                assertj       : 'org.assertj:assertj-core:3.11.1',
-                lombok        : 'org.projectlombok:lombok:1.18.4',
-                mockito       : 'org.mockito:mockito-core:2.23.0',
-                mockitojupiter: 'org.mockito:mockito-junit-jupiter:2.23.0',
-                jupiterengine : 'org.junit.jupiter:junit-jupiter-engine:5.3.1',
-                jupiterapi    : 'org.junit.jupiter:junit-jupiter-api:5.3.1',
-                jupiterparams : 'org.junit.jupiter:junit-jupiter-params:5.3.1',
-                jerseyclient  : 'org.glassfish.jersey.core:jersey-client:2.27',
-                javatuples    : 'org.javatuples:javatuples:1.2'
+                assertj        : 'org.assertj:assertj-core:3.11.1',
+                lombok         : 'org.projectlombok:lombok:1.18.4',
+                mockito        : 'org.mockito:mockito-core:2.23.0',
+                mockitojupiter : 'org.mockito:mockito-junit-jupiter:2.23.0',
+                jupiterengine  : 'org.junit.jupiter:junit-jupiter-engine:5.3.1',
+                jupiterapi     : 'org.junit.jupiter:junit-jupiter-api:5.3.1',
+                jupiterparams  : 'org.junit.jupiter:junit-jupiter-params:5.3.1',
+                jerseyclient   : 'org.glassfish.jersey.core:jersey-client:2.27',
+                javatuples     : 'org.javatuples:javatuples:1.2',
+                jacksondatatype: 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.7',
+                guava          : 'com.google.guava:guava:22.0'
         ]
     }
 }

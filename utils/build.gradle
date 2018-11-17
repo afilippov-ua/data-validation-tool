@@ -1,4 +1,5 @@
 dependencies {
-    compileOnly libs.lombok
+    implementation libs.lombok
     annotationProcessor libs.lombok
+    implementation libs.jacksondatatype
 }
