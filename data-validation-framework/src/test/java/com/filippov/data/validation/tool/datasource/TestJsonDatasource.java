@@ -1,50 +1,31 @@
 package com.filippov.data.validation.tool.datasource;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.filippov.data.validation.tool.JsonDataLoader;
 import com.filippov.data.validation.tool.datasource.query.DatasourceQuery;
 import com.filippov.data.validation.tool.model.ColumnData;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.filippov.data.validation.tool.model.DataType.DOUBLE;
-import static com.filippov.data.validation.tool.model.DataType.INTEGER;
-import static com.filippov.data.validation.tool.model.DataType.STRING;
-import static java.util.Arrays.asList;
-
 public class TestJsonDatasource implements Datasource {
-    private static final DatasourceColumn TABLE_A_PK = DatasourceColumn.builder().name("id").dataType(INTEGER).build();
-    private static final DatasourceColumn TABLE_A_INTEGER_COL = DatasourceColumn.builder().name("integerColumn").dataType(INTEGER).build();
-    private static final DatasourceColumn TABLE_A_DOUBLE_COL = DatasourceColumn.builder().name("doubleColumn").dataType(DOUBLE).build();
-    private static final DatasourceColumn TABLE_A_STRING_COL = DatasourceColumn.builder().name("stringColumn").dataType(STRING).build();
+    private final String metadataFilePath;
+    private final String dataFilePath;
+    private DatasourceMetadata metadata;
+    private Map<DatasourceColumn, ColumnData> dataMap = new HashMap<>();
 
-    private static final DatasourceColumn TABLE_B_PK = DatasourceColumn.builder().name("id").dataType(INTEGER).build();
-    private static final DatasourceColumn TABLE_B_INTEGER_COL = DatasourceColumn.builder().name("integerColumn").dataType(INTEGER).build();
-    private static final DatasourceColumn TABLE_B_DOUBLE_COL = DatasourceColumn.builder().name("doubleColumn").dataType(DOUBLE).build();
-    private static final DatasourceColumn TABLE_B_STRING_COL = DatasourceColumn.builder().name("stringColumn").dataType(STRING).build();
-
-    private final String fileName;
-    private final Map<DatasourceColumn, ColumnData> dataMap;
-
-    public TestJsonDatasource(String fileName) {
-        this.fileName = fileName;
-        this.dataMap = new HashMap<>();
+    public TestJsonDatasource(String metadataFilePath, String dataFilePath) {
+        this.metadataFilePath = metadataFilePath;
+        this.dataFilePath = dataFilePath;
     }
 
     @Override
     public DatasourceMetadata getMetadata() {
-        return DatasourceMetadata.builder()
-                .tables(asList(
-                        DatasourceTable.builder()
-                                .name("TableA")
-                                .primaryKey(TABLE_A_PK)
-                                .columns(asList(TABLE_A_PK, TABLE_A_INTEGER_COL, TABLE_A_DOUBLE_COL, TABLE_A_STRING_COL))
-                                .build(),
-                        DatasourceTable.builder()
-                                .name("TableB")
-                                .primaryKey(TABLE_B_PK)
-                                .columns(asList(TABLE_B_PK, TABLE_B_INTEGER_COL, TABLE_B_DOUBLE_COL, TABLE_B_STRING_COL))
-                                .build()))
-                .build();
+        if (metadata == null) {
+            metadata = new JsonDataLoader().loadData(metadataFilePath, new TypeReference<DatasourceMetadata>() {
+            });
+        }
+        return metadata;
     }
 
     @Override
@@ -56,6 +37,22 @@ public class TestJsonDatasource implements Datasource {
     }
 
     private void loadData() {
+        final Map<String, Map<String, ColumnData>> data = new JsonDataLoader().loadData(dataFilePath, new TypeReference<Map<String, Map<String, ColumnData>>>() {
+        });
 
+        for (DatasourceTable table : getMetadata().getTables()) {
+            if (data.containsKey(table.getName())) {
+                final Map<String, ColumnData> columnDataMap = data.get(table.getName());
+                for (DatasourceColumn column : table.getColumns()) {
+                    if (columnDataMap.containsKey(column.getName())) {
+                        dataMap.put(column, columnDataMap.get(column.getName()));
+                    } else {
+                        throw new IllegalArgumentException("Incorrect json data for the table: " + table + " and column: " + column);
+                    }
+                }
+            } else {
+                throw new IllegalArgumentException("Incorrect json data for the table: " + table);
+            }
+        }
     }
 }

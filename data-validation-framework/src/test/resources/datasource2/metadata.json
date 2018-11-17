@@ -1,0 +1,54 @@
+{
+  "tables": [
+    {
+      "name": "TableA",
+      "primaryKey": {
+        "name": "id",
+        "dataType": "INTEGER"
+      },
+      "columns": [
+        {
+          "name": "id",
+          "dataType": "INTEGER"
+        },
+        {
+          "name": "integerColumn",
+          "dataType": "INTEGER"
+        },
+        {
+          "name": "doubleColumn",
+          "dataType": "DOUBLE"
+        },
+        {
+          "name": "stringColumn",
+          "dataType": "STRING"
+        }
+      ]
+    },
+    {
+      "name": "TableB",
+      "primaryKey": {
+        "name": "id",
+        "dataType": "INTEGER"
+      },
+      "columns": [
+        {
+          "name": "id",
+          "dataType": "INTEGER"
+        },
+        {
+          "name": "integerColumn",
+          "dataType": "INTEGER"
+        },
+        {
+          "name": "doubleColumn",
+          "dataType": "DOUBLE"
+        },
+        {
+          "name": "stringColumn",
+          "dataType": "STRING"
+        }
+      ]
+    }
+  ]
+}

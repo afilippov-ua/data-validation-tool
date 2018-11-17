@@ -4,10 +4,16 @@ dependencies {
     implementation libs.javatuples
     implementation libs.lombok
     implementation libs.guava
+    implementation libs.jacksondatatype
+    implementation libs.javaslang
+
     annotationProcessor libs.lombok
 
     testImplementation libs.assertj
     testImplementation libs.jupiterparams
     testImplementation libs.jupiterapi
     testRuntimeOnly libs.jupiterengine
+
+    testImplementation libs.lombok
+    testAnnotationProcessor libs.lombok
 }

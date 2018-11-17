@@ -1,10 +1,16 @@
 package com.filippov.data.validation.tool.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.filippov.data.validation.tool.datasource.DatasourceColumn;
-import org.javatuples.Pair;
+import lombok.Builder;
+import lombok.Getter;
 
+@Getter
+@Builder
+@JsonDeserialize(builder = ColumnData.ColumnDataBuilder.class)
 public class ColumnData {
     private DatasourceColumn primaryKey;
     private DatasourceColumn column;
-    private Pair<Object[], Object[]> data;
+    private Object[] keys;
+    private Object[] values;
 }

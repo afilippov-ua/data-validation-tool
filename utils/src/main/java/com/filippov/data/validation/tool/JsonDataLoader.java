@@ -1,7 +1,9 @@
 package com.filippov.data.validation.tool;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import lombok.SneakyThrows;
 
 import java.util.List;
@@ -15,5 +17,12 @@ public class JsonDataLoader {
                 .readValue(
                         this.getClass().getClassLoader().getResourceAsStream(resourceName),
                         new TypeReference<List<Map<String, Object>>>(){});
+    }
+
+    @SneakyThrows
+    public <T> T loadData(String resourceName, TypeReference typeReference) {
+        final ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.setVisibility(VisibilityChecker.Std.defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY));
+        return objectMapper.readValue(this.getClass().getClassLoader().getResourceAsStream(resourceName), typeReference);
     }
 }
