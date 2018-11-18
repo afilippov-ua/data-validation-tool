@@ -8,6 +8,7 @@ import com.filippov.data.validation.tool.datastorage.execution.LoadDataJob;
 import com.filippov.data.validation.tool.executor.Priority;
 import com.filippov.data.validation.tool.executor.PriorityThreadPoolExecutor;
 import com.filippov.data.validation.tool.model.ColumnData;
+import lombok.Builder;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,7 +22,7 @@ public class DefaultDataStorage implements DataStorage {
     private final ColumnDataCache cache;
     private final PriorityThreadPoolExecutor executor;
 
-
+    @Builder
     public DefaultDataStorage(RelationType relationType, Datasource datasource, ColumnDataCache cache, Integer maxThreads) {
         this.relationType = relationType;
         this.datasource = datasource;
