@@ -60,7 +60,7 @@ public class DefaultDataStorage implements DataStorage {
                                 Priority.HIGH)
                                 .get();
                     } catch (ExecutionException | InterruptedException e) {
-                        log.error("Loading data from datasource has been failed", e);
+                        log.error("Loading data from {} datasource has been failed", relationType, e);
                         throw new RuntimeException(e);
                     }
                 });
