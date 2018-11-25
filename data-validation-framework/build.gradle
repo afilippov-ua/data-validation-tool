@@ -2,10 +2,12 @@ dependencies {
     compile project(':utils')
 
     implementation libs.lombok
+    annotationProcessor libs.lombok
+
     implementation libs.jacksondatatype
     implementation libs.logback
-
-    annotationProcessor libs.lombok
+    implementation libs.kryo
+    implementation libs.kryoserializers
 
     testImplementation libs.assertj
     testImplementation libs.jupiterparams
