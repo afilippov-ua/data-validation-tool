@@ -1,7 +1,7 @@
 package com.filippov.data.validation.tool.datastorage;
 
 import com.filippov.data.validation.tool.AbstractTest;
-import com.filippov.data.validation.tool.datastorage.cache.DiskColumnDataCache;
+import com.filippov.data.validation.tool.datastorage.cache.KryoColumnDataCache;
 import org.junit.jupiter.api.Test;
 
 import static com.filippov.data.validation.tool.datastorage.RelationType.LEFT;
@@ -12,13 +12,13 @@ class DefaultDataStorageTest extends AbstractTest {
             .left(DefaultDataStorage.builder()
                     .relationType(LEFT)
                     .datasource(TEST_DATASOURCE_1)
-                    .cache(new DiskColumnDataCache(CACHE_PATH))
+                    .cache(new KryoColumnDataCache(CACHE_PATH))
                     .maxThreads(1)
                     .build())
             .right(DefaultDataStorage.builder()
                     .relationType(RIGHT)
                     .datasource(TEST_DATASOURCE_2)
-                    .cache(new DiskColumnDataCache(CACHE_PATH))
+                    .cache(new KryoColumnDataCache(CACHE_PATH))
                     .maxThreads(1)
                     .build())
             .build();

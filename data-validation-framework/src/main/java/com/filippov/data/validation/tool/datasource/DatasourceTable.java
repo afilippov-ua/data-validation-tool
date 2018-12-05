@@ -6,14 +6,15 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Getter
-@Setter // TODO: remove
+@Setter
 @Builder
 @EqualsAndHashCode(of = {"name"})
 @JsonDeserialize(builder = DatasourceTable.DatasourceTableBuilder.class)
-public class DatasourceTable {
+public class DatasourceTable implements Serializable {
     private String name;
     private DatasourceColumn primaryKey;
     private List<DatasourceColumn> columns;

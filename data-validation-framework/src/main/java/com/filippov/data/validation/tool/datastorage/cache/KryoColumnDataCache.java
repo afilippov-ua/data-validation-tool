@@ -3,6 +3,7 @@ package com.filippov.data.validation.tool.datastorage.cache;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.filippov.data.validation.tool.FileUtils;
 import com.filippov.data.validation.tool.datasource.DatasourceColumn;
 import com.filippov.data.validation.tool.datasource.DatasourceTable;
 import com.filippov.data.validation.tool.model.ColumnData;
@@ -10,6 +11,7 @@ import com.filippov.data.validation.tool.model.DataType;
 import de.javakaffee.kryoserializers.ArraysAsListSerializer;
 import de.javakaffee.kryoserializers.SynchronizedCollectionsSerializer;
 import de.javakaffee.kryoserializers.UnmodifiableCollectionsSerializer;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.objenesis.strategy.StdInstantiatorStrategy;
 
@@ -19,16 +21,15 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 @Slf4j
-public class DiskColumnDataCache implements ColumnDataCache {
+public class KryoColumnDataCache implements ColumnDataCache {
     private static final Class[] classes = {ColumnData.class, DatasourceTable.class, DatasourceColumn.class, DataType.class};
     private static final ThreadLocal<Kryo> kryo = ThreadLocal.withInitial(() -> {
         Kryo kryo = new Kryo();
         kryo.setInstantiatorStrategy(new Kryo.DefaultInstantiatorStrategy(new StdInstantiatorStrategy()));
         Arrays.stream(classes).forEach(kryo::register);
-        
+
         kryo.register(Arrays.asList("").getClass(), new ArraysAsListSerializer());
         UnmodifiableCollectionsSerializer.registerSerializers(kryo);
         SynchronizedCollectionsSerializer.registerSerializers(kryo);
@@ -37,7 +38,7 @@ public class DiskColumnDataCache implements ColumnDataCache {
 
     private final Path cachePath;
 
-    public DiskColumnDataCache(Path cachePath) {
+    public KryoColumnDataCache(Path cachePath) {
         this.cachePath = cachePath;
     }
 
@@ -56,17 +57,6 @@ public class DiskColumnDataCache implements ColumnDataCache {
     }
 
     @Override
-    public ColumnData getOrLoad(DatasourceColumn column, Supplier<ColumnData> supplier) {
-        if (exist(column)) {
-            return get(column).get();
-        } else {
-            final ColumnData data = supplier.get();
-            put(column, data);
-            return data;
-        }
-    }
-
-    @Override
     public void put(DatasourceColumn column, ColumnData columnData) {
         final Path path = resolvePath(column);
         mkdirs(path.getParent());
@@ -75,13 +65,6 @@ public class DiskColumnDataCache implements ColumnDataCache {
         } catch (IOException e) {
             log.error("Exception while writing data to disk: {}", path);
             log.debug(e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void putIfNotExist(DatasourceColumn column, Supplier<ColumnData> supplier) {
-        if (exist(column)) {
-            put(column, supplier.get());
         }
     }
 
@@ -99,6 +82,20 @@ public class DiskColumnDataCache implements ColumnDataCache {
             log.error("Exception while deleting data from disk: {}", path);
             log.debug(e.getMessage(), e);
         }
+    }
+
+    @Override
+    public void flush() {
+    }
+
+    @Override
+    @SneakyThrows
+    public void cleanUp() {
+        FileUtils.delete(cachePath);
+    }
+
+    @Override
+    public void close() {
     }
 
     private Path resolvePath(DatasourceColumn column) {

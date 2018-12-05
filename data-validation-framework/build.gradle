@@ -8,6 +8,7 @@ dependencies {
     implementation libs.logback
     implementation libs.kryo
     implementation libs.kryoserializers
+    implementation libs.ehcache
 
     testImplementation libs.assertj
     testImplementation libs.jupiterparams

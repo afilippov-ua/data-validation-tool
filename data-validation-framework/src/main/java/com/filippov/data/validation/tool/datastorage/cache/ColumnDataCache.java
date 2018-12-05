@@ -10,13 +10,31 @@ public interface ColumnDataCache {
 
     Optional<ColumnData> get(DatasourceColumn column);
 
-    ColumnData getOrLoad(DatasourceColumn column, Supplier<ColumnData> supplier);
+    default ColumnData getOrLoad(DatasourceColumn column, Supplier<ColumnData> supplier) {
+        if (exist(column)) {
+            return get(column).get();
+        } else {
+            final ColumnData data = supplier.get();
+            put(column, data);
+            return data;
+        }
+    }
 
     void put(DatasourceColumn column, ColumnData columnData);
 
-    void putIfNotExist(DatasourceColumn column, Supplier<ColumnData> supplier);
+    default void putIfNotExist(DatasourceColumn column, Supplier<ColumnData> supplier) {
+        if (!exist(column)) {
+            put(column, supplier.get());
+        }
+    }
 
     boolean exist(DatasourceColumn column);
 
     void delete(DatasourceColumn column);
+
+    void flush();
+
+    void cleanUp();
+
+    void close();
 }
