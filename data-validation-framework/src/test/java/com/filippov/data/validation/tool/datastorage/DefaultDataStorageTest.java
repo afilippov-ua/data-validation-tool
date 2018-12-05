@@ -45,13 +45,13 @@ class DefaultDataStorageTest extends AbstractTest {
     @ParameterizedTest()
     @MethodSource("columnProvider")
     void getDataTest(String columnName, List<?> expectedValues) {
-        final DatasourceTable leftTable = leftStorage.getDatasource().getMetadata().tableByName("TableA");
-        final DatasourceTable rightTable = rightStorage.getDatasource().getMetadata().tableByName("TableA");
+        final DatasourceTable leftTable = leftStorage.getDatasource().getMetadata().getTableByName("TableA");
+        final DatasourceTable rightTable = rightStorage.getDatasource().getMetadata().getTableByName("TableA");
 
-        final DatasourceColumn leftIdColumn = leftTable.columnByName(ID);
+        final DatasourceColumn leftIdColumn = leftTable.getColumnByName(ID);
 
-        final DatasourceColumn leftColumn = leftTable.columnByName(columnName);
-        final DatasourceColumn rightColumn = rightTable.columnByName(columnName);
+        final DatasourceColumn leftColumn = leftTable.getColumnByName(columnName);
+        final DatasourceColumn rightColumn = rightTable.getColumnByName(columnName);
 
         final ColumnData data = leftStorage.getData(
                 Query.builder()

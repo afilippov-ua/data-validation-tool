@@ -14,11 +14,11 @@ class DataStoragePairTest extends AbstractTest {
 
     @Test
     void getDataTest() {
-        final DatasourceTable leftTable = LEFT_DATASOURCE.getMetadata().tableByName(TABLE_A);
-        final DatasourceTable rightTable = RIGHT_DATASOURCE.getMetadata().tableByName(TABLE_A);
+        final DatasourceTable leftTable = LEFT_DATASOURCE.getMetadata().getTableByName(TABLE_A);
+        final DatasourceTable rightTable = RIGHT_DATASOURCE.getMetadata().getTableByName(TABLE_A);
 
-        final DatasourceColumn leftColumn = leftTable.columnByName(ID);
-        final DatasourceColumn rightColumn = rightTable.columnByName(ID);
+        final DatasourceColumn leftColumn = leftTable.getColumnByName(ID);
+        final DatasourceColumn rightColumn = rightTable.getColumnByName(ID);
 
         final ColumnDataPair columnData = storagePair.getColumnData(
                 Query.builder()

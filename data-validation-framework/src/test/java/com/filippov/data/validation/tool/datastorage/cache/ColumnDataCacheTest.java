@@ -66,7 +66,7 @@ class ColumnDataCacheTest extends AbstractTest {
 
     @ParameterizedTest()
     @MethodSource("cacheProvider")
-    void getOrLoadTest(ColumnDataCache cache) {
+    void getOrLoadExceptionTest(ColumnDataCache cache) {
         cache.delete(TEST_COLUMN);
         assertThat(cache.exist(TEST_COLUMN)).isFalse();
 
@@ -81,7 +81,7 @@ class ColumnDataCacheTest extends AbstractTest {
 
     @ParameterizedTest()
     @MethodSource("cacheProvider")
-    void getOrLoadExceptionTest(ColumnDataCache cache) {
+    void getOrLoadTest(ColumnDataCache cache) {
         cache.delete(TEST_COLUMN);
         assertThat(cache.exist(TEST_COLUMN)).isFalse();
 

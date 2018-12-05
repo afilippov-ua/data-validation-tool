@@ -6,15 +6,15 @@ import lombok.Getter;
 
 import java.util.List;
 
-@Builder
 @Getter
+@Builder
 @JsonDeserialize(builder = DatasourceMetadata.DatasourceMetadataBuilder.class)
 public class DatasourceMetadata {
     private List<DatasourceTable> tables;
 
-    public DatasourceTable tableByName(String name) {
-        return tables.stream().filter(table -> table.getName().equals(name))
+    public DatasourceTable getTableByName(String tableName) {
+        return tables.stream().filter(table -> table.getName().equals(tableName))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Table with name: " + name + " wasn't found"));
+                .orElseThrow(() -> new IllegalArgumentException("Table with name: " + tableName + " wasn't found"));
     }
 }
