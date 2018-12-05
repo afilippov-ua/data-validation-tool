@@ -18,4 +18,10 @@ public class DatasourceTable implements Serializable {
     private String name;
     private DatasourceColumn primaryKey;
     private List<DatasourceColumn> columns;
+
+    public DatasourceColumn columnByName(String columnName) {
+        return columns.stream().filter(column -> column.getName().equals(columnName))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Datasource column with name: " + columnName + " wasn't found in table: " + name));
+    }
 }

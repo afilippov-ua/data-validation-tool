@@ -12,4 +12,24 @@
            diskPersistent="true"
            diskExpiryThreadIntervalSeconds="0"
            memoryStoreEvictionPolicy="LFU"/>
+
+    <cache name="left"
+           maxElementsInMemory="1000"
+           eternal="true"
+           overflowToDisk="true"
+           timeToIdleSeconds="0"
+           timeToLiveSeconds="0"
+           diskPersistent="true"
+           diskExpiryThreadIntervalSeconds="0"
+           memoryStoreEvictionPolicy="LFU"/>
+
+    <cache name="right"
+           maxElementsInMemory="1000"
+           eternal="true"
+           overflowToDisk="true"
+           timeToIdleSeconds="0"
+           timeToLiveSeconds="0"
+           diskPersistent="true"
+           diskExpiryThreadIntervalSeconds="0"
+           memoryStoreEvictionPolicy="LFU"/>
 </ehcache>

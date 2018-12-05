@@ -6,7 +6,7 @@
         "dataType": "INTEGER"
       },
       "column": {
-        "name": "integerColumn",
+        "name": "id",
         "dataType": "INTEGER"
       },
       "keys": [
@@ -8064,7 +8064,7 @@
         "dataType": "INTEGER"
       },
       "column": {
-        "name": "integerColumn",
+        "name": "id",
         "dataType": "INTEGER"
       },
       "keys": [
