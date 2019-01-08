@@ -1,5 +1,7 @@
-package com.filippov.data.validation.tool.datastorage;
+package com.filippov.data.validation.tool.pair;
 
+import com.filippov.data.validation.tool.datastorage.DataStorage;
+import com.filippov.data.validation.tool.datastorage.Query;
 import com.filippov.data.validation.tool.model.ColumnData;
 import com.filippov.data.validation.tool.model.ColumnDataPair;
 import lombok.Builder;

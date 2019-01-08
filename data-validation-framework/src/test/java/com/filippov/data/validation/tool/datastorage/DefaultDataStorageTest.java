@@ -2,10 +2,11 @@ package com.filippov.data.validation.tool.datastorage;
 
 import com.filippov.data.validation.tool.AbstractTest;
 import com.filippov.data.validation.tool.datasource.DatasourceColumn;
+import com.filippov.data.validation.tool.datasource.DatasourceMetadata;
 import com.filippov.data.validation.tool.datasource.DatasourceTable;
 import com.filippov.data.validation.tool.model.ColumnData;
-import com.filippov.data.validation.tool.model.ColumnPair;
-import com.filippov.data.validation.tool.model.TablePair;
+import com.filippov.data.validation.tool.pair.ColumnPair;
+import com.filippov.data.validation.tool.pair.TablePair;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -45,13 +46,16 @@ class DefaultDataStorageTest extends AbstractTest {
     @ParameterizedTest()
     @MethodSource("columnProvider")
     void getDataTest(String columnName, List<?> expectedValues) {
-        final DatasourceTable leftTable = leftStorage.getDatasource().getMetadata().getTableByName("TableA");
-        final DatasourceTable rightTable = rightStorage.getDatasource().getMetadata().getTableByName("TableA");
+        DatasourceMetadata leftMetadata = leftStorage.getDatasource().getMetadata();
+        DatasourceMetadata rightMetadata = rightStorage.getDatasource().getMetadata();
 
-        final DatasourceColumn leftIdColumn = leftTable.getColumnByName(ID);
+        final DatasourceTable leftTable = leftMetadata.getTableByName("TableA");
+        final DatasourceTable rightTable = rightMetadata.getTableByName("TableA");
 
-        final DatasourceColumn leftColumn = leftTable.getColumnByName(columnName);
-        final DatasourceColumn rightColumn = rightTable.getColumnByName(columnName);
+        final DatasourceColumn leftIdColumn = leftMetadata.getColumnByName(leftTable.getName(), ID);
+
+        final DatasourceColumn leftColumn = leftMetadata.getColumnByName(leftTable.getName(), columnName);
+        final DatasourceColumn rightColumn = rightMetadata.getColumnByName(rightTable.getName(), columnName);
 
         final ColumnData data = leftStorage.getData(
                 Query.builder()

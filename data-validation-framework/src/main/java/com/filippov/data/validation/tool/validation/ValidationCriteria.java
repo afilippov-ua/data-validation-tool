@@ -1,7 +1,7 @@
 package com.filippov.data.validation.tool.validation;
 
-import com.filippov.data.validation.tool.model.ColumnPair;
-import com.filippov.data.validation.tool.model.TablePair;
+import com.filippov.data.validation.tool.pair.ColumnPair;
+import com.filippov.data.validation.tool.pair.TablePair;
 import lombok.Builder;
 
 import java.util.List;

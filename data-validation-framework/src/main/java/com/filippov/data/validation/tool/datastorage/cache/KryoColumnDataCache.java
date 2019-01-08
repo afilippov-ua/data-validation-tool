@@ -99,7 +99,7 @@ public class KryoColumnDataCache implements ColumnDataCache {
     }
 
     private Path resolvePath(DatasourceColumn column) {
-        return cachePath.resolve(column.getTable().getName() + "/" + column.getName());
+        return cachePath.resolve(column.getTableName() + "/" + column.getName());
     }
 
     private void mkdirs(Path path) {

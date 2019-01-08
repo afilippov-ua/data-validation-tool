@@ -2,10 +2,12 @@
   "TableA": {
     "id": {
       "primaryKey": {
+        "tableName": "TableA",
         "name": "id",
         "dataType": "INTEGER"
       },
       "column": {
+        "tableName": "TableA",
         "name": "id",
         "dataType": "INTEGER"
       },
@@ -1998,10 +2000,12 @@
     },
     "integerColumn": {
       "primaryKey": {
+        "tableName": "TableA",
         "name": "id",
         "dataType": "INTEGER"
       },
       "column": {
+        "tableName": "TableA",
         "name": "integerColumn",
         "dataType": "INTEGER"
       },
@@ -3994,10 +3998,12 @@
     },
     "doubleColumn": {
       "primaryKey": {
+        "tableName": "TableA",
         "name": "id",
         "dataType": "INTEGER"
       },
       "column": {
+        "tableName": "TableA",
         "name": "doubleColumn",
         "dataType": "DOUBLE"
       },
@@ -5990,10 +5996,12 @@
     },
     "stringColumn": {
       "primaryKey": {
+        "tableName": "TableA",
         "name": "id",
         "dataType": "INTEGER"
       },
       "column": {
+        "tableName": "TableA",
         "name": "stringColumn",
         "dataType": "STRING"
       },
@@ -7988,10 +7996,12 @@
   "TableB": {
     "id": {
       "primaryKey": {
+        "tableName": "TableB",
         "name": "id",
         "dataType": "INTEGER"
       },
       "column": {
+        "tableName": "TableB",
         "name": "id",
         "dataType": "INTEGER"
       },
@@ -9984,10 +9994,12 @@
     },
     "integerColumn": {
       "primaryKey": {
+        "tableName": "TableB",
         "name": "id",
         "dataType": "INTEGER"
       },
       "column": {
+        "tableName": "TableB",
         "name": "integerColumn",
         "dataType": "INTEGER"
       },
@@ -11980,10 +11992,12 @@
     },
     "doubleColumn": {
       "primaryKey": {
+        "tableName": "TableB",
         "name": "id",
         "dataType": "INTEGER"
       },
       "column": {
+        "tableName": "TableB",
         "name": "doubleColumn",
         "dataType": "DOUBLE"
       },
@@ -13976,10 +13990,12 @@
     },
     "stringColumn": {
       "primaryKey": {
+        "tableName": "TableB",
         "name": "id",
         "dataType": "INTEGER"
       },
       "column": {
+        "tableName": "TableB",
         "name": "stringColumn",
         "dataType": "STRING"
       },

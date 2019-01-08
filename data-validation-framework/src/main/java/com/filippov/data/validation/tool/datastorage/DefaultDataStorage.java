@@ -53,7 +53,10 @@ public class DefaultDataStorage implements DataStorage {
                                         .datasource(datasource)
                                         .query(DatasourceQuery.builder()
                                                 .table(query.getTablePair().getTableFor(relationType))
-                                                .primaryKey(query.getTablePair().getTableFor(relationType).getPrimaryKey())
+                                                .primaryKey(
+                                                        datasource.getMetadata().getColumnByName(
+                                                                query.getTablePair().getTableFor(relationType).getName(),
+                                                                query.getTablePair().getTableFor(relationType).getPrimaryKey()))
                                                 .column(query.getColumnPair().getColumnFor(relationType))
                                                 .queryParams(query.getQueryParams())
                                                 .build())
@@ -76,7 +79,10 @@ public class DefaultDataStorage implements DataStorage {
                                     .columnDataCache(cache)
                                     .query(DatasourceQuery.builder()
                                             .table(query.getTablePair().getTableFor(relationType))
-                                            .primaryKey(query.getTablePair().getTableFor(relationType).getPrimaryKey())
+                                            .primaryKey(
+                                                    datasource.getMetadata().getColumnByName(
+                                                            query.getTablePair().getTableFor(relationType).getName(),
+                                                            query.getTablePair().getTableFor(relationType).getPrimaryKey()))
                                             .column(query.getColumnPair().getColumnFor(relationType))
                                             .queryParams(query.getQueryParams())
                                             .build())

@@ -1,7 +1,7 @@
 package com.filippov.data.validation.tool.datasource;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import lombok.Builder;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,18 +11,53 @@ import java.util.List;
 
 @Getter
 @Setter
-@Builder
 @EqualsAndHashCode(of = {"name"})
 @JsonDeserialize(builder = DatasourceTable.DatasourceTableBuilder.class)
 public class DatasourceTable implements Serializable {
     private String name;
-    private DatasourceColumn primaryKey;
-    private List<DatasourceColumn> columns;
+    private String primaryKey;
+    private List<String> columns;
 
-    public DatasourceColumn getColumnByName(String columnName) {
-        return columns.stream().filter(column -> column.getName().equals(columnName))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Datasource column with name: " + columnName + " wasn't found in table: " + name));
+    DatasourceTable(String name, String primaryKey, List<String> columns) {
+        this.name = name;
+        this.primaryKey = primaryKey;
+        this.columns = columns;
+    }
+
+    public static DatasourceTableBuilder builder() {
+        return new DatasourceTableBuilder();
+    }
+
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class DatasourceTableBuilder {
+        private String name;
+        private String primaryKey;
+        private List<String> columns;
+
+        DatasourceTableBuilder() {
+        }
+
+        public DatasourceTableBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public DatasourceTableBuilder primaryKey(String primaryKey) {
+            this.primaryKey = primaryKey;
+            return this;
+        }
+
+        public DatasourceTableBuilder columns(List<String> columns) {
+            this.columns = columns;
+            return this;
+        }
+
+        public DatasourceTable build() {
+            return new DatasourceTable(name, primaryKey, columns);
+        }
+
+        public String toString() {
+            return "DatasourceTable.DatasourceTableBuilder(name=" + this.name + ", primaryKey=" + this.primaryKey + ", columns=" + this.columns + ")";
+        }
     }
 }

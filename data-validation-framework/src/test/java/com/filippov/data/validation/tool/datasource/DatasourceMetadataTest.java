@@ -1,14 +1,14 @@
 package com.filippov.data.validation.tool.datasource;
 
+import com.filippov.data.validation.tool.AbstractTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class DatasourceMetadataTest {
+class DatasourceMetadataTest extends AbstractTest {
     private static final DatasourceTable table1 = DatasourceTable.builder().name("table1").build();
     private static final DatasourceTable table2 = DatasourceTable.builder().name("table2").build();
 
@@ -31,6 +31,6 @@ public class DatasourceMetadataTest {
 
     @Test
     void incorrectTableNameTest() {
-        assertThrows(IllegalArgumentException.class, () -> metadata.getTableByName("incorrect name"));
+        assertThat(metadata.getTableByName("incorrect name")).isNull();
     }
 }

@@ -29,11 +29,11 @@ class ColumnDataCacheTest extends AbstractTest {
     static {
         TABLE = DatasourceTable.builder().name("table1").build();
 
-        PK = DatasourceColumn.builder().name("pk").table(TABLE).build();
-        TEST_COLUMN = DatasourceColumn.builder().name("test_column").table(TABLE).build();
+        PK = DatasourceColumn.builder().name("pk").tableName(TABLE.getName()).build();
+        TEST_COLUMN = DatasourceColumn.builder().name("test_column").tableName(TABLE.getName()).build();
 
-        TABLE.setPrimaryKey(PK);
-        TABLE.setColumns(asList(PK, TEST_COLUMN));
+        TABLE.setPrimaryKey(PK.getName());
+        TABLE.setColumns(asList(PK.getName(), TEST_COLUMN.getName()));
 
         IDS = asList(1, 2, 3, 4, 5, 6, 7);
         VALUES = asList("str1", "str2", "str3", "str4", "str5", "str6", "str7");

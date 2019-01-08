@@ -4,8 +4,8 @@ import com.filippov.data.validation.tool.AbstractTest;
 import com.filippov.data.validation.tool.datasource.DatasourceColumn;
 import com.filippov.data.validation.tool.datasource.DatasourceTable;
 import com.filippov.data.validation.tool.model.ColumnDataPair;
-import com.filippov.data.validation.tool.model.ColumnPair;
-import com.filippov.data.validation.tool.model.TablePair;
+import com.filippov.data.validation.tool.pair.ColumnPair;
+import com.filippov.data.validation.tool.pair.TablePair;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,8 +17,8 @@ class DataStoragePairTest extends AbstractTest {
         final DatasourceTable leftTable = LEFT_DATASOURCE.getMetadata().getTableByName(TABLE_A);
         final DatasourceTable rightTable = RIGHT_DATASOURCE.getMetadata().getTableByName(TABLE_A);
 
-        final DatasourceColumn leftColumn = leftTable.getColumnByName(ID);
-        final DatasourceColumn rightColumn = rightTable.getColumnByName(ID);
+        final DatasourceColumn leftColumn = LEFT_DATASOURCE.getMetadata().getColumnByName(leftTable.getName(), ID);
+        final DatasourceColumn rightColumn = RIGHT_DATASOURCE.getMetadata().getColumnByName(rightTable.getName(), ID);
 
         final ColumnDataPair columnData = storagePair.getColumnData(
                 Query.builder()

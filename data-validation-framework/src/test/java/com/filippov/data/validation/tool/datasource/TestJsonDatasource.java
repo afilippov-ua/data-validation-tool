@@ -9,14 +9,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TestJsonDatasource implements Datasource {
+    private final String id;
     private final String metadataFilePath;
     private final String dataFilePath;
     private DatasourceMetadata metadata;
     private Map<DatasourceColumn, ColumnData> dataMap = new HashMap<>();
 
-    public TestJsonDatasource(String metadataFilePath, String dataFilePath) {
+    public TestJsonDatasource(String id, String metadataFilePath, String dataFilePath) {
+        this.id = id;
         this.metadataFilePath = metadataFilePath;
         this.dataFilePath = dataFilePath;
+    }
+
+    @Override
+    public String getId() {
+        return this.id;
     }
 
     @Override
@@ -43,7 +50,8 @@ public class TestJsonDatasource implements Datasource {
         for (DatasourceTable table : getMetadata().getTables()) {
             if (data.containsKey(table.getName())) {
                 final Map<String, ColumnData> columnDataMap = data.get(table.getName());
-                for (DatasourceColumn column : table.getColumns()) {
+                for (String columnName : table.getColumns()) {
+                    DatasourceColumn column = getMetadata().getColumnByName(table.getName(), columnName);
                     if (columnDataMap.containsKey(column.getName())) {
                         dataMap.put(column, columnDataMap.get(column.getName()));
                     } else {

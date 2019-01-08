@@ -2,53 +2,65 @@
   "tables": [
     {
       "name": "TableA",
-      "primaryKey": {
-        "name": "id",
-        "dataType": "INTEGER"
-      },
+      "primaryKey": "id",
       "columns": [
-        {
-          "name": "id",
-          "dataType": "INTEGER"
-        },
-        {
-          "name": "integerColumn",
-          "dataType": "INTEGER"
-        },
-        {
-          "name": "doubleColumn",
-          "dataType": "DOUBLE"
-        },
-        {
-          "name": "stringColumn",
-          "dataType": "STRING"
-        }
+        "id",
+        "integerColumn",
+        "doubleColumn",
+        "stringColumn"
       ]
     },
     {
       "name": "TableB",
-      "primaryKey": {
-        "name": "id",
-        "dataType": "INTEGER"
-      },
+      "primaryKey": "id",
       "columns": [
-        {
-          "name": "id",
-          "dataType": "INTEGER"
-        },
-        {
-          "name": "integerColumn",
-          "dataType": "INTEGER"
-        },
-        {
-          "name": "doubleColumn",
-          "dataType": "DOUBLE"
-        },
-        {
-          "name": "stringColumn",
-          "dataType": "STRING"
-        }
+        "id",
+        "integerColumn",
+        "doubleColumn",
+        "stringColumn"
       ]
+    }
+  ],
+  "columns": [
+    {
+      "tableName": "TableA",
+      "name": "id",
+      "dataType": "INTEGER"
+    },
+    {
+      "tableName": "TableA",
+      "name": "integerColumn",
+      "dataType": "INTEGER"
+    },
+    {
+      "tableName": "TableA",
+      "name": "doubleColumn",
+      "dataType": "DOUBLE"
+    },
+    {
+      "tableName": "TableA",
+      "name": "stringColumn",
+      "dataType": "STRING"
+    },
+    {
+      "tableName": "TableB",
+      "name": "id",
+      "dataType": "INTEGER"
+    },
+    {
+      "tableName": "TableB",
+      "name": "integerColumn",
+      "dataType": "INTEGER"
+    },
+    {
+      "tableName": "TableB",
+      "name": "doubleColumn",
+      "dataType": "DOUBLE"
+    },
+    {
+      "tableName": "TableB",
+      "name": "stringColumn",
+      "dataType": "STRING"
     }
   ]
 }
