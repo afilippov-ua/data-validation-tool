@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.concurrent.Callable;
 
 @Slf4j
-public class LoadDataJob implements Callable<ColumnData> {
+public class LoadDataJob<K, V> implements Callable<ColumnData<K, V>> {
     private ColumnDataCache columnDataCache;
     private Datasource datasource;
     private DatasourceQuery query;
@@ -23,7 +23,7 @@ public class LoadDataJob implements Callable<ColumnData> {
     }
 
     @Override
-    public ColumnData call() throws Exception {
+    public ColumnData<K, V> call() throws Exception {
         return columnDataCache.getOrLoad(query.getColumn(), () -> {
             try {
                 return datasource.getColumnData(query);

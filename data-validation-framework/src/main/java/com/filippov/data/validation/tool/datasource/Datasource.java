@@ -9,5 +9,5 @@ public interface Datasource {
 
     DatasourceMetadata getMetadata();
 
-    ColumnData getColumnData(DatasourceQuery query);
+    <K, V> ColumnData<K, V> getColumnData(DatasourceQuery query);
 }

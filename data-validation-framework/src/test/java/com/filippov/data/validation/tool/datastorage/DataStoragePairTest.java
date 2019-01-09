@@ -20,7 +20,7 @@ class DataStoragePairTest extends AbstractTest {
         final DatasourceColumn leftColumn = LEFT_DATASOURCE.getMetadata().getColumnByName(leftTable.getName(), ID);
         final DatasourceColumn rightColumn = RIGHT_DATASOURCE.getMetadata().getColumnByName(rightTable.getName(), ID);
 
-        final ColumnDataPair columnData = storagePair.getColumnData(
+        final ColumnDataPair<Integer, Integer, Integer> columnData = storagePair.getColumnData(
                 Query.builder()
                         .tablePair(TablePair.builder().left(leftTable).right(rightTable).build())
                         .columnPair(ColumnPair.builder().left(leftColumn).right(rightColumn).build())

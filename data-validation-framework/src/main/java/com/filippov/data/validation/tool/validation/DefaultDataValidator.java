@@ -7,9 +7,14 @@ import com.filippov.data.validation.tool.pair.TablePair;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 public class DefaultDataValidator implements DataValidator {
     private final DatasourceMetadata leftMetadata;
@@ -21,25 +26,52 @@ public class DefaultDataValidator implements DataValidator {
     }
 
     @Override
-    public ValidationResult validate(ColumnPair columnPair, ColumnData left, ColumnData right) {
-        final List<Object> allKeys = Stream.concat(
-                left.getKeys().stream(),
-                right.getKeys().stream())
+    public <K, LV, RV> ValidationResult validate(ColumnPair columnPair, ColumnData<K, LV> leftData, ColumnData<K, RV> rightData) {
+        final List<K> allKeys = Stream.concat(
+                leftData.getKeys().stream(),
+                rightData.getKeys().stream())
                 .distinct()
                 .sorted() // TODO : remove this extra sorting in case of performance degradation
                 .collect(toList());
 
-        final List<Object> failedKeys = new ArrayList<>();
-        for (Object key : allKeys) {
+        final Map<K, Integer> leftIdToIndexMap = IntStream.range(0, leftData.getKeys().size())
+                .boxed()
+                .collect(toMap(
+                        i -> leftData.getKeys().get(i),
+                        Function.identity()));
 
+        final Map<K, Integer> rightIdToIndexMap = IntStream.range(0, rightData.getKeys().size())
+                .boxed()
+                .collect(toMap(
+                        i -> rightData.getKeys().get(i),
+                        Function.identity()));
+
+        final List<K> failedKeys = new ArrayList<>();
+        for (K key : allKeys) {
+            final Integer leftId = leftIdToIndexMap.get(key);
+            final Integer rightId = rightIdToIndexMap.get(key);
+
+            if (leftId == null || rightId == null) {
+                failedKeys.add(key);
+            } else {
+                final Object leftValue = leftData.getValues().get(leftId);
+                final Object rightValue = rightData.getValues().get(rightId);
+
+                final Object leftResult = columnPair.getLeftTransformer().transform(leftValue);
+                final Object rightResult = columnPair.getRightTransformer().transform(rightValue);
+
+                if (!Objects.equals(leftResult, rightResult)) {
+                    failedKeys.add(key);
+                }
+            }
         }
 
-        return ValidationResult.builder()
+        return ValidationResult.<K>builder()
                 .tablePair(TablePair.builder()
-                        .left(leftMetadata.getTableByName(left.getColumn().getTableName()))
-                        .right(rightMetadata.getTableByName(right.getColumn().getTableName()))
+                        .left(leftMetadata.getTableByName(leftData.getColumn().getTableName()))
+                        .right(rightMetadata.getTableByName(rightData.getColumn().getTableName()))
                         .build())
-                .columnPair(ColumnPair.builder().left(left.getColumn()).right(right.getColumn()).build())
+                .columnPair(ColumnPair.builder().left(leftData.getColumn()).right(rightData.getColumn()).build())
                 .failedKeys(failedKeys)
                 .build();
     }

@@ -24,7 +24,7 @@ class ColumnDataCacheTest extends AbstractTest {
     private static final DatasourceColumn TEST_COLUMN;
     private static final List<Integer> IDS;
     private static final List<String> VALUES;
-    private static final ColumnData TEST_DATA;
+    private static final ColumnData<Integer, ?> TEST_DATA;
 
     static {
         TABLE = DatasourceTable.builder().name("table1").build();
@@ -37,7 +37,7 @@ class ColumnDataCacheTest extends AbstractTest {
 
         IDS = asList(1, 2, 3, 4, 5, 6, 7);
         VALUES = asList("str1", "str2", "str3", "str4", "str5", "str6", "str7");
-        TEST_DATA = ColumnData.builder().primaryKey(PK).column(TEST_COLUMN).keys(IDS).values(VALUES).build();
+        TEST_DATA = ColumnData.<Integer, String>builder().primaryKey(PK).column(TEST_COLUMN).keys(IDS).values(VALUES).build();
     }
 
     @AfterAll
@@ -85,7 +85,7 @@ class ColumnDataCacheTest extends AbstractTest {
         cache.delete(TEST_COLUMN);
         assertThat(cache.exist(TEST_COLUMN)).isFalse();
 
-        ColumnData data = cache.getOrLoad(TEST_COLUMN, () -> TEST_DATA);
+        ColumnData<Integer, ?> data = cache.getOrLoad(TEST_COLUMN, () -> TEST_DATA);
         assertThat(data).isNotNull();
         assertThat(data.getPrimaryKey()).isEqualTo(PK);
         assertThat(data.getColumn()).isEqualTo(TEST_COLUMN);
@@ -101,7 +101,7 @@ class ColumnDataCacheTest extends AbstractTest {
     void putAndGetTest(ColumnDataCache cache) {
         cache.put(TEST_COLUMN, TEST_DATA);
 
-        final Optional<ColumnData> optionalData = cache.get(TEST_COLUMN);
+        final Optional<ColumnData<Integer, String>> optionalData = cache.get(TEST_COLUMN);
         assertThat(optionalData).isNotEmpty();
         optionalData.ifPresent(data -> {
             assertThat(data.getPrimaryKey()).isEqualTo(PK);
@@ -122,7 +122,7 @@ class ColumnDataCacheTest extends AbstractTest {
 
         cache.putIfNotExist(TEST_COLUMN, () -> TEST_DATA);
 
-        final Optional<ColumnData> optionalData = cache.get(TEST_COLUMN);
+        final Optional<ColumnData<Integer, String>> optionalData = cache.get(TEST_COLUMN);
         assertThat(optionalData).isNotEmpty();
         optionalData.ifPresent(data -> {
             assertThat(data.getPrimaryKey()).isEqualTo(PK);

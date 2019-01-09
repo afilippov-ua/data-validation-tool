@@ -9,7 +9,7 @@ public interface DataStorage {
 
     Datasource getDatasource();
 
-    ColumnData getData(Query query);
+    <K, V> ColumnData<K, V> getData(Query query);
 
     void preloadInBackground(Query query);
 

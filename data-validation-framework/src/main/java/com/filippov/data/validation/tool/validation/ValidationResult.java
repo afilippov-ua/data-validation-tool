@@ -9,8 +9,8 @@ import java.util.List;
 
 @Getter
 @Builder
-public class ValidationResult {
+public class ValidationResult<K> {
     private TablePair tablePair;
     private ColumnPair columnPair;
-    private List<Object> failedKeys;
+    private List<K> failedKeys;
 }

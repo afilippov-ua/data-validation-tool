@@ -9,15 +9,15 @@ import java.util.Optional;
 
 public class InMemoryColumnDataCache implements ColumnDataCache {
 
-    private Map<DatasourceColumn, ColumnData> dataMap = new HashMap<>();
+    private Map<DatasourceColumn, ColumnData<?, ?>> dataMap = new HashMap<>();
 
     @Override
-    public Optional<ColumnData> get(DatasourceColumn column) {
-        return Optional.ofNullable(dataMap.get(column));
+    public <K, V> Optional<ColumnData<K, V>> get(DatasourceColumn column) {
+        return Optional.ofNullable((ColumnData<K, V>) dataMap.get(column));
     }
 
     @Override
-    public void put(DatasourceColumn column, ColumnData columnData) {
+    public <K, V> void put(DatasourceColumn column, ColumnData<K, V> columnData) {
         dataMap.put(column, columnData);
     }
 

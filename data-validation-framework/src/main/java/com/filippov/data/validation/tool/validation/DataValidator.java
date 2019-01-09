@@ -5,5 +5,5 @@ import com.filippov.data.validation.tool.pair.ColumnPair;
 
 public interface DataValidator {
 
-    ValidationResult validate(ColumnPair columnPair, ColumnData left, ColumnData right);
+    <K, LV, RV> ValidationResult validate(ColumnPair columnPair, ColumnData<K, LV> leftData, ColumnData<K, RV> rightData);
 }

@@ -42,12 +42,12 @@ public class DefaultDataStorage implements DataStorage {
 
     @Override
     @SneakyThrows
-    public ColumnData getData(Query query) {
+    public <K, V> ColumnData<K, V> getData(Query query) {
         return cache.getOrLoad(
                 query.getColumnPair().getColumnFor(relationType),
                 () -> {
                     try {
-                        return executor.submit(
+                        return (ColumnData<K, V>) executor.submit(
                                 LoadDataJob.builder()
                                         .columnDataCache(cache)
                                         .datasource(datasource)

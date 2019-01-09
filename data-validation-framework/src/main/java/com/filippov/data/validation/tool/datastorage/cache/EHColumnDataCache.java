@@ -19,16 +19,16 @@ public class EHColumnDataCache implements ColumnDataCache {
 
     @Override
     @SneakyThrows
-    public Optional<ColumnData> get(DatasourceColumn column) {
+    public <K, V> Optional<ColumnData<K, V>> get(DatasourceColumn column) {
         if (exist(column)) {
-            return Optional.of((ColumnData) cache.get(column).getObjectValue());
+            return Optional.of((ColumnData<K, V>) cache.get(column).getObjectValue());
         } else {
             return Optional.empty();
         }
     }
 
     @Override
-    public void put(DatasourceColumn column, ColumnData columnData) {
+    public <K, V> void put(DatasourceColumn column, ColumnData<K, V> columnData) {
         cache.put(new Element(column, columnData));
     }
 

@@ -21,11 +21,11 @@ public class DataStoragePair {
     private DataStorage right;
 
     @SneakyThrows
-    public ColumnDataPair getColumnData(Query query) {
-        final Future<ColumnData> leftFuture = executor.submit(() -> left.getData(query));
-        final Future<ColumnData> rightFuture = executor.submit(() -> right.getData(query));
+    public <K, LV, RV> ColumnDataPair<K, LV, RV> getColumnData(Query query) {
+        final Future<ColumnData<K, LV>> leftFuture = executor.submit(() -> left.getData(query));
+        final Future<ColumnData<K, RV>> rightFuture = executor.submit(() -> right.getData(query));
 
-        return ColumnDataPair.builder()
+        return ColumnDataPair.<K, LV, RV>builder()
                 .left(leftFuture.get())
                 .right(rightFuture.get())
                 .build();

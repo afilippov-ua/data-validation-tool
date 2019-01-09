@@ -2,18 +2,24 @@ package com.filippov.data.validation.tool.model;
 
 import com.filippov.data.validation.tool.datastorage.RelationType;
 import lombok.Builder;
-import lombok.Getter;
 
 import static com.filippov.data.validation.tool.datastorage.RelationType.LEFT;
 import static com.filippov.data.validation.tool.datastorage.RelationType.RIGHT;
 
-@Getter
 @Builder
-public class ColumnDataPair {
-    private ColumnData left;
-    private ColumnData right;
+public class ColumnDataPair<K, LV, RV> {
+    private ColumnData<K, LV> left;
+    private ColumnData<K, RV> right;
 
-    public ColumnData getColumnDataFor(RelationType relationType) {
+    public ColumnData<K, LV> getLeft() {
+        return left;
+    }
+
+    public ColumnData<K, RV> getRight() {
+        return right;
+    }
+
+    public ColumnData<K, ?> getColumnDataFor(RelationType relationType) {
         if (relationType == LEFT) {
             return left;
         } else if (relationType == RIGHT) {

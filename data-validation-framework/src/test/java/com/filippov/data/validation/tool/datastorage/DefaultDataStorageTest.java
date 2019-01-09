@@ -57,7 +57,7 @@ class DefaultDataStorageTest extends AbstractTest {
         final DatasourceColumn leftColumn = leftMetadata.getColumnByName(leftTable.getName(), columnName);
         final DatasourceColumn rightColumn = rightMetadata.getColumnByName(rightTable.getName(), columnName);
 
-        final ColumnData data = leftStorage.getData(
+        final ColumnData<Integer, ?> data = leftStorage.getData(
                 Query.builder()
                         .tablePair(TablePair.builder().left(leftTable).right(rightTable).build())
                         .columnPair(ColumnPair.builder().left(leftColumn).right(rightColumn).build())

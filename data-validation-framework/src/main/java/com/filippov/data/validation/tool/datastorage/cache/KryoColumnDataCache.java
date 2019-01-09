@@ -43,7 +43,7 @@ public class KryoColumnDataCache implements ColumnDataCache {
     }
 
     @Override
-    public Optional<ColumnData> get(DatasourceColumn column) {
+    public <K, V> Optional<ColumnData<K, V>> get(DatasourceColumn column) {
         if (exist(column)) {
             final Path path = resolvePath(column);
             try (Input input = new Input(Files.newInputStream(path, StandardOpenOption.READ))) {
@@ -57,7 +57,7 @@ public class KryoColumnDataCache implements ColumnDataCache {
     }
 
     @Override
-    public void put(DatasourceColumn column, ColumnData columnData) {
+    public <K, V> void put(DatasourceColumn column, ColumnData<K, V> columnData) {
         final Path path = resolvePath(column);
         mkdirs(path.getParent());
         try (Output output = new Output(Files.newOutputStream(path))) {

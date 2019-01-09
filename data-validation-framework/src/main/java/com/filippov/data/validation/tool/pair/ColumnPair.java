@@ -18,8 +18,8 @@ public class ColumnPair {
     private DatasourceColumn left;
     private DatasourceColumn right;
 
-    private Transformer<?, ?> leftTransformer; // TODO: generics
-    private Transformer<?, ?> rightTransformer; // TODO: generics
+    private Transformer<Object, Object> leftTransformer; // TODO: generics
+    private Transformer<Object, Object> rightTransformer; // TODO: generics
 
     public DatasourceColumn getColumnFor(RelationType relationType) {
         if (relationType == LEFT) {

@@ -8,21 +8,21 @@ import java.util.function.Supplier;
 
 public interface ColumnDataCache {
 
-    Optional<ColumnData> get(DatasourceColumn column);
+    <K, V> Optional<ColumnData<K, V>> get(DatasourceColumn column);
 
-    default ColumnData getOrLoad(DatasourceColumn column, Supplier<ColumnData> supplier) {
+    default <K, V> ColumnData<K, V> getOrLoad(DatasourceColumn column, Supplier<ColumnData<K, V>> supplier) {
         if (exist(column)) {
-            return get(column).get();
+            return (ColumnData<K, V>) get(column).get();
         } else {
-            final ColumnData data = supplier.get();
+            final ColumnData<K, V> data = supplier.get();
             put(column, data);
             return data;
         }
     }
 
-    void put(DatasourceColumn column, ColumnData columnData);
+    <K, V> void put(DatasourceColumn column, ColumnData<K, V> columnData);
 
-    default void putIfNotExist(DatasourceColumn column, Supplier<ColumnData> supplier) {
+    default <K, V> void putIfNotExist(DatasourceColumn column, Supplier<ColumnData<K, V>> supplier) {
         if (!exist(column)) {
             put(column, supplier.get());
         }

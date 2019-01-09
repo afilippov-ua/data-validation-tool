@@ -13,13 +13,13 @@ import java.util.List;
 @Builder
 @EqualsAndHashCode(of = {"primaryKey", "column"})
 @JsonDeserialize(builder = ColumnData.ColumnDataBuilder.class)
-public class ColumnData implements Serializable {
+public class ColumnData<K, V> implements Serializable {
     private DatasourceColumn primaryKey;
     private DatasourceColumn column;
-    private List<?> keys;
-    private List<?> values;
+    private List<K> keys;
+    private List<V> values;
 
-    public ColumnData(DatasourceColumn primaryKey, DatasourceColumn column, List<?> keys, List<?> values) {
+    public ColumnData(DatasourceColumn primaryKey, DatasourceColumn column, List<K> keys, List<V> values) {
         this.primaryKey = primaryKey;
         this.column = column;
         this.keys = keys;

@@ -13,7 +13,7 @@ public class TestJsonDatasource implements Datasource {
     private final String metadataFilePath;
     private final String dataFilePath;
     private DatasourceMetadata metadata;
-    private Map<DatasourceColumn, ColumnData> dataMap = new HashMap<>();
+    private Map<DatasourceColumn, ColumnData<?, ?>> dataMap = new HashMap<>();
 
     public TestJsonDatasource(String id, String metadataFilePath, String dataFilePath) {
         this.id = id;
@@ -36,11 +36,11 @@ public class TestJsonDatasource implements Datasource {
     }
 
     @Override
-    public ColumnData getColumnData(DatasourceQuery query) {
+    public <K, V> ColumnData<K, V> getColumnData(DatasourceQuery query) {
         if (dataMap.isEmpty()) {
             loadData();
         }
-        return dataMap.get(query.getColumn());
+        return (ColumnData<K, V>) dataMap.get(query.getColumn());
     }
 
     private void loadData() {

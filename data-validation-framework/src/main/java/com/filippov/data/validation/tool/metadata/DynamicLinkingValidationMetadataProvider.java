@@ -48,7 +48,7 @@ public class DynamicLinkingValidationMetadataProvider implements ValidationMetad
                     log.error("Dynamic linking of column names error. Column with name: {} wasn't found in {} table: {}",
                             columnName, (leftColumn == null) ? "left" : "right", tableName);
                 } else {
-                    final Transformer<?, ?> defaultTransformer = getDefaultTransformer(leftColumn, rightColumn);
+                    final Transformer defaultTransformer = getDefaultTransformer(leftColumn, rightColumn);
                     pairs.add(ColumnPair.builder()
                             .columnPairName(leftColumn.getName())
                             .left(leftColumn)
