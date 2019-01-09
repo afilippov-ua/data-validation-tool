@@ -2,7 +2,7 @@ package com.filippov.data.validation.tool.pair;
 
 import com.filippov.data.validation.tool.datasource.DatasourceColumn;
 import com.filippov.data.validation.tool.datastorage.RelationType;
-import com.filippov.data.validation.tool.validation.transformation.Transformer;
+import com.filippov.data.validation.tool.validation.transformer.Transformer;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

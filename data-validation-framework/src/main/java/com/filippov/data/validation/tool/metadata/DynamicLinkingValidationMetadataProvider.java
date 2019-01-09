@@ -5,10 +5,10 @@ import com.filippov.data.validation.tool.datasource.DatasourceColumn;
 import com.filippov.data.validation.tool.datasource.DatasourceMetadata;
 import com.filippov.data.validation.tool.datasource.DatasourceTable;
 import com.filippov.data.validation.tool.pair.ColumnPair;
-import com.filippov.data.validation.tool.validation.transformation.ToDoubleTransformer;
-import com.filippov.data.validation.tool.validation.transformation.ToIntegerTransformer;
-import com.filippov.data.validation.tool.validation.transformation.ToStringTransformer;
-import com.filippov.data.validation.tool.validation.transformation.Transformer;
+import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToDoubleTransformer;
+import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToIntegerTransformer;
+import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToStringTransformer;
+import com.filippov.data.validation.tool.validation.transformer.Transformer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -71,16 +71,16 @@ public class DynamicLinkingValidationMetadataProvider implements ValidationMetad
         if (left.getDataType() == right.getDataType()) {
             switch (left.getDataType()) {
                 case STRING:
-                    return new ToStringTransformer();
+                    return new ObjectToStringTransformer();
                 case DOUBLE:
-                    return new ToDoubleTransformer();
+                    return new ObjectToDoubleTransformer();
                 case INTEGER:
-                    return new ToIntegerTransformer();
+                    return new ObjectToIntegerTransformer();
                 default:
                     throw new UnsupportedOperationException("Unsupported data type: " + left.getDataType());
             }
         } else {
-            return new ToStringTransformer();
+            return new ObjectToStringTransformer();
         }
     }
 }
