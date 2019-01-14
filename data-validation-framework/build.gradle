@@ -17,8 +17,4 @@ dependencies {
 
     testImplementation libs.lombok
     testAnnotationProcessor libs.lombok
-
-    test {
-        useJUnitPlatform()
-    }
 }

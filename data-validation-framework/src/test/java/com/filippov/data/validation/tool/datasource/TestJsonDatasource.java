@@ -9,21 +9,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TestJsonDatasource implements Datasource {
-    private final String id;
     private final String metadataFilePath;
     private final String dataFilePath;
     private DatasourceMetadata metadata;
     private Map<DatasourceColumn, ColumnData<?, ?>> dataMap = new HashMap<>();
 
-    public TestJsonDatasource(String id, String metadataFilePath, String dataFilePath) {
-        this.id = id;
+    public TestJsonDatasource(String metadataFilePath, String dataFilePath) {
         this.metadataFilePath = metadataFilePath;
         this.dataFilePath = dataFilePath;
     }
 
     @Override
-    public String getId() {
-        return this.id;
+    public String getConnectionString() {
+        return "metadata_file:" + metadataFilePath + ";data_file:" + dataFilePath;
     }
 
     @Override

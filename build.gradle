@@ -23,12 +23,6 @@ repositories {
     maven { url "https://repo.spring.io/milestone" }
 }
 
-
-dependencies {
-    implementation('org.springframework.boot:spring-boot-starter-actuator')
-    testImplementation('org.springframework.boot:spring-boot-starter-test')
-}
-
 allprojects {
     group = 'com.filippov.data.validation.tool'
     version = '0.0.1-SNAPSHOT'
@@ -57,7 +51,36 @@ allprojects {
                 jacksondatatype: 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.7',
                 kryo           : 'com.esotericsoftware:kryo:4.0.2',
                 kryoserializers: 'de.javakaffee:kryo-serializers:0.42',
-                ehcache        : 'net.sf.ehcache:ehcache:2.10.6'
+                ehcache        : 'net.sf.ehcache:ehcache:2.10.6',
+                mongo          : 'org.mongodb:mongo-java-driver:3.9.1'
+
         ]
     }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+
+dependencies {
+    compile project(':data-validation-framework')
+
+    implementation libs.lombok
+    annotationProcessor libs.lombok
+
+    implementation libs.mongo
+    implementation('org.springframework.boot:spring-boot-starter-actuator')
+    testImplementation('org.springframework.boot:spring-boot-starter-test')
+
+    testImplementation libs.assertj
+    testImplementation libs.jupiterparams
+    testImplementation libs.jupiterapi
+    testRuntimeOnly libs.jupiterengine
+
+    testImplementation libs.lombok
+    testAnnotationProcessor libs.lombok
+}
+
+test {
+    useJUnitPlatform()
 }

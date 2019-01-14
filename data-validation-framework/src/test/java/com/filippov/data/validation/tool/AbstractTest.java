@@ -22,8 +22,8 @@ public class AbstractTest {
     protected static final String RIGHT_DS_METADATA_PATH = "datasource2/metadata.json";
     protected static final String RIGHT_DS_DATA_PATH = "datasource2/data.json";
 
-    protected static final Datasource LEFT_DATASOURCE = new TestJsonDatasource("left", LEFT_DS_METADATA_PATH, LEFT_DS_DATA_PATH);
-    protected static final Datasource RIGHT_DATASOURCE = new TestJsonDatasource("right", RIGHT_DS_METADATA_PATH, RIGHT_DS_DATA_PATH);
+    protected static final Datasource LEFT_DATASOURCE = new TestJsonDatasource(LEFT_DS_METADATA_PATH, LEFT_DS_DATA_PATH);
+    protected static final Datasource RIGHT_DATASOURCE = new TestJsonDatasource(RIGHT_DS_METADATA_PATH, RIGHT_DS_DATA_PATH);
 
     protected static final String TABLE_A = "TableA";
     protected static final String TABLE_B = "TableB";
