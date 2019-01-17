@@ -7,13 +7,13 @@ import com.filippov.data.validation.tool.storage.ApplicationStorage;
 import com.filippov.data.validation.tool.storage.MongoApplicationStorage;
 import com.filippov.data.validation.tool.storage.mapper.ApplicationStorageBsonMapper;
 import com.filippov.data.validation.tool.storage.mapper.DatasourceDtoMapper;
-import com.mongodb.MongoClient;
 import com.mongodb.client.MongoDatabase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.mongodb.MongoDbFactory;
 
 @Configuration
-public class DataValidationToolConfig {
+public class TestConfiguration {
 
     @Bean
     public StoragePairRepository storagePairRepository(ApplicationStorage applicationStorage, DatasourceDtoMapper mapper) {
@@ -26,14 +26,6 @@ public class DataValidationToolConfig {
     }
 
     @Bean
-    public MongoDatabase applicationDatabase() {
-        final String host = "localhost";  // TODO: config holder
-        final int port = 27017;  // TODO: config holder
-        final String dbName = "dvt"; // TODO: config holder
-        return new MongoClient(host, port).getDatabase(dbName);
-    }
-
-    @Bean
     public ApplicationStorageBsonMapper applicationStorageDtoMapper() {
         return new ApplicationStorageBsonMapper();
     }
@@ -41,6 +33,11 @@ public class DataValidationToolConfig {
     @Bean
     public DatasourceDtoMapper datasourceDtoMapper() {
         return new DatasourceDtoMapper();
+    }
+
+    @Bean
+    public MongoDatabase applicationDatabase(MongoDbFactory mongoDbFactory) {
+        return mongoDbFactory.getDb();
     }
 
     @Bean
