@@ -2,7 +2,6 @@ package com.filippov.data.validation.tool;
 
 import com.filippov.data.validation.tool.datasource.Datasource;
 import com.filippov.data.validation.tool.datasource.TestJsonDatasource;
-import com.filippov.data.validation.tool.datastorage.DataStorage;
 import com.filippov.data.validation.tool.pair.DataStoragePair;
 import com.filippov.data.validation.tool.datastorage.DefaultDataStorage;
 import com.filippov.data.validation.tool.datastorage.cache.InMemoryColumnDataCache;
@@ -33,14 +32,14 @@ public class AbstractTest {
     protected static final String DOUBLE_COLUMN = "doubleColumn";
     protected static final String STRING_COLUMN = "stringColumn";
 
-    protected final DataStorage leftStorage = DefaultDataStorage.builder()
+    protected final DefaultDataStorage leftStorage = DefaultDataStorage.builder()
             .relationType(LEFT)
             .datasource(LEFT_DATASOURCE)
             .cache(new InMemoryColumnDataCache())
             .maxThreads(1)
             .build();
 
-    protected final DataStorage rightStorage = DefaultDataStorage.builder()
+    protected final DefaultDataStorage rightStorage = DefaultDataStorage.builder()
             .relationType(RIGHT)
             .datasource(RIGHT_DATASOURCE)
             .cache(new InMemoryColumnDataCache())

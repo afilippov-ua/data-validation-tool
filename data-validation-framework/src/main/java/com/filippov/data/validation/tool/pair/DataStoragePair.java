@@ -5,6 +5,7 @@ import com.filippov.data.validation.tool.datastorage.Query;
 import com.filippov.data.validation.tool.model.ColumnData;
 import com.filippov.data.validation.tool.model.ColumnDataPair;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
@@ -14,6 +15,7 @@ import java.util.concurrent.Future;
 
 @Builder
 @Getter
+@EqualsAndHashCode(of = {"left", "right"})
 public class DataStoragePair {
     private static final ExecutorService executor = Executors.newCachedThreadPool();
 

@@ -2,7 +2,7 @@ package com.filippov.data.validation.tool.storage;
 
 import com.filippov.data.validation.tool.Timer;
 import com.filippov.data.validation.tool.storage.dto.DatasourcePairDto;
-import com.filippov.data.validation.tool.storage.mapper.MongoDtoBsonMapper;
+import com.filippov.data.validation.tool.storage.mapper.MongoBsonMapper;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +19,9 @@ public class MongoApplicationStorage implements ApplicationStorage {
     private static final String OBJECT_ID = "_id";
 
     private final MongoDatabase db;
-    private final MongoDtoBsonMapper mapper;
+    private final MongoBsonMapper mapper;
 
-    public MongoApplicationStorage(MongoDatabase db, MongoDtoBsonMapper mapper) {
+    public MongoApplicationStorage(MongoDatabase db, MongoBsonMapper mapper) {
         this.db = db;
         this.mapper = mapper;
     }

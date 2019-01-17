@@ -1,32 +1,15 @@
 package com.filippov.data.validation.tool.storage.mapper;
 
-import com.filippov.data.validation.tool.datasource.Datasource;
-import com.filippov.data.validation.tool.datasource.EmptyDatasource;
 import com.filippov.data.validation.tool.storage.dto.DatasourceDto;
 import com.filippov.data.validation.tool.storage.dto.DatasourcePairDto;
 import org.bson.Document;
 
-public class MongoDtoBsonMapper {
+public class MongoBsonMapper {
     private static final String PAIR = "pair";
     private static final String LEFT = "left";
     private static final String RIGHT = "right";
     private static final String DATASOURCE_CLASS = "datasourceClass";
     private static final String CONNECTION_STRING = "connectionString";
-
-    public DatasourceDto toDto(Datasource datasource) {
-        return DatasourceDto.builder()
-                .datasourceClass(datasource.getClass().getSimpleName())
-                .connectionString(datasource.getConnectionString())
-                .build();
-    }
-
-    public Datasource fromDto(DatasourceDto datasourceDto) {
-        if (datasourceDto.getDatasourceClass().equals(EmptyDatasource.class.getSimpleName())) {
-            return new EmptyDatasource(datasourceDto.getConnectionString());
-        } else {
-            throw new IllegalArgumentException("Unsupported datasource class: " + datasourceDto.getDatasourceClass());
-        }
-    }
 
     public Document toBson(DatasourceDto datasourceDto) {
         final Document document = new Document();

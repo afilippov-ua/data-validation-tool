@@ -4,7 +4,6 @@ import com.filippov.data.validation.tool.datasource.Datasource;
 import com.filippov.data.validation.tool.model.ColumnData;
 
 public interface DataStorage {
-
     RelationType getRelationType();
 
     Datasource getDatasource();
