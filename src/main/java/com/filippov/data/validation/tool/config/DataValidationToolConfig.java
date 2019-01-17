@@ -5,9 +5,7 @@ import com.filippov.data.validation.tool.repository.DefaultStoragePairRepository
 import com.filippov.data.validation.tool.repository.StoragePairRepository;
 import com.filippov.data.validation.tool.storage.ApplicationStorage;
 import com.filippov.data.validation.tool.storage.MongoApplicationStorage;
-import com.filippov.data.validation.tool.storage.mapper.ApplicationStorageBsonMapper;
-import com.filippov.data.validation.tool.storage.mapper.DatasourceDtoMapper;
-import com.mongodb.MongoClient;
+import com.filippov.data.validation.tool.storage.mapper.MongoDtoBsonMapper;
 import com.mongodb.client.MongoDatabase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,35 +14,22 @@ import org.springframework.context.annotation.Configuration;
 public class DataValidationToolConfig {
 
     @Bean
-    public StoragePairRepository storagePairRepository(ApplicationStorage applicationStorage, DatasourceDtoMapper mapper) {
-        return new DefaultStoragePairRepository(applicationStorage, mapper);
-    }
-
-    @Bean
     public Context context(StoragePairRepository storagePairRepository) {
         return new Context(storagePairRepository);
     }
 
     @Bean
-    public MongoDatabase applicationDatabase() {
-        final String host = "localhost";  // TODO: config holder
-        final int port = 27017;  // TODO: config holder
-        final String dbName = "dvt"; // TODO: config holder
-        return new MongoClient(host, port).getDatabase(dbName);
+    public MongoDtoBsonMapper mongoDtoBsonMapper() {
+        return new MongoDtoBsonMapper();
     }
 
     @Bean
-    public ApplicationStorageBsonMapper applicationStorageDtoMapper() {
-        return new ApplicationStorageBsonMapper();
+    public StoragePairRepository storagePairRepository(ApplicationStorage applicationStorage, MongoDtoBsonMapper mongoDtoBsonMapper) {
+        return new DefaultStoragePairRepository(applicationStorage, mongoDtoBsonMapper);
     }
 
     @Bean
-    public DatasourceDtoMapper datasourceDtoMapper() {
-        return new DatasourceDtoMapper();
-    }
-
-    @Bean
-    public ApplicationStorage applicationStorage(MongoDatabase applicationDatabase, ApplicationStorageBsonMapper mapper) {
+    public ApplicationStorage applicationStorage(MongoDatabase applicationDatabase, MongoDtoBsonMapper mapper) {
         return new MongoApplicationStorage(applicationDatabase, mapper);
     }
 }

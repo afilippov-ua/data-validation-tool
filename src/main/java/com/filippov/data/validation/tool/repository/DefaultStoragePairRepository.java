@@ -3,7 +3,7 @@ package com.filippov.data.validation.tool.repository;
 import com.filippov.data.validation.tool.pair.DataStoragePair;
 import com.filippov.data.validation.tool.storage.ApplicationStorage;
 import com.filippov.data.validation.tool.storage.dto.DatasourcePairDto;
-import com.filippov.data.validation.tool.storage.mapper.DatasourceDtoMapper;
+import com.filippov.data.validation.tool.storage.mapper.MongoDtoBsonMapper;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
@@ -15,9 +15,9 @@ import static java.util.stream.Collectors.toList;
 @Slf4j
 public class DefaultStoragePairRepository implements StoragePairRepository {
     private final ApplicationStorage applicationStorage;
-    private final DatasourceDtoMapper mapper;
+    private final MongoDtoBsonMapper mapper;
 
-    public DefaultStoragePairRepository(ApplicationStorage applicationStorage, DatasourceDtoMapper mapper) {
+    public DefaultStoragePairRepository(ApplicationStorage applicationStorage, MongoDtoBsonMapper mapper) {
         this.applicationStorage = applicationStorage;
         this.mapper = mapper;
     }
@@ -50,6 +50,6 @@ public class DefaultStoragePairRepository implements StoragePairRepository {
     }
 
     private DataStoragePair toDataStoragePair(DatasourcePairDto datasourcePairDto) {
-        return null;
+        return null; // TODO
     }
 }

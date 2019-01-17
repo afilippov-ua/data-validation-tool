@@ -2,7 +2,7 @@ package com.filippov.data.validation.tool.storage;
 
 import com.filippov.data.validation.tool.Timer;
 import com.filippov.data.validation.tool.storage.dto.DatasourcePairDto;
-import com.filippov.data.validation.tool.storage.mapper.ApplicationStorageBsonMapper;
+import com.filippov.data.validation.tool.storage.mapper.MongoDtoBsonMapper;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import lombok.extern.slf4j.Slf4j;
@@ -19,18 +19,25 @@ public class MongoApplicationStorage implements ApplicationStorage {
     private static final String OBJECT_ID = "_id";
 
     private final MongoDatabase db;
-    private final ApplicationStorageBsonMapper mapper;
+    private final MongoDtoBsonMapper mapper;
 
-    public MongoApplicationStorage(MongoDatabase db, ApplicationStorageBsonMapper mapper) {
+    public MongoApplicationStorage(MongoDatabase db, MongoDtoBsonMapper mapper) {
         this.db = db;
         this.mapper = mapper;
     }
 
     @Override
     public String putDatasourcePair(DatasourcePairDto datasourcePairDto) {
+        if (datasourcePairDto == null) {
+            throw new IllegalArgumentException("Datasource pair is null");
+        }
+
+        Timer timer = Timer.start();
         final Document document = new Document();
         document.put(PAIR, mapper.toBson(datasourcePairDto));
-        return save(document, DATA_STORAGE_PAIR_COLLECTION_NAME);
+        final String id = save(document, DATA_STORAGE_PAIR_COLLECTION_NAME);
+        log.info("Data storage pair was added to mongo storage (id: '{}'). Execution time: {}", id, timer.stop());
+        return id;
     }
 
     @Override
@@ -40,41 +47,46 @@ public class MongoApplicationStorage implements ApplicationStorage {
 
     @Override
     public Optional<DatasourcePairDto> getDatasourcePair(String id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Datasource pair ID is null");
+        }
+
         Timer timer = Timer.start();
         final Document filter = new Document();
         filter.put(OBJECT_ID, new ObjectId(id));
-        Optional<Document> doc = findOne(filter, DATA_STORAGE_PAIR_COLLECTION_NAME);
-        log.info("Loading of data storage pair from mongo storage was finished. Execution time: {}", timer.stop());
-        return doc.map(mapper::toDatasourcePairDto);
+        final Optional<DatasourcePairDto> result =
+                findOne(filter, DATA_STORAGE_PAIR_COLLECTION_NAME)
+                        .map(mapper::toDatasourcePairDto);
+        log.info("Data storage pair with id: '{}' was loaded from mongo storage. Execution time: {}", id, timer.stop());
+        return result;
     }
 
     @Override
     public void deleteDatasourcePair(String id) {
+        if (id == null) {
+            throw new IllegalArgumentException("Datasource pair ID is null");
+        }
+
+        Timer timer = Timer.start();
         final Document filter = new Document();
-        filter.put(OBJECT_ID, id);
+        filter.put(OBJECT_ID, new ObjectId(id));
         delete(filter, DATA_STORAGE_PAIR_COLLECTION_NAME);
+        log.info("Data storage pair by id: '{}' was deleted from mongo storage. Execution time: {}", id, timer.stop());
     }
 
     private Optional<Document> findOne(Document filter, String collectionName) {
-        Timer timer = Timer.start();
         final MongoCollection<Document> collection = db.getCollection(collectionName);
-        final Document first = collection.find(filter).first();
-        log.info("Document (table: {}, column: {}) was removed from mongo storage (collection: {}). Execution time: {}", collectionName, timer.stop());
-        return Optional.ofNullable(first);
+        return Optional.ofNullable(collection.find(filter).first());
     }
 
     private String save(Document document, String collectionName) {
-        Timer timer = Timer.start();
         final MongoCollection<Document> collection = db.getCollection(collectionName);
         collection.insertOne(document);
-        log.info("New document was added to mongo storage (collection: {}). Execution time: {}", collectionName, timer.stop());
         return document.get(OBJECT_ID).toString();
     }
 
     private void delete(Document filter, String collectionName) {
-        Timer timer = Timer.start();
         final MongoCollection<Document> collection = db.getCollection(collectionName);
         collection.deleteOne(filter);
-        log.info("Document (table: {}, column: {}) was removed from mongo storage (collection: {}). Execution time: {}", collectionName, timer.stop());
     }
 }
