@@ -67,6 +67,10 @@ dependencies {
     implementation libs.lombok
     annotationProcessor libs.lombok
     implementation libs.mongo
+    implementation('org.springframework.boot:spring-boot-starter-web') {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
+    implementation('org.springframework.boot:spring-boot-starter-jetty')
     implementation('org.springframework.boot:spring-boot-starter-actuator')
 
     testImplementation libs.assertj
@@ -79,7 +83,6 @@ dependencies {
     testImplementation libs.lombok
     testRuntimeOnly libs.jupiterengine
     testAnnotationProcessor libs.lombok
-
 }
 
 test {

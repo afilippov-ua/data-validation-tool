@@ -16,7 +16,6 @@ public class DatasourceColumn implements Serializable {
     private String name;
     private DataType dataType;
 
-    @java.beans.ConstructorProperties({"tableName", "name", "dataType"})
     DatasourceColumn(String tableName, String name, DataType dataType) {
         this.tableName = tableName;
         this.name = name;
