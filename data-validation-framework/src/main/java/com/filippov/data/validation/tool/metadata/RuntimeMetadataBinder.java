@@ -20,12 +20,12 @@ import java.util.Set;
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
-public class RuntimeLinkingMetadataProvider implements MetadataProvider {
+public class RuntimeMetadataBinder implements MetadataBinder {
 
     @Override
-    public Metadata loadMetadata(DatasourceMetadata left, DatasourceMetadata right) {
-        log.debug("Loading validation metadata using dynamic linking by name provider");
+    public Metadata bind(DatasourceMetadata left, DatasourceMetadata right) {
         Timer timer = Timer.start();
+        log.debug("Runtime metadata binder was started");
 
         final List<ColumnPair> pairs = new ArrayList<>();
 
@@ -47,7 +47,7 @@ public class RuntimeLinkingMetadataProvider implements MetadataProvider {
                     final Optional<DatasourceColumn> rightColumn = right.getColumnByName(tableName, columnName);
 
                     if (leftColumn.isEmpty() || rightColumn.isEmpty()) {
-                        log.error("Dynamic linking of column names error. Column with name: {} wasn't found in {} table: {}",
+                        log.error("Runtime metadata binding error. Column with name: '{}' wasn't found in {} table: '{}'",
                                 columnName, leftColumn.isEmpty() ? "left" : "right", tableName);
                     } else {
                         final Transformer defaultTransformer = getDefaultTransformer(leftColumn.get(), rightColumn.get());
@@ -61,11 +61,11 @@ public class RuntimeLinkingMetadataProvider implements MetadataProvider {
                     }
                 }
             } else {
-                log.error("Dynamic linking of table names error. Table with name: {} wasn't found in {} datasource", tableName, leftTable.isEmpty() ? "left" : "right");
+                log.error("Runtime metadata binding error. Table with name: '{}' wasn't found in {} datasource", tableName, leftTable.isEmpty() ? "left" : "right");
             }
         }
 
-        log.debug("Loading validation metadata using dynamic linking by name provider was finished. Execution time: {}", timer.stop());
+        log.debug("Runtime metadata binder was finished. Execution time: {}", timer.stop());
 
         return Metadata.builder()
                 .columnPairs(pairs)
@@ -82,7 +82,7 @@ public class RuntimeLinkingMetadataProvider implements MetadataProvider {
                 case INTEGER:
                     return new ObjectToIntegerTransformer();
                 default:
-                    throw new UnsupportedOperationException("Unsupported data type: " + left.getDataType());
+                    throw new UnsupportedOperationException("Unsupported data type: '" + left.getDataType() + "'");
             }
         } else {
             return new ObjectToStringTransformer();

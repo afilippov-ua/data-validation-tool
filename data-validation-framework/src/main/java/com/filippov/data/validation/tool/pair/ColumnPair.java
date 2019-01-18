@@ -12,14 +12,14 @@ import static com.filippov.data.validation.tool.datastorage.RelationType.RIGHT;
 
 @Getter
 @Builder
-@EqualsAndHashCode(of = {"left", "right"})
+@EqualsAndHashCode(of = {"columnPairName", "left", "right"})
 public class ColumnPair {
     private String columnPairName;
     private DatasourceColumn left;
     private DatasourceColumn right;
 
-    private Transformer<Object, Object> leftTransformer; // TODO: generics
-    private Transformer<Object, Object> rightTransformer; // TODO: generics
+    private Transformer<? super Object, ? extends Object> leftTransformer; // TODO: generics
+    private Transformer<? super Object, ? extends Object> rightTransformer; // TODO: generics
 
     public DatasourceColumn getColumnFor(RelationType relationType) {
         if (relationType == LEFT) {
