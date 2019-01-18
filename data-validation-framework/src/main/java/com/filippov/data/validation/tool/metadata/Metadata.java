@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class ValidationMetadata {
+public class Metadata {
     private List<ColumnPair> columnPairs;
 
     public ColumnPair getColumnPair(String tableName, String columnName) {

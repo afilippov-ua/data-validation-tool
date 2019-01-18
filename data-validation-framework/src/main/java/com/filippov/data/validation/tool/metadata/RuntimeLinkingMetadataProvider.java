@@ -20,10 +20,10 @@ import java.util.Set;
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
-public class DynamicLinkingValidationMetadataProvider implements ValidationMetadataProvider {
+public class RuntimeLinkingMetadataProvider implements MetadataProvider {
 
     @Override
-    public ValidationMetadata loadMetadata(DatasourceMetadata left, DatasourceMetadata right) {
+    public Metadata loadMetadata(DatasourceMetadata left, DatasourceMetadata right) {
         log.debug("Loading validation metadata using dynamic linking by name provider");
         Timer timer = Timer.start();
 
@@ -67,7 +67,7 @@ public class DynamicLinkingValidationMetadataProvider implements ValidationMetad
 
         log.debug("Loading validation metadata using dynamic linking by name provider was finished. Execution time: {}", timer.stop());
 
-        return ValidationMetadata.builder()
+        return Metadata.builder()
                 .columnPairs(pairs)
                 .build();
     }

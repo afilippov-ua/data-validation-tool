@@ -4,8 +4,8 @@ import com.filippov.data.validation.tool.AbstractTest;
 import com.filippov.data.validation.tool.datasource.DatasourceColumn;
 import com.filippov.data.validation.tool.datasource.DatasourceTable;
 import com.filippov.data.validation.tool.datastorage.Query;
-import com.filippov.data.validation.tool.metadata.DynamicLinkingValidationMetadataProvider;
-import com.filippov.data.validation.tool.metadata.ValidationMetadata;
+import com.filippov.data.validation.tool.metadata.RuntimeLinkingMetadataProvider;
+import com.filippov.data.validation.tool.metadata.Metadata;
 import com.filippov.data.validation.tool.model.ColumnDataPair;
 import com.filippov.data.validation.tool.pair.ColumnPair;
 import com.filippov.data.validation.tool.pair.TablePair;
@@ -31,8 +31,8 @@ public class DefaultDataValidatorTest extends AbstractTest {
                 .columnPair(ColumnPair.builder().left(leftColumn).right(rightColumn).build())
                 .build());
 
-        final ValidationMetadata validationMetadata = new DynamicLinkingValidationMetadataProvider().loadMetadata(LEFT_DATASOURCE.getMetadata(), RIGHT_DATASOURCE.getMetadata());
-        final ColumnPair columnPair = validationMetadata.getColumnPair(leftTable.getName(), leftColumn.getName());
+        final Metadata metadata = new RuntimeLinkingMetadataProvider().loadMetadata(LEFT_DATASOURCE.getMetadata(), RIGHT_DATASOURCE.getMetadata());
+        final ColumnPair columnPair = metadata.getColumnPair(leftTable.getName(), leftColumn.getName());
 
         final ValidationResult validationResult = validator.validate(columnPair, columnDataPair.getLeft(), columnDataPair.getRight());
         assertThat(validationResult).isNotNull();
