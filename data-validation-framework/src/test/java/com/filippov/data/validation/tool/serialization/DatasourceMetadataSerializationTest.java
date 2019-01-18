@@ -41,13 +41,24 @@ public class DatasourceMetadataSerializationTest extends AbstractTest {
 
         final DatasourceMetadata datasourceMetadata = new ObjectMapper().readValue(result, DatasourceMetadata.class);
         assertThat(datasourceMetadata).isNotNull();
-        final DatasourceTable t1 = datasourceMetadata.getTableByName("table1");
-        final DatasourceTable t2 = datasourceMetadata.getTableByName("table2");
+        final DatasourceTable t1 = datasourceMetadata.getTableByName("table1").get();
+        final DatasourceTable t2 = datasourceMetadata.getTableByName("table2").get();
 
-        assertThat(datasourceMetadata.getColumnByName(t1.getName(), "PK1").getTableName()).isEqualTo(t1.getName());
-        assertThat(datasourceMetadata.getColumnByName(t1.getName(), "col1").getTableName()).isEqualTo(t1.getName());
-
-        assertThat(datasourceMetadata.getColumnByName(t2.getName(), "PK2").getTableName()).isEqualTo(t2.getName());
-        assertThat(datasourceMetadata.getColumnByName(t2.getName(), "col2").getTableName()).isEqualTo(t2.getName());
+        assertThat(datasourceMetadata.getColumnByName(t1.getName(), "PK1"))
+                .isNotEmpty()
+                .map(column -> column.getTableName())
+                .hasValue(t1.getName());
+        assertThat(datasourceMetadata.getColumnByName(t1.getName(), "col1"))
+                .isNotEmpty()
+                .map(DatasourceColumn::getTableName)
+                .hasValue(t1.getName());
+        assertThat(datasourceMetadata.getColumnByName(t2.getName(), "PK2"))
+                .isNotEmpty()
+                .map(DatasourceColumn::getTableName)
+                .hasValue(t2.getName());
+        assertThat(datasourceMetadata.getColumnByName(t2.getName(), "col2"))
+                .isNotEmpty()
+                .map(DatasourceColumn::getTableName)
+                .hasValue(t2.getName());
     }
 }

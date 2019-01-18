@@ -49,7 +49,7 @@ public class TestJsonDatasource implements Datasource {
             if (data.containsKey(table.getName())) {
                 final Map<String, ColumnData> columnDataMap = data.get(table.getName());
                 for (String columnName : table.getColumns()) {
-                    DatasourceColumn column = getMetadata().getColumnByName(table.getName(), columnName);
+                    DatasourceColumn column = getMetadata().getColumnByName(table.getName(), columnName).get();
                     if (columnDataMap.containsKey(column.getName())) {
                         dataMap.put(column, columnDataMap.get(column.getName()));
                     } else {

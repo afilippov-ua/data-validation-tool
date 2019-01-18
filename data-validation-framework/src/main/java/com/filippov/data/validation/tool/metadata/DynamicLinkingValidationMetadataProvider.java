@@ -5,15 +5,16 @@ import com.filippov.data.validation.tool.datasource.DatasourceColumn;
 import com.filippov.data.validation.tool.datasource.DatasourceMetadata;
 import com.filippov.data.validation.tool.datasource.DatasourceTable;
 import com.filippov.data.validation.tool.pair.ColumnPair;
+import com.filippov.data.validation.tool.validation.transformer.Transformer;
 import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToDoubleTransformer;
 import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToIntegerTransformer;
 import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToStringTransformer;
-import com.filippov.data.validation.tool.validation.transformer.Transformer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
@@ -33,30 +34,34 @@ public class DynamicLinkingValidationMetadataProvider implements ValidationMetad
         allTables.addAll(right.getTables().stream().map(DatasourceTable::getName).collect(toList()));
 
         for (String tableName : allTables) {
-            final DatasourceTable leftTable = left.getTableByName(tableName);
-            final DatasourceTable rightTable = left.getTableByName(tableName);
+            final Optional<DatasourceTable> leftTable = left.getTableByName(tableName);
+            final Optional<DatasourceTable> rightTable = left.getTableByName(tableName);
 
-            final Set<String> allColumns = new HashSet<>();
-            allColumns.addAll(leftTable.getColumns());
-            allColumns.addAll(rightTable.getColumns());
+            if (leftTable.isPresent() && rightTable.isPresent()) {
+                final Set<String> allColumns = new HashSet<>();
+                allColumns.addAll(leftTable.get().getColumns());
+                allColumns.addAll(rightTable.get().getColumns());
 
-            for (String columnName : allColumns) {
-                final DatasourceColumn leftColumn = left.getColumnByName(tableName, columnName);
-                final DatasourceColumn rightColumn = right.getColumnByName(tableName, columnName);
+                for (String columnName : allColumns) {
+                    final Optional<DatasourceColumn> leftColumn = left.getColumnByName(tableName, columnName);
+                    final Optional<DatasourceColumn> rightColumn = right.getColumnByName(tableName, columnName);
 
-                if (leftColumn == null || rightColumn == null) {
-                    log.error("Dynamic linking of column names error. Column with name: {} wasn't found in {} table: {}",
-                            columnName, (leftColumn == null) ? "left" : "right", tableName);
-                } else {
-                    final Transformer defaultTransformer = getDefaultTransformer(leftColumn, rightColumn);
-                    pairs.add(ColumnPair.builder()
-                            .columnPairName(leftColumn.getName())
-                            .left(leftColumn)
-                            .right(rightColumn)
-                            .leftTransformer(defaultTransformer)
-                            .rightTransformer(defaultTransformer)
-                            .build());
+                    if (leftColumn.isEmpty() || rightColumn.isEmpty()) {
+                        log.error("Dynamic linking of column names error. Column with name: {} wasn't found in {} table: {}",
+                                columnName, leftColumn.isEmpty() ? "left" : "right", tableName);
+                    } else {
+                        final Transformer defaultTransformer = getDefaultTransformer(leftColumn.get(), rightColumn.get());
+                        pairs.add(ColumnPair.builder()
+                                .columnPairName(leftColumn.get().getName())
+                                .left(leftColumn.get())
+                                .right(rightColumn.get())
+                                .leftTransformer(defaultTransformer)
+                                .rightTransformer(defaultTransformer)
+                                .build());
+                    }
                 }
+            } else {
+                log.error("Dynamic linking of table names error. Table with name: {} wasn't found in {} datasource", tableName, leftTable.isEmpty() ? "left" : "right");
             }
         }
 

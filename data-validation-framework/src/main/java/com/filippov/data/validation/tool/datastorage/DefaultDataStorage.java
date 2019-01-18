@@ -51,15 +51,7 @@ public class DefaultDataStorage implements DataStorage {
                                 LoadDataJob.builder()
                                         .columnDataCache(cache)
                                         .datasource(datasource)
-                                        .query(DatasourceQuery.builder()
-                                                .table(query.getTablePair().getTableFor(relationType))
-                                                .primaryKey(
-                                                        datasource.getMetadata().getColumnByName(
-                                                                query.getTablePair().getTableFor(relationType).getName(),
-                                                                query.getTablePair().getTableFor(relationType).getPrimaryKey()))
-                                                .column(query.getColumnPair().getColumnFor(relationType))
-                                                .queryParams(query.getQueryParams())
-                                                .build())
+                                        .query(toDatasourceQuery(datasource, relationType, query))
                                         .build(),
                                 Priority.HIGH)
                                 .get();
@@ -77,15 +69,7 @@ public class DefaultDataStorage implements DataStorage {
                             CacheDataJob.builder()
                                     .datasource(datasource)
                                     .columnDataCache(cache)
-                                    .query(DatasourceQuery.builder()
-                                            .table(query.getTablePair().getTableFor(relationType))
-                                            .primaryKey(
-                                                    datasource.getMetadata().getColumnByName(
-                                                            query.getTablePair().getTableFor(relationType).getName(),
-                                                            query.getTablePair().getTableFor(relationType).getPrimaryKey()))
-                                            .column(query.getColumnPair().getColumnFor(relationType))
-                                            .queryParams(query.getQueryParams())
-                                            .build())
+                                    .query(toDatasourceQuery(datasource, relationType, query))
                                     .build(),
                     Priority.LOW);
         }
@@ -99,5 +83,18 @@ public class DefaultDataStorage implements DataStorage {
     @Override
     public void deleteCache(Query query) {
         cache.delete(query.getColumnPair().getColumnFor(relationType));
+    }
+
+    private DatasourceQuery toDatasourceQuery(Datasource datasource, RelationType relationType, Query query) {
+        return DatasourceQuery.builder()
+                .table(query.getTablePair().getTableFor(relationType))
+                .primaryKey(
+                        datasource.getMetadata().getColumnByName(
+                                query.getTablePair().getTableFor(relationType).getName(),
+                                query.getTablePair().getTableFor(relationType).getPrimaryKey())
+                                .get())
+                .column(query.getColumnPair().getColumnFor(relationType))
+                .queryParams(query.getQueryParams())
+                .build();
     }
 }

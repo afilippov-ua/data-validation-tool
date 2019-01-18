@@ -4,6 +4,7 @@ import com.filippov.data.validation.tool.datasource.DatasourceMetadata;
 import com.filippov.data.validation.tool.model.ColumnData;
 import com.filippov.data.validation.tool.pair.ColumnPair;
 import com.filippov.data.validation.tool.pair.TablePair;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
+@Slf4j
 public class DefaultDataValidator implements DataValidator {
     private final DatasourceMetadata leftMetadata;
     private final DatasourceMetadata rightMetadata;
@@ -68,8 +70,8 @@ public class DefaultDataValidator implements DataValidator {
 
         return ValidationResult.<K>builder()
                 .tablePair(TablePair.builder()
-                        .left(leftMetadata.getTableByName(leftData.getColumn().getTableName()))
-                        .right(rightMetadata.getTableByName(rightData.getColumn().getTableName()))
+                        .left(leftMetadata.getTableByName(leftData.getColumn().getTableName()).get())
+                        .right(rightMetadata.getTableByName(rightData.getColumn().getTableName()).get())
                         .build())
                 .columnPair(ColumnPair.builder().left(leftData.getColumn()).right(rightData.getColumn()).build())
                 .failedKeys(failedKeys)

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @Builder
@@ -15,17 +16,15 @@ public class DatasourceMetadata {
     private List<DatasourceTable> tables;
     private List<DatasourceColumn> columns;
 
-    public DatasourceTable getTableByName(String tableName) {
+    public Optional<DatasourceTable> getTableByName(String tableName) {
         return tables.stream().filter(table -> table.getName().equals(tableName))
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 
-    public DatasourceColumn getColumnByName(String tableName, String columnName) {
+    public Optional<DatasourceColumn> getColumnByName(String tableName, String columnName) {
         return columns.stream()
                 .filter(column -> column.getTableName().equals(tableName))
                 .filter(column -> column.getName().equals(columnName))
-                .findFirst()
-                .orElse(null);
+                .findFirst();
     }
 }
