@@ -20,6 +20,11 @@ public class TestJsonDatasource implements Datasource {
     }
 
     @Override
+    public DatasourceType getDatasourceType() {
+        return DatasourceType.EMPTY_DATASOURCE;
+    }
+
+    @Override
     public String getConnectionString() {
         return "metadata_file:" + metadataFilePath + ";data_file:" + dataFilePath;
     }

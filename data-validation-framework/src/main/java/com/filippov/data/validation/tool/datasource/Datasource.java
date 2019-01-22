@@ -5,6 +5,8 @@ import com.filippov.data.validation.tool.model.ColumnData;
 
 public interface Datasource {
 
+    DatasourceType getDatasourceType();
+
     String getConnectionString();
 
     DatasourceMetadata getMetadata();

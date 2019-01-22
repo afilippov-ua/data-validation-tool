@@ -14,6 +14,7 @@ public class DtoMapper {
     }
 
     public Datasource fromDto(DatasourceDto datasourceDto) {
+        // TODO : change to enum
         if (datasourceDto.getDatasourceClass().equals(EmptyDatasource.class.getSimpleName())) {
             return new EmptyDatasource(datasourceDto.getConnectionString());
         } else {

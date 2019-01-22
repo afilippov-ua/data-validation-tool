@@ -8,6 +8,11 @@ import static java.util.Collections.emptyList;
 public class EmptyDatasource implements Datasource {
     private final String connectionString;
 
+    @Override
+    public DatasourceType getDatasourceType() {
+        return DatasourceType.EMPTY_DATASOURCE;
+    }
+
     public EmptyDatasource(String connectionString) {
         this.connectionString = connectionString;
     }
