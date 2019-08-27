@@ -1,11 +1,9 @@
 buildscript {
     ext {
-        springBootVersion = '2.1.1.RELEASE'
+        springBootVersion = '2.1.6.RELEASE'
     }
     repositories {
         mavenCentral()
-        maven { url "https://repo.spring.io/snapshot" }
-        maven { url "https://repo.spring.io/milestone" }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
@@ -19,8 +17,6 @@ apply plugin: 'io.spring.dependency-management'
 
 repositories {
     mavenCentral()
-    maven { url "https://repo.spring.io/snapshot" }
-    maven { url "https://repo.spring.io/milestone" }
 }
 
 allprojects {
@@ -33,27 +29,6 @@ allprojects {
 
     repositories {
         mavenCentral()
-        maven { url "https://repo.spring.io/snapshot" }
-        maven { url "https://repo.spring.io/milestone" }
-    }
-
-    ext {
-        libs = [
-                logback        : 'ch.qos.logback:logback-classic:1.2.3',
-                assertj        : 'org.assertj:assertj-core:3.11.1',
-                lombok         : 'org.projectlombok:lombok:1.18.4',
-                mockito        : 'org.mockito:mockito-core:2.23.0',
-                mockitojupiter : 'org.mockito:mockito-junit-jupiter:2.23.0',
-                jupiterengine  : 'org.junit.jupiter:junit-jupiter-engine:5.3.1',
-                jupiterapi     : 'org.junit.jupiter:junit-jupiter-api:5.3.1',
-                jupiterparams  : 'org.junit.jupiter:junit-jupiter-params:5.3.1',
-                jerseyclient   : 'org.glassfish.jersey.core:jersey-client:2.27',
-                jacksondatatype: 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.7',
-                kryo           : 'com.esotericsoftware:kryo:4.0.2',
-                kryoserializers: 'de.javakaffee:kryo-serializers:0.42',
-                ehcache        : 'net.sf.ehcache:ehcache:2.10.6',
-                mongo          : 'org.mongodb:mongo-java-driver:3.9.1'
-        ]
     }
 
     test {
@@ -64,25 +39,25 @@ allprojects {
 dependencies {
     compile project(':data-validation-framework')
 
-    implementation libs.lombok
-    annotationProcessor libs.lombok
-    implementation libs.mongo
+    implementation('org.projectlombok:lombok:1.18.4')
+    annotationProcessor('org.projectlombok:lombok:1.18.4')
+    implementation('org.mongodb:mongo-java-driver:3.9.1')
     implementation('org.springframework.boot:spring-boot-starter-web') {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     }
     implementation('org.springframework.boot:spring-boot-starter-jetty')
     implementation('org.springframework.boot:spring-boot-starter-actuator')
 
-    testImplementation libs.assertj
-    testImplementation libs.jupiterparams
-    testImplementation libs.jupiterapi
+    testImplementation('org.assertj:assertj-core:3.11.1')
+    testImplementation('org.junit.jupiter:junit-jupiter-params:5.3.1')
+    testImplementation('org.junit.jupiter:junit-jupiter-api:5.3.1')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
     testImplementation('org.springframework.boot:spring-boot-starter-data-mongodb')
     testImplementation('de.flapdoodle.embed:de.flapdoodle.embed.mongo:2.2.0')
     testImplementation('cz.jirutka.spring:embedmongo-spring:1.3.0')
-    testImplementation libs.lombok
-    testRuntimeOnly libs.jupiterengine
-    testAnnotationProcessor libs.lombok
+    testImplementation('org.projectlombok:lombok:1.18.4')
+    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.3.1')
+    testAnnotationProcessor('org.projectlombok:lombok:1.18.4')
 }
 
 test {

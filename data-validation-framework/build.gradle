@@ -1,20 +1,20 @@
 dependencies {
     compile project(':utils')
 
-    implementation libs.lombok
-    annotationProcessor libs.lombok
+    implementation('org.projectlombok:lombok:1.18.4')
+    annotationProcessor('org.projectlombok:lombok:1.18.4')
 
-    implementation libs.jacksondatatype
-    implementation libs.logback
-    implementation libs.kryo
-    implementation libs.kryoserializers
-    implementation libs.ehcache
+    implementation('com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.7')
+    implementation('ch.qos.logback:logback-classic:1.2.3')
+    implementation('com.esotericsoftware:kryo:4.0.2')
+    implementation('de.javakaffee:kryo-serializers:0.42')
+    implementation('net.sf.ehcache:ehcache:2.10.6')
 
-    testImplementation libs.assertj
-    testImplementation libs.jupiterparams
-    testImplementation libs.jupiterapi
-    testRuntimeOnly libs.jupiterengine
+    testImplementation('org.assertj:assertj-core:3.11.1')
+    testImplementation('org.junit.jupiter:junit-jupiter-params:5.3.1')
+    testImplementation('org.junit.jupiter:junit-jupiter-api:5.3.1')
+    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.3.1')
 
-    testImplementation libs.lombok
-    testAnnotationProcessor libs.lombok
+    testImplementation('org.projectlombok:lombok:1.18.4')
+    testAnnotationProcessor('org.projectlombok:lombok:1.18.4')
 }

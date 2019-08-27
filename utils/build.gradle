@@ -1,5 +1,5 @@
 dependencies {
-    implementation libs.lombok
-    annotationProcessor libs.lombok
-    implementation libs.jacksondatatype
+    implementation('org.projectlombok:lombok:1.18.4')
+    annotationProcessor('org.projectlombok:lombok:1.18.4')
+    implementation('com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.7')
 }
