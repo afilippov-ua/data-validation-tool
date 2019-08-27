@@ -2,7 +2,7 @@ package com.filippov.data.validation.tool.controller;
 
 import com.filippov.data.validation.tool.AbstractDataValidationToolTest;
 import com.filippov.data.validation.tool.datasource.DatasourceType;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Arrays;

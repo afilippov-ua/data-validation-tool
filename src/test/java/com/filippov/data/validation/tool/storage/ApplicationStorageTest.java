@@ -7,8 +7,8 @@ import com.filippov.data.validation.tool.datastorage.cache.InMemoryColumnDataCac
 import com.filippov.data.validation.tool.pair.DataStoragePair;
 import com.filippov.data.validation.tool.storage.dto.DatasourcePairDto;
 import com.filippov.data.validation.tool.storage.mapper.DtoMapper;
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -18,6 +18,7 @@ import java.util.Optional;
 import static com.filippov.data.validation.tool.datastorage.RelationType.LEFT;
 import static com.filippov.data.validation.tool.datastorage.RelationType.RIGHT;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ApplicationStorageTest extends AbstractDataValidationToolTest {
     private final List<String> createdIds = new ArrayList<>();
@@ -28,28 +29,32 @@ public class ApplicationStorageTest extends AbstractDataValidationToolTest {
     private DtoMapper dtoMapper;
 
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void getByIncorrectIdFormatTest() {
-        applicationStorage.getDatasourcePair("incorrect object id");
+        assertThrows(IllegalArgumentException.class,
+                () -> applicationStorage.getDatasourcePair("incorrect object id"));
     }
 
     public void getByNonExistentIdTest() {
         assertThat(applicationStorage.getDatasourcePair("5c40e54f9a234a2f0f65e32d")).isEmpty();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void getDatasourcePairByNullIdTest() {
-        applicationStorage.getDatasourcePair(null);
+        assertThrows(IllegalArgumentException.class,
+                () -> applicationStorage.getDatasourcePair(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void putNullDatasourcePairTest() {
-        applicationStorage.putDatasourcePair(null);
+        assertThrows(IllegalArgumentException.class,
+                () -> applicationStorage.putDatasourcePair(null));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void deleteDatasourcePairByNullIdTest() {
-        applicationStorage.deleteDatasourcePair(null);
+        assertThrows(IllegalArgumentException.class,
+                () -> applicationStorage.deleteDatasourcePair(null));
     }
 
     @Test
@@ -81,7 +86,7 @@ public class ApplicationStorageTest extends AbstractDataValidationToolTest {
         assertThat(emptyResult).isEmpty();
     }
 
-    @After
+    @AfterEach
     public void cleanUp() {
         createdIds.forEach(applicationStorage::deleteDatasourcePair);
     }
