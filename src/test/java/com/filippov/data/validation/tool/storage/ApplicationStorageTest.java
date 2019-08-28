@@ -35,6 +35,7 @@ public class ApplicationStorageTest extends AbstractDataValidationToolTest {
                 () -> applicationStorage.getDatasourcePair("incorrect object id"));
     }
 
+    @Test
     public void getByNonExistentIdTest() {
         assertThat(applicationStorage.getDatasourcePair("5c40e54f9a234a2f0f65e32d")).isEmpty();
     }
