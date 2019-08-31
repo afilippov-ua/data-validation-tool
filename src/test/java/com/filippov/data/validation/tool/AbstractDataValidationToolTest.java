@@ -1,13 +1,12 @@
 package com.filippov.data.validation.tool;
 
-import com.filippov.data.validation.tool.config.DataValidationToolConfig;
-import com.filippov.data.validation.tool.config.EmbeddedMongoConfiguration;
-import com.filippov.data.validation.tool.config.TestConfig;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @SpringBootTest
-@ContextConfiguration(classes = {DataValidationToolConfig.class, TestConfig.class, EmbeddedMongoConfiguration.class})
+@ExtendWith(SpringExtension.class)
+//@ContextConfiguration(classes = {DataValidationToolConfig.class, TestConfig.class, EmbeddedMongoConfiguration.class})
 public abstract class AbstractDataValidationToolTest {
 
 }

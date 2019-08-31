@@ -38,4 +38,12 @@ public class DataValidationToolConfig {
     public ApplicationStorage applicationStorage(MongoDatabase applicationDatabase, MongoBsonMapper mapper) {
         return new MongoApplicationStorage(applicationDatabase, mapper);
     }
+
+//    @Bean
+//    public MongoDatabase applicationDatabase() {
+//        final String host = "localhost";  // TODO: config holder
+//        final int port = 27017;  // TODO: config holder
+//        final String dbName = "dvt"; // TODO: config holder
+//        return new MongoClient(host, port).getDatabase(dbName);
+//    }
 }
