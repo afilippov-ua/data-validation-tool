@@ -34,6 +34,7 @@ public class TestJsonDatasource implements Datasource {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <K, V> ColumnData<K, V> getColumnData(DatasourceQuery query) {
         if (dataMap.isEmpty()) {
             loadData();
