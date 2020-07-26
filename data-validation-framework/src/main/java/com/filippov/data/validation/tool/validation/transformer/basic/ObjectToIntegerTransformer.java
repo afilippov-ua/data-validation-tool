@@ -13,7 +13,7 @@ public class ObjectToIntegerTransformer implements Transformer<Object, Integer> 
         } else if (value instanceof String) {
             return Integer.parseInt((String) value);
         } else if (value instanceof Double) {
-            return ((Double) value).intValue();
+            return ((Double) value).intValue(); // TODO?
         } else {
             throw new IllegalArgumentException("Unsupported data type: " + value.getClass().getSimpleName());
         }

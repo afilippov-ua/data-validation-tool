@@ -2,9 +2,9 @@ package com.filippov.data.validation.tool.serialization;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.filippov.data.validation.tool.AbstractTest;
-import com.filippov.data.validation.tool.datasource.DatasourceColumn;
-import com.filippov.data.validation.tool.datasource.DatasourceMetadata;
-import com.filippov.data.validation.tool.datasource.DatasourceTable;
+import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
+import com.filippov.data.validation.tool.datasource.model.DatasourceMetadata;
+import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
 import com.filippov.data.validation.tool.model.DataType;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;

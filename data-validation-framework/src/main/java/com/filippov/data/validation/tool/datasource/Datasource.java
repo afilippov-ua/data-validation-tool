@@ -1,13 +1,13 @@
 package com.filippov.data.validation.tool.datasource;
 
+import com.filippov.data.validation.tool.datasource.model.DatasourceConfig;
+import com.filippov.data.validation.tool.datasource.model.DatasourceMetadata;
 import com.filippov.data.validation.tool.datasource.query.DatasourceQuery;
 import com.filippov.data.validation.tool.model.ColumnData;
 
 public interface Datasource {
 
-    DatasourceType getDatasourceType();
-
-    String getConnectionString();
+    DatasourceConfig getConfig();
 
     DatasourceMetadata getMetadata();
 

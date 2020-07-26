@@ -1,6 +1,6 @@
 package com.filippov.data.validation.tool.pair;
 
-import com.filippov.data.validation.tool.datasource.DatasourceTable;
+import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
 import com.filippov.data.validation.tool.datastorage.RelationType;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -13,6 +13,8 @@ import static com.filippov.data.validation.tool.datastorage.RelationType.RIGHT;
 @Builder
 @EqualsAndHashCode(of = {"left", "right"})
 public class TablePair {
+    private String id;
+    private String name;
     private DatasourceTable left;
     private DatasourceTable right;
 

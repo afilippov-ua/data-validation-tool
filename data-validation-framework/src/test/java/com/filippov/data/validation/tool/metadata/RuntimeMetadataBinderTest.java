@@ -1,8 +1,10 @@
 package com.filippov.data.validation.tool.metadata;
 
 import com.filippov.data.validation.tool.AbstractTest;
-import com.filippov.data.validation.tool.datasource.DatasourceMetadata;
+import com.filippov.data.validation.tool.datasource.model.DatasourceMetadata;
+import com.filippov.data.validation.tool.metadata.uuid.RandomUuidRuntimeGenerator;
 import com.filippov.data.validation.tool.pair.ColumnPair;
+import com.filippov.data.validation.tool.pair.TablePair;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
@@ -14,25 +16,25 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class RuntimeMetadataBinderTest extends AbstractTest {
 
-    private RuntimeMetadataBinder provider = new RuntimeMetadataBinder();
-
     @Test
     void correctMetadataProcessingTest() {
-        final Metadata result = provider.bind(LEFT_DATASOURCE.getMetadata(), RIGHT_DATASOURCE.getMetadata());
+        final Metadata bindedMetadata = new RuntimeMetadataBinder(new RandomUuidRuntimeGenerator())
+                .bind(LEFT_DATASOURCE.getMetadata(), RIGHT_DATASOURCE.getMetadata());
+        final TablePair tablePair = bindedMetadata.getTablePairByName(TABLE_A).get();
 
         final Set<ColumnPair> expectedColumnPairs = new HashSet<>(asList(
-                columnPair(TABLE_A, ID),
-                columnPair(TABLE_A, INTEGER_COLUMN),
-                columnPair(TABLE_A, DOUBLE_COLUMN),
-                columnPair(TABLE_A, STRING_COLUMN),
-                columnPair(TABLE_B, ID),
-                columnPair(TABLE_B, INTEGER_COLUMN),
-                columnPair(TABLE_B, DOUBLE_COLUMN),
-                columnPair(TABLE_B, STRING_COLUMN)));
+                columnPair(tablePair, ID),
+                columnPair(tablePair, INTEGER_COLUMN),
+                columnPair(tablePair, DOUBLE_COLUMN),
+                columnPair(tablePair, STRING_COLUMN),
+                columnPair(tablePair, ID),
+                columnPair(tablePair, INTEGER_COLUMN),
+                columnPair(tablePair, DOUBLE_COLUMN),
+                columnPair(tablePair, STRING_COLUMN)));
 
-        assertThat(result)
+        assertThat(bindedMetadata)
                 .isNotNull()
-                .extracting(metadata -> new HashSet<>(metadata.getColumnPairs()))
+                .extracting(metadata -> new HashSet<>(metadata.getColumnPairs(tablePair)))
                 .isEqualTo(expectedColumnPairs);
     }
 
@@ -56,23 +58,27 @@ public class RuntimeMetadataBinderTest extends AbstractTest {
                         RIGHT_DATASOURCE.getMetadata().getColumnByName(TABLE_B, STRING_COLUMN).get()))
                 .build();
 
-        final Metadata result = provider.bind(leftMetadata, rightMetadata);
+        final Metadata bindedMetadata = new RuntimeMetadataBinder(new RandomUuidRuntimeGenerator())
+                .bind(leftMetadata, rightMetadata);
+        final TablePair tablePair = bindedMetadata.getTablePairByName(TABLE_A).get();
 
         final Set<ColumnPair> expectedColumnPairs = new HashSet<>(asList(
-                columnPair(TABLE_A, ID),
-                columnPair(TABLE_A, INTEGER_COLUMN)));
+                columnPair(tablePair, ID),
+                columnPair(tablePair, INTEGER_COLUMN)));
 
-        assertThat(result)
+        assertThat(bindedMetadata)
                 .isNotNull()
-                .extracting(metadata -> new HashSet<>(metadata.getColumnPairs()))
+                .extracting(metadata -> new HashSet<>(metadata.getColumnPairs(tablePair)))
                 .isEqualTo(expectedColumnPairs);
     }
 
-    private ColumnPair columnPair(String tableName, String columnName) {
+    private ColumnPair columnPair(TablePair tablePair, String columnName) {
         return ColumnPair.builder()
-                .columnPairName(columnName)
-                .left(LEFT_DATASOURCE.getMetadata().getColumnByName(tableName, columnName).get())
-                .right(RIGHT_DATASOURCE.getMetadata().getColumnByName(tableName, columnName).get())
+                .id(columnName)
+                .name(columnName)
+                .tablePair(tablePair)
+                .left(LEFT_DATASOURCE.getMetadata().getColumnByName(tablePair.getLeft().getName(), columnName).get())
+                .right(RIGHT_DATASOURCE.getMetadata().getColumnByName(tablePair.getRight().getName(), columnName).get())
                 .build();
     }
 }

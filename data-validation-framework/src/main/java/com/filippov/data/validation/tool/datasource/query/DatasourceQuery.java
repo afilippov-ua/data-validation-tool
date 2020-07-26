@@ -1,7 +1,7 @@
 package com.filippov.data.validation.tool.datasource.query;
 
-import com.filippov.data.validation.tool.datasource.DatasourceColumn;
-import com.filippov.data.validation.tool.datasource.DatasourceTable;
+import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
+import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
 import lombok.Builder;
 import lombok.Getter;
 

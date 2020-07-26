@@ -1,9 +1,9 @@
 package com.filippov.data.validation.tool.datastorage;
 
 import com.filippov.data.validation.tool.AbstractTest;
-import com.filippov.data.validation.tool.datasource.DatasourceColumn;
-import com.filippov.data.validation.tool.datasource.DatasourceMetadata;
-import com.filippov.data.validation.tool.datasource.DatasourceTable;
+import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
+import com.filippov.data.validation.tool.datasource.model.DatasourceMetadata;
+import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
 import com.filippov.data.validation.tool.model.ColumnData;
 import com.filippov.data.validation.tool.pair.ColumnPair;
 import com.filippov.data.validation.tool.pair.TablePair;
@@ -33,21 +33,21 @@ class DefaultDataStorageTest extends AbstractTest {
 
     @Test
     void getRelationTypeTest() {
-        assertThat(leftStorage.getRelationType()).isEqualTo(LEFT);
-        assertThat(rightStorage.getRelationType()).isEqualTo(RIGHT);
+        assertThat(leftStorage.getConfig().getRelationType()).isEqualTo(LEFT);
+        assertThat(rightStorage.getConfig().getRelationType()).isEqualTo(RIGHT);
     }
 
     @Test
     void getDatasourceTest() {
-        assertThat(leftStorage.getDatasource()).isEqualTo(LEFT_DATASOURCE);
-        assertThat(rightStorage.getDatasource()).isEqualTo(RIGHT_DATASOURCE);
+        assertThat(leftStorage.getConfig().getDatasource()).isEqualTo(LEFT_DATASOURCE);
+        assertThat(rightStorage.getConfig().getDatasource()).isEqualTo(RIGHT_DATASOURCE);
     }
 
     @ParameterizedTest()
     @MethodSource("columnProvider")
     void getDataTest(String columnName, List<?> expectedValues) {
-        DatasourceMetadata leftMetadata = leftStorage.getDatasource().getMetadata();
-        DatasourceMetadata rightMetadata = rightStorage.getDatasource().getMetadata();
+        DatasourceMetadata leftMetadata = leftStorage.getConfig().getDatasource().getMetadata();
+        DatasourceMetadata rightMetadata = rightStorage.getConfig().getDatasource().getMetadata();
 
         final DatasourceTable leftTable = leftMetadata.getTableByName(TABLE_A).get();
         final DatasourceTable rightTable = rightMetadata.getTableByName(TABLE_A).get();
@@ -59,8 +59,8 @@ class DefaultDataStorageTest extends AbstractTest {
 
         final ColumnData<Integer, ?> data = leftStorage.getData(
                 Query.builder()
-                        .tablePair(TablePair.builder().left(leftTable).right(rightTable).build())
-                        .columnPair(ColumnPair.builder().left(leftColumn).right(rightColumn).build())
+                        .tablePair(TablePair.builder().id("table-pair-id-1").left(leftTable).right(rightTable).build())
+                        .columnPair(ColumnPair.builder().id("column-pair-id-1").left(leftColumn).right(rightColumn).build())
                         .build());
 
         assertThat(data).isNotNull();

@@ -2,6 +2,11 @@ package com.filippov.data.validation.tool.datasource;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.filippov.data.validation.tool.JsonDataLoader;
+import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
+import com.filippov.data.validation.tool.datasource.model.DatasourceConfig;
+import com.filippov.data.validation.tool.datasource.model.DatasourceMetadata;
+import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
+import com.filippov.data.validation.tool.datasource.model.DatasourceType;
 import com.filippov.data.validation.tool.datasource.query.DatasourceQuery;
 import com.filippov.data.validation.tool.model.ColumnData;
 
@@ -20,16 +25,6 @@ public class TestJsonDatasource implements Datasource {
     }
 
     @Override
-    public DatasourceType getDatasourceType() {
-        return DatasourceType.EMPTY_DATASOURCE;
-    }
-
-    @Override
-    public String getConnectionString() {
-        return "metadata_file:" + metadataFilePath + ";data_file:" + dataFilePath;
-    }
-
-    @Override
     public DatasourceMetadata getMetadata() {
         if (metadata == null) {
             metadata = new JsonDataLoader().loadData(metadataFilePath, new TypeReference<DatasourceMetadata>() {
@@ -44,6 +39,15 @@ public class TestJsonDatasource implements Datasource {
             loadData();
         }
         return (ColumnData<K, V>) dataMap.get(query.getColumn());
+    }
+
+    @Override
+    public DatasourceConfig getConfig() {
+        return DatasourceConfig.builder()
+                .datasourceType(DatasourceType.EMPTY_DATASOURCE)
+                .defaultMaxConnections(1)
+                .config("metadata_file:" + metadataFilePath + ";data_file:" + dataFilePath)
+                .build();
     }
 
     private void loadData() {

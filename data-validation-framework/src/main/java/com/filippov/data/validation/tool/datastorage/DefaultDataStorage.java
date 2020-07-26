@@ -2,7 +2,7 @@ package com.filippov.data.validation.tool.datastorage;
 
 import com.filippov.data.validation.tool.datasource.Datasource;
 import com.filippov.data.validation.tool.datasource.query.DatasourceQuery;
-import com.filippov.data.validation.tool.datastorage.cache.ColumnDataCache;
+import com.filippov.data.validation.tool.cache.ColumnDataCache;
 import com.filippov.data.validation.tool.datastorage.execution.CacheDataJob;
 import com.filippov.data.validation.tool.datastorage.execution.LoadDataJob;
 import com.filippov.data.validation.tool.executor.Priority;
@@ -17,46 +17,44 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 public class DefaultDataStorage implements DataStorage {
-    private final RelationType relationType;
-    private final Datasource datasource;
+    private final DataStorageConfig config;
     private final ColumnDataCache cache;
     private final PriorityThreadPoolExecutor executor;
 
     @Builder
-    public DefaultDataStorage(RelationType relationType, Datasource datasource, ColumnDataCache cache, Integer maxThreads) {
-        this.relationType = relationType;
-        this.datasource = datasource;
+    public DefaultDataStorage(DataStorageConfig config, ColumnDataCache cache) {
+        this.config = config;
         this.cache = cache;
-        this.executor = new PriorityThreadPoolExecutor(maxThreads, maxThreads, 0L, TimeUnit.MILLISECONDS);
+        this.executor = new PriorityThreadPoolExecutor(config.getMaxConnections(), config.getMaxConnections(), 0L, TimeUnit.MILLISECONDS);
     }
 
     @Override
-    public RelationType getRelationType() {
-        return relationType;
+    public DataStorageConfig getConfig() {
+        return this.config;
     }
 
     @Override
-    public Datasource getDatasource() {
-        return datasource;
+    public ColumnDataCache getCache() {
+        return null;
     }
 
     @Override
     @SneakyThrows
     public <K, V> ColumnData<K, V> getData(Query query) {
         return cache.getOrLoad(
-                query.getColumnPair().getColumnFor(relationType),
+                query.getColumnPair().getColumnFor(config.getRelationType()),
                 () -> {
                     try {
                         return (ColumnData<K, V>) executor.submit(
                                 LoadDataJob.builder()
                                         .columnDataCache(cache)
-                                        .datasource(datasource)
-                                        .query(toDatasourceQuery(datasource, relationType, query))
+                                        .datasource(config.getDatasource())
+                                        .query(toDatasourceQuery(config.getDatasource(), config.getRelationType(), query))
                                         .build(),
                                 Priority.HIGH)
                                 .get();
                     } catch (ExecutionException | InterruptedException e) {
-                        log.error("Loading data from {} datasource has been failed", relationType, e);
+                        log.error("Loading data from {} datasource has been failed", config.getRelationType(), e);
                         throw new RuntimeException(e);
                     }
                 });
@@ -64,25 +62,25 @@ public class DefaultDataStorage implements DataStorage {
 
     @Override
     public void preloadInBackground(Query query) {
-        if (!cache.exist(query.getColumnPair().getColumnFor(relationType))) {
+        if (!cache.exist(query.getColumnPair().getColumnFor(config.getRelationType()))) {
             executor.submit(() ->
                             CacheDataJob.builder()
-                                    .datasource(datasource)
+                                    .datasource(config.getDatasource())
                                     .columnDataCache(cache)
-                                    .query(toDatasourceQuery(datasource, relationType, query))
+                                    .query(toDatasourceQuery(config.getDatasource(), config.getRelationType(), query))
                                     .build(),
                     Priority.LOW);
         }
     }
 
     @Override
-    public void stopBackgroundPreloading() {
+    public void stopPreloadInBackground() {
         executor.remove(Priority.LOW);
     }
 
     @Override
     public void deleteCache(Query query) {
-        cache.delete(query.getColumnPair().getColumnFor(relationType));
+        cache.delete(query.getColumnPair().getColumnFor(config.getRelationType()));
     }
 
     private DatasourceQuery toDatasourceQuery(Datasource datasource, RelationType relationType, Query query) {

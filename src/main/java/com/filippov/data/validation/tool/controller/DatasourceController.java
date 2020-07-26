@@ -1,28 +1,23 @@
 package com.filippov.data.validation.tool.controller;
 
-import com.filippov.data.validation.tool.datasource.DatasourceType;
+import com.filippov.data.validation.tool.datasource.model.DatasourceType;
 import com.filippov.data.validation.tool.service.DatasourceService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("datasources")
+@RequiredArgsConstructor
 public class DatasourceController {
-
     private final DatasourceService datasourceService;
 
-    public DatasourceController(DatasourceService datasourceService) {
-        this.datasourceService = datasourceService;
-    }
-
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody
-    List<DatasourceType> getAllDatasources() {
+    @GetMapping(path = "/types", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<DatasourceType> getAllDatasourceTypes() {
         return datasourceService.getDatasourceTypes();
     }
 }

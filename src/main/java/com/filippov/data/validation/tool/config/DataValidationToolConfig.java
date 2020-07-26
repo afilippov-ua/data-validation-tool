@@ -1,49 +1,63 @@
 package com.filippov.data.validation.tool.config;
 
-import com.filippov.data.validation.tool.Context;
-import com.filippov.data.validation.tool.repository.DefaultStoragePairRepository;
-import com.filippov.data.validation.tool.repository.StoragePairRepository;
-import com.filippov.data.validation.tool.storage.ApplicationStorage;
-import com.filippov.data.validation.tool.storage.MongoApplicationStorage;
-import com.filippov.data.validation.tool.storage.mapper.DtoMapper;
-import com.filippov.data.validation.tool.storage.mapper.MongoBsonMapper;
-import com.mongodb.client.MongoDatabase;
+import com.filippov.data.validation.tool.cache.ColumnDataCache;
+import com.filippov.data.validation.tool.cache.InMemoryColumnDataCache;
+import com.filippov.data.validation.tool.factory.ColumnDataCacheFactory;
+import com.filippov.data.validation.tool.factory.DataStorageFactory;
+import com.filippov.data.validation.tool.factory.DatasourceFactory;
+import com.filippov.data.validation.tool.factory.DefaultColumnDataCacheFactory;
+import com.filippov.data.validation.tool.factory.DefaultDataStorageFactory;
+import com.filippov.data.validation.tool.factory.DefaultDatasourceFactory;
+import com.filippov.data.validation.tool.metadata.MetadataBinder;
+import com.filippov.data.validation.tool.metadata.RuntimeMetadataBinder;
+import com.filippov.data.validation.tool.metadata.uuid.RandomUuidRuntimeGenerator;
+import com.filippov.data.validation.tool.metadata.uuid.UuidGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @Configuration
 public class DataValidationToolConfig {
 
     @Bean
-    public Context context(StoragePairRepository storagePairRepository) {
-        return new Context(storagePairRepository);
+    DatasourceFactory datasourceFactory() {
+        return new DefaultDatasourceFactory();
     }
 
     @Bean
-    public MongoBsonMapper mongoDtoBsonMapper() {
-        return new MongoBsonMapper();
+    MetadataBinder metadataBinder(UuidGenerator uuidGenerator) {
+        return new RuntimeMetadataBinder(uuidGenerator);
     }
 
     @Bean
-    public DtoMapper dtoMapper() {
-        return new DtoMapper();
+    ColumnDataCacheFactory columnDataCacheFactory() {
+        return new DefaultColumnDataCacheFactory();
     }
 
     @Bean
-    public StoragePairRepository storagePairRepository(ApplicationStorage applicationStorage, DtoMapper dtoMapper) {
-        return new DefaultStoragePairRepository(applicationStorage, dtoMapper);
+    DataStorageFactory dataStorageFactory(ColumnDataCacheFactory columnDataCacheFactory) {
+        return new DefaultDataStorageFactory(columnDataCacheFactory);
     }
 
     @Bean
-    public ApplicationStorage applicationStorage(MongoDatabase applicationDatabase, MongoBsonMapper mapper) {
-        return new MongoApplicationStorage(applicationDatabase, mapper);
+    ColumnDataCache columnDataCache() {
+        return new InMemoryColumnDataCache();
     }
 
-//    @Bean
-//    public MongoDatabase applicationDatabase() {
-//        final String host = "localhost";  // TODO: config holder
-//        final int port = 27017;  // TODO: config holder
-//        final String dbName = "dvt"; // TODO: config holder
-//        return new MongoClient(host, port).getDatabase(dbName);
-//    }
+    @Bean
+    UuidGenerator uuidGenerator() {
+        return new RandomUuidRuntimeGenerator();
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurerAdapter() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry) {
+                registry.addMapping("/**").allowedOrigins("*");
+            }
+        };
+    }
 }

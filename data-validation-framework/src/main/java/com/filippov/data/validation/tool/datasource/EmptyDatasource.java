@@ -1,25 +1,17 @@
 package com.filippov.data.validation.tool.datasource;
 
+import com.filippov.data.validation.tool.datasource.model.DatasourceConfig;
+import com.filippov.data.validation.tool.datasource.model.DatasourceMetadata;
 import com.filippov.data.validation.tool.datasource.query.DatasourceQuery;
 import com.filippov.data.validation.tool.model.ColumnData;
 
 import static java.util.Collections.emptyList;
 
 public class EmptyDatasource implements Datasource {
-    private final String connectionString;
+    private final DatasourceConfig datasourceConfig;
 
-    @Override
-    public DatasourceType getDatasourceType() {
-        return DatasourceType.EMPTY_DATASOURCE;
-    }
-
-    public EmptyDatasource(String connectionString) {
-        this.connectionString = connectionString;
-    }
-
-    @Override
-    public String getConnectionString() {
-        return connectionString;
+    public EmptyDatasource(DatasourceConfig datasourceConfig) {
+        this.datasourceConfig = datasourceConfig;
     }
 
     @Override
@@ -33,5 +25,10 @@ public class EmptyDatasource implements Datasource {
     @Override
     public <K, V> ColumnData<K, V> getColumnData(DatasourceQuery query) {
         return null;
+    }
+
+    @Override
+    public DatasourceConfig getConfig() {
+        return datasourceConfig;
     }
 }

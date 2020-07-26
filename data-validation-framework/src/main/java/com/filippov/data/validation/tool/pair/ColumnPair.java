@@ -1,6 +1,6 @@
 package com.filippov.data.validation.tool.pair;
 
-import com.filippov.data.validation.tool.datasource.DatasourceColumn;
+import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
 import com.filippov.data.validation.tool.datastorage.RelationType;
 import com.filippov.data.validation.tool.validation.transformer.Transformer;
 import lombok.Builder;
@@ -12,9 +12,11 @@ import static com.filippov.data.validation.tool.datastorage.RelationType.RIGHT;
 
 @Getter
 @Builder
-@EqualsAndHashCode(of = {"columnPairName", "left", "right"})
+@EqualsAndHashCode(of = {"name", "left", "right"})
 public class ColumnPair {
-    private String columnPairName;
+    private String id; // TODO!!!
+    private String name;
+    private TablePair tablePair;
     private DatasourceColumn left;
     private DatasourceColumn right;
 

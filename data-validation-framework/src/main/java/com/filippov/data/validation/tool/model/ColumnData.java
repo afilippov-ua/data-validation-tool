@@ -1,7 +1,7 @@
 package com.filippov.data.validation.tool.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.filippov.data.validation.tool.datasource.DatasourceColumn;
+import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

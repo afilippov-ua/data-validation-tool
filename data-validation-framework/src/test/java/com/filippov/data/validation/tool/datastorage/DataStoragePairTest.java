@@ -1,8 +1,8 @@
 package com.filippov.data.validation.tool.datastorage;
 
 import com.filippov.data.validation.tool.AbstractTest;
-import com.filippov.data.validation.tool.datasource.DatasourceColumn;
-import com.filippov.data.validation.tool.datasource.DatasourceTable;
+import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
+import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
 import com.filippov.data.validation.tool.model.ColumnDataPair;
 import com.filippov.data.validation.tool.pair.ColumnPair;
 import com.filippov.data.validation.tool.pair.TablePair;
@@ -22,8 +22,8 @@ class DataStoragePairTest extends AbstractTest {
 
         final ColumnDataPair<Integer, Integer, Integer> columnData = storagePair.getColumnData(
                 Query.builder()
-                        .tablePair(TablePair.builder().left(leftTable).right(rightTable).build())
-                        .columnPair(ColumnPair.builder().left(leftColumn).right(rightColumn).build())
+                        .tablePair(TablePair.builder().id("table-pair-id-1").left(leftTable).right(rightTable).build())
+                        .columnPair(ColumnPair.builder().id("column-pair-id-1").left(leftColumn).right(rightColumn).build())
                         .build());
 
         assertThat(columnData).isNotNull();

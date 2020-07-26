@@ -1,6 +1,6 @@
 package com.filippov.data.validation.tool.validation;
 
-import com.filippov.data.validation.tool.datasource.DatasourceMetadata;
+import com.filippov.data.validation.tool.datasource.model.DatasourceMetadata;
 import com.filippov.data.validation.tool.model.ColumnData;
 import com.filippov.data.validation.tool.pair.ColumnPair;
 import com.filippov.data.validation.tool.pair.TablePair;
@@ -28,7 +28,7 @@ public class DefaultDataValidator implements DataValidator {
     }
 
     @Override
-    public <K, LV, RV> ValidationResult validate(ColumnPair columnPair, ColumnData<K, LV> leftData, ColumnData<K, RV> rightData) {
+    public <K, LV, RV> ValidationResult validate(TablePair tablePair, ColumnPair columnPair, ColumnData<K, LV> leftData, ColumnData<K, RV> rightData) {
         final List<K> allKeys = Stream.concat(
                 leftData.getKeys().stream(),
                 rightData.getKeys().stream())
@@ -69,11 +69,8 @@ public class DefaultDataValidator implements DataValidator {
         }
 
         return ValidationResult.<K>builder()
-                .tablePair(TablePair.builder()
-                        .left(leftMetadata.getTableByName(leftData.getColumn().getTableName()).get())
-                        .right(rightMetadata.getTableByName(rightData.getColumn().getTableName()).get())
-                        .build())
-                .columnPair(ColumnPair.builder().left(leftData.getColumn()).right(rightData.getColumn()).build())
+                .tablePair(tablePair)
+                .columnPair(columnPair)
                 .failedKeys(failedKeys)
                 .build();
     }

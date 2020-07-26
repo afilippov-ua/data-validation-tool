@@ -2,15 +2,21 @@ package com.filippov.data.validation.tool.datastorage.cache;
 
 import com.filippov.data.validation.tool.AbstractTest;
 import com.filippov.data.validation.tool.FileUtils;
-import com.filippov.data.validation.tool.datasource.DatasourceColumn;
-import com.filippov.data.validation.tool.datasource.DatasourceTable;
+import com.filippov.data.validation.tool.cache.ColumnDataCache;
+import com.filippov.data.validation.tool.cache.EHColumnDataCache;
+import com.filippov.data.validation.tool.cache.KryoColumnDataCache;
+import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
+import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
 import com.filippov.data.validation.tool.model.ColumnData;
 import lombok.SneakyThrows;
+import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +31,8 @@ class ColumnDataCacheTest extends AbstractTest {
     private static final List<Integer> IDS;
     private static final List<String> VALUES;
     private static final ColumnData<Integer, ?> TEST_DATA;
+    private static final ColumnDataCache EH_CACHE = newCache(EHColumnDataCache.class);
+    private static final ColumnDataCache KRYO_CACHE = newCache(KryoColumnDataCache.class);
 
     static {
         TABLE = DatasourceTable.builder().name("table1").build();
@@ -41,24 +49,28 @@ class ColumnDataCacheTest extends AbstractTest {
     }
 
     @AfterAll
-    @SneakyThrows
     static void cleanUp() {
-        FileUtils.delete(CACHE_PATH);
+        try {
+            FileUtils.delete(Paths.get(BASE_CACHE_PATH));
+        } catch (IOException ex) {
+            // if it's empty - skip
+        }
     }
 
     static Object[][] cacheProvider() {
         return new Object[][]{
-                {newCache(EHColumnDataCache.class)},
-                {newCache(KryoColumnDataCache.class)}
+                {EH_CACHE},
+                {KRYO_CACHE}
         };
     }
 
     @SneakyThrows
     static ColumnDataCache newCache(Class cacheClass) {
         if (cacheClass.equals(EHColumnDataCache.class)) {
-            return new EHColumnDataCache(CacheManager.newInstance("src/test/resources/ehcache.xml").getCache("test"));
+            final Cache cache = CacheManager.newInstance("src/test/resources/ehcache.xml").getCache("test");
+            return new EHColumnDataCache(cache);
         } else if (cacheClass.equals(KryoColumnDataCache.class)) {
-            return new KryoColumnDataCache(CACHE_PATH);
+            return new KryoColumnDataCache(Paths.get(KRYO_CACHE_PATH));
         } else {
             throw new IllegalArgumentException("Unsupported cache class: " + cacheClass.getName());
         }
@@ -158,6 +170,7 @@ class ColumnDataCacheTest extends AbstractTest {
         assertThat(cache.exist(TEST_COLUMN)).isFalse();
         assertThat(cache.get(TEST_COLUMN)).isEmpty();
 
+        cache.flush();
         cache.cleanUp();
         cache.close();
     }

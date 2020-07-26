@@ -1,14 +1,17 @@
 package com.filippov.data.validation.tool.metadata;
 
 import com.filippov.data.validation.tool.Timer;
-import com.filippov.data.validation.tool.datasource.DatasourceColumn;
-import com.filippov.data.validation.tool.datasource.DatasourceMetadata;
-import com.filippov.data.validation.tool.datasource.DatasourceTable;
+import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
+import com.filippov.data.validation.tool.datasource.model.DatasourceMetadata;
+import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
+import com.filippov.data.validation.tool.metadata.uuid.UuidGenerator;
 import com.filippov.data.validation.tool.pair.ColumnPair;
+import com.filippov.data.validation.tool.pair.TablePair;
 import com.filippov.data.validation.tool.validation.transformer.Transformer;
 import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToDoubleTransformer;
 import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToIntegerTransformer;
 import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToStringTransformer;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -20,24 +23,35 @@ import java.util.Set;
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
+@RequiredArgsConstructor
 public class RuntimeMetadataBinder implements MetadataBinder {
+
+    private final UuidGenerator uuidGenerator;
 
     @Override
     public Metadata bind(DatasourceMetadata left, DatasourceMetadata right) {
         Timer timer = Timer.start();
         log.debug("Runtime metadata binder was started");
 
-        final List<ColumnPair> pairs = new ArrayList<>();
+        final List<ColumnPair> columnPairs = new ArrayList<>();
+        final List<TablePair> tablePairs = new ArrayList<>();
 
-        final Set<String> allTables = new HashSet<>();
-        allTables.addAll(left.getTables().stream().map(DatasourceTable::getName).collect(toList()));
-        allTables.addAll(right.getTables().stream().map(DatasourceTable::getName).collect(toList()));
+        final Set<String> allTableNames = new HashSet<>();
+        allTableNames.addAll(left.getTables().stream().map(DatasourceTable::getName).collect(toList()));
+        allTableNames.addAll(right.getTables().stream().map(DatasourceTable::getName).collect(toList()));
 
-        for (String tableName : allTables) {
-            final Optional<DatasourceTable> leftTable = left.getTableByName(tableName);
-            final Optional<DatasourceTable> rightTable = left.getTableByName(tableName);
+        for (String tableName : allTableNames) {
+            final Optional<DatasourceTable> leftTable = left.getTableByName(tableName); //TODO: slow
+            final Optional<DatasourceTable> rightTable = left.getTableByName(tableName); //TODO: slow
 
             if (leftTable.isPresent() && rightTable.isPresent()) {
+                final TablePair tablePair = TablePair.builder()
+                        .id(uuidGenerator.generateRandomUuid())
+                        .name(leftTable.get().getName())
+                        .left(leftTable.get())
+                        .right(rightTable.get()).build();
+                tablePairs.add(tablePair);
+
                 final Set<String> allColumns = new HashSet<>();
                 allColumns.addAll(leftTable.get().getColumns());
                 allColumns.addAll(rightTable.get().getColumns());
@@ -51,8 +65,10 @@ public class RuntimeMetadataBinder implements MetadataBinder {
                                 columnName, leftColumn.isEmpty() ? "left" : "right", tableName);
                     } else {
                         final Transformer defaultTransformer = getDefaultTransformer(leftColumn.get(), rightColumn.get());
-                        pairs.add(ColumnPair.builder()
-                                .columnPairName(leftColumn.get().getName())
+                        columnPairs.add(ColumnPair.builder()
+                                .id(uuidGenerator.generateRandomUuid())
+                                .name(leftColumn.get().getName())
+                                .tablePair(tablePair)
                                 .left(leftColumn.get())
                                 .right(rightColumn.get())
                                 .leftTransformer(defaultTransformer)
@@ -68,7 +84,8 @@ public class RuntimeMetadataBinder implements MetadataBinder {
         log.debug("Runtime metadata binder was finished. Execution time: {}", timer.stop());
 
         return Metadata.builder()
-                .columnPairs(pairs)
+                .tablePairs(tablePairs)
+                .columnPairs(columnPairs)
                 .build();
     }
 

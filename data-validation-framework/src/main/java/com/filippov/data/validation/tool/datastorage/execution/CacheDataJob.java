@@ -2,7 +2,7 @@ package com.filippov.data.validation.tool.datastorage.execution;
 
 import com.filippov.data.validation.tool.datasource.Datasource;
 import com.filippov.data.validation.tool.datasource.query.DatasourceQuery;
-import com.filippov.data.validation.tool.datastorage.cache.ColumnDataCache;
+import com.filippov.data.validation.tool.cache.ColumnDataCache;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
