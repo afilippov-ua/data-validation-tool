@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '2.1.6.RELEASE'
+        springBootVersion = '2.2.4.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -10,16 +10,13 @@ buildscript {
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'idea'
+plugins {
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'java'
+}
+
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-
-sourceCompatibility = 11
-
-repositories {
-    mavenCentral()
-}
 
 allprojects {
     group = 'com.filippov.data.validation.tool'
