@@ -1,13 +1,13 @@
 package com.filippov.data.validation.tool.datastorage;
 
-import com.filippov.data.validation.tool.cache.ColumnDataCache;
+import com.filippov.data.validation.tool.datasource.Datasource;
 import com.filippov.data.validation.tool.model.ColumnData;
 
 public interface DataStorage {
 
     DataStorageConfig getConfig();
 
-    ColumnDataCache getCache();
+    Datasource getDatasource();
 
     <K, V> ColumnData<K, V> getData(Query query);
 

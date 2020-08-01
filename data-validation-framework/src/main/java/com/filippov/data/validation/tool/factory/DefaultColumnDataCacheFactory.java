@@ -8,6 +8,6 @@ public class DefaultColumnDataCacheFactory implements ColumnDataCacheFactory {
 
     @Override
     public ColumnDataCache getOrCreateForDatasource(Datasource datasource) {
-        return new InMemoryColumnDataCache(); // TODO: implement real factory
+        return new InMemoryColumnDataCache(); // TODO: use only in-memory for now
     }
 }

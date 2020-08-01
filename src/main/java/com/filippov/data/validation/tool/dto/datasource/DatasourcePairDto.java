@@ -8,6 +8,6 @@ import lombok.Getter;
 @Builder
 @EqualsAndHashCode
 public class DatasourcePairDto {
-    private DatasourceDefinitionDto left;
-    private DatasourceDefinitionDto right;
+    private DatasourceDefinitionDto leftDatasource;
+    private DatasourceDefinitionDto rightDatasource;
 }

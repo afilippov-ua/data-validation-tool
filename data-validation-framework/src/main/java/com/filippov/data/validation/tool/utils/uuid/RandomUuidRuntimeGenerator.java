@@ -1,4 +1,4 @@
-package com.filippov.data.validation.tool.metadata.uuid;
+package com.filippov.data.validation.tool.utils.uuid;
 
 import java.util.UUID;
 

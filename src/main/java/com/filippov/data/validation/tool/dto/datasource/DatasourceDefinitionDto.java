@@ -5,10 +5,13 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+import java.util.Map;
+
 @Getter
 @Builder
 @EqualsAndHashCode
 public class DatasourceDefinitionDto {
     private DatasourceType datasourceType;
-    private String config;
+    private Integer maxConnections;
+    private Map<String, Object> configParams;
 }

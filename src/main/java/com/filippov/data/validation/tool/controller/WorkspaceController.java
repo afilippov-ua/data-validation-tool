@@ -34,14 +34,14 @@ public class WorkspaceController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<WorkspaceDto> getWorkspaces() {
-        return workspaceService.get().stream()
+        return workspaceService.getAllWorkspaces().stream()
                 .map(dtoMapper::toDto)
                 .collect(toList());
     }
 
     @GetMapping(path = "/{workspaceId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public WorkspaceDto getWorkspace(@PathVariable("workspaceId") String workspaceId) {
-        return workspaceService.get(workspaceId)
+        return workspaceService.getWorkspaceById(workspaceId)
                 .map(dtoMapper::toDto)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Unable to find workspace by id: " + workspaceId));
     }
@@ -58,7 +58,7 @@ public class WorkspaceController {
 
     @GetMapping(path = "/{workspaceId}/metadata", produces = MediaType.APPLICATION_JSON_VALUE)
     public WorkspaceMetadataDto getWorkspaceMetadata(@PathVariable("workspaceId") String workspaceId) {
-        return workspaceService.get(workspaceId)
+        return workspaceService.getWorkspaceById(workspaceId)
                 .map(metadataService::getMetadata)
                 .map(dtoMapper::toDto)
                 .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Unable to find workspace by id: " + workspaceId));
@@ -66,7 +66,7 @@ public class WorkspaceController {
 
     @GetMapping(path = "/{id}/metadata/tablePairs", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<TablePairDto> getTablePairs(@PathVariable("id") String id) {
-        return workspaceService.get(id)
+        return workspaceService.getWorkspaceById(id)
                 .map(workspace -> metadataService.getTablePairs(workspace).stream()
                         .map(dtoMapper::toDto)
                         .collect(toList()))
@@ -76,7 +76,7 @@ public class WorkspaceController {
     @GetMapping(path = "/{workspaceId}/metadata/tablePairs/{tablePairId}/columnPairs", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ColumnPairDto> getColumnPairs(@PathVariable("workspaceId") String workspaceId, @PathVariable("tablePairId") String tablePairId) {
         // TODO: check table pair name
-        return workspaceService.get(workspaceId)
+        return workspaceService.getWorkspaceById(workspaceId)
                 .map(workspace -> metadataService.getColumnPairs(workspace, tablePairId).stream()
                         .map(dtoMapper::toDto)
                         .collect(toList()))

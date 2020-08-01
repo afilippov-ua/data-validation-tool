@@ -9,8 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.IOException;
+
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class DatasourceMetadataTest extends AbstractTest {
     private static final DatasourceTable table1 = DatasourceTable.builder().name(TABLE_A).build();
@@ -45,22 +48,26 @@ class DatasourceMetadataTest extends AbstractTest {
     @ParameterizedTest()
     @MethodSource("tableNameProvider")
     void getTableByNameTest(String columnName, DatasourceTable expectedTable) {
-        assertThat(metadata.getTableByName(columnName)).hasValue(expectedTable);
+        assertThat(metadata.getTableByName(columnName)).isEqualTo(expectedTable);
     }
 
     @Test
     void incorrectTableNameTest() {
-        assertThat(metadata.getTableByName("incorrect name")).isEmpty();
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> metadata.getTableByName("incorrect name"))
+                .withNoCause();
     }
 
     @ParameterizedTest()
     @MethodSource("columnNameProvider")
     void getColumnByNameTest(String tableName, String columnName, DatasourceColumn expectedColumn) {
-        assertThat(metadata.getColumnByName(tableName, columnName)).hasValue(expectedColumn);
+        assertThat(metadata.getColumnByName(tableName, columnName)).isEqualTo(expectedColumn);
     }
 
     @Test
     void incorrectColumnsNameTest() {
-        assertThat(metadata.getColumnByName(TABLE_A, "incorrect name")).isEmpty();
+        assertThatExceptionOfType(IllegalArgumentException.class)
+                .isThrownBy(() -> metadata.getColumnByName(TABLE_A, "incorrect name"))
+                .withNoCause();
     }
 }

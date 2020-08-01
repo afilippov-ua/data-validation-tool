@@ -1,15 +1,26 @@
 package com.filippov.data.validation.tool.validation.transformer.specific.string;
 
-import com.filippov.data.validation.tool.validation.transformer.Transformer;
+import com.filippov.data.validation.tool.model.DataType;
+import com.filippov.data.validation.tool.validation.transformer.AbstractTransformer;
 
-public class TrimStringTransformer implements Transformer<String, String> {
+public class TrimStringTransformer extends AbstractTransformer {
 
     @Override
-    public String transform(String value) {
+    public String transform(Object value) {
         if (value == null) {
             return null;
         } else {
-            return value.trim();
+            return ((String) value).trim(); // TODO: add generic
         }
+    }
+
+    @Override
+    public DataType getInputDataType() {
+        return DataType.STRING;
+    }
+
+    @Override
+    public DataType getOutputDataType() {
+        return DataType.STRING;
     }
 }

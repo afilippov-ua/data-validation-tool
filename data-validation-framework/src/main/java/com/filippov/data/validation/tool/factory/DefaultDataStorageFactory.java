@@ -7,7 +7,7 @@ import com.filippov.data.validation.tool.datastorage.DefaultDataStorage;
 import com.filippov.data.validation.tool.datastorage.RelationType;
 
 public class DefaultDataStorageFactory implements DataStorageFactory {
-    private ColumnDataCacheFactory columnDataCacheFactory;
+    private final ColumnDataCacheFactory columnDataCacheFactory;
 
     public DefaultDataStorageFactory(ColumnDataCacheFactory columnDataCacheFactory) {
         this.columnDataCacheFactory = columnDataCacheFactory;
@@ -18,9 +18,9 @@ public class DefaultDataStorageFactory implements DataStorageFactory {
         return DefaultDataStorage.builder()
                 .config(DataStorageConfig.builder()
                         .relationType(relationType)
-                        .datasource(datasource)
                         .maxConnections(maxConnections)
                         .build())
+                .datasource(datasource)
                 .cache(columnDataCacheFactory.getOrCreateForDatasource(datasource))
                 .build();
     }

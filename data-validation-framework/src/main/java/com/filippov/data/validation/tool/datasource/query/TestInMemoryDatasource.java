@@ -1,0 +1,104 @@
+package com.filippov.data.validation.tool.datasource.query;
+
+import com.filippov.data.validation.tool.datasource.Datasource;
+import com.filippov.data.validation.tool.datasource.config.DatasourceConfig;
+import com.filippov.data.validation.tool.datasource.config.TestInMemoryDatasourceConfig;
+import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
+import com.filippov.data.validation.tool.datasource.model.DatasourceMetadata;
+import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
+import com.filippov.data.validation.tool.datastorage.Query;
+import com.filippov.data.validation.tool.datastorage.RelationType;
+import com.filippov.data.validation.tool.model.ColumnData;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
+import static com.filippov.data.validation.tool.model.DataType.INTEGER;
+import static com.filippov.data.validation.tool.model.DataType.STRING;
+import static java.util.Arrays.asList;
+
+public class TestInMemoryDatasource implements Datasource {
+    private static final String USERS = "users";
+    private static final String DEPARTMENTS = "departments";
+
+    private static final String ID = "id";
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
+
+    private static final String NAME = "name";
+    private static final String NUMBER_OF_EMPLOYEES = "number_of_employees";
+
+    private static final DatasourceColumn U_ID = DatasourceColumn.builder().tableName(USERS).name(ID).dataType(INTEGER).build();
+    private static final DatasourceColumn U_NAME = DatasourceColumn.builder().tableName(USERS).name(USERNAME).dataType(STRING).build();
+    private static final DatasourceColumn U_PASS = DatasourceColumn.builder().tableName(USERS).name(PASSWORD).dataType(STRING).build();
+
+    private static final DatasourceColumn D_ID = DatasourceColumn.builder().tableName(DEPARTMENTS).name(ID).dataType(INTEGER).build();
+    private static final DatasourceColumn D_NAME = DatasourceColumn.builder().tableName(DEPARTMENTS).name(NAME).dataType(STRING).build();
+    private static final DatasourceColumn D_NUM = DatasourceColumn.builder().tableName(DEPARTMENTS).name(NUMBER_OF_EMPLOYEES).dataType(INTEGER).build();
+
+    private static final DatasourceMetadata METADATA = DatasourceMetadata.builder()
+            .tables(asList(
+                    DatasourceTable.builder()
+                            .name(USERS)
+                            .primaryKey(ID)
+                            .columns(asList(ID, USERNAME, PASSWORD))
+                            .build(),
+                    DatasourceTable.builder()
+                            .name(DEPARTMENTS)
+                            .primaryKey(ID)
+                            .columns(asList(ID, NAME, NUMBER_OF_EMPLOYEES))
+                            .build()))
+            .columns(asList(U_ID, U_NAME, U_PASS, D_ID, D_NAME, D_NUM))
+            .build();
+
+    private static final Map<String, Map<String, ColumnData<?, ?>>> dataMap = buildDataMap();
+
+    private static Map<String, Map<String, ColumnData<?, ?>>> buildDataMap() {
+        final Map<String, ColumnData<?, ?>> userColumns = new HashMap<>();
+        userColumns.put(ID, ColumnData.builder().keyColumn(U_ID).dataColumn(U_ID).keys(asList(1, 2, 3, 4, 5)).data(asList(1, 2, 3, 4, 5)).build());
+        userColumns.put(NAME, ColumnData.builder().keyColumn(U_ID).dataColumn(U_NAME).keys(asList(1, 2, 3, 4, 5)).data(asList("user1", "user2", "user3", "user4", "user5")).build());
+        userColumns.put(PASSWORD, ColumnData.builder().keyColumn(U_ID).dataColumn(U_PASS).keys(asList(1, 2, 3, 4, 5)).data(asList("pass1", "pass2", "pass3", "pass4", "pass5")).build());
+
+        final Map<String, ColumnData<?, ?>> departmentColumns = new HashMap<>();
+        departmentColumns.put(ID, ColumnData.builder().keyColumn(D_ID).dataColumn(D_ID).keys(asList(10, 20, 30, 40, 50)).data(asList(10, 20, 30, 40, 50)).build());
+        departmentColumns.put(NAME, ColumnData.builder().keyColumn(D_ID).dataColumn(D_NAME).keys(asList(10, 20, 30, 40, 50)).data(asList("dep1", "dep2", "dep3", "dep4", "dep5")).build());
+        departmentColumns.put(NUMBER_OF_EMPLOYEES, ColumnData.builder().keyColumn(D_ID).dataColumn(D_NUM).keys(asList(10, 20, 30, 40, 50)).data(asList(25, 50, 75, 100, 125)).build());
+
+        final Map<String, Map<String, ColumnData<?, ?>>> dataMap = new HashMap<>();
+        dataMap.put(USERS, userColumns);
+        dataMap.put(DEPARTMENTS, departmentColumns);
+
+        return dataMap;
+    }
+
+    @Override
+    public DatasourceConfig getConfig() {
+        return new TestInMemoryDatasourceConfig();
+    }
+
+    @Override
+    public DatasourceMetadata getMetadata() {
+        return METADATA;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public <K, V> ColumnData<K, V> getColumnData(DatasourceQuery query) {
+        return (ColumnData<K, V>) Optional.ofNullable(
+                Optional.ofNullable(dataMap.get(query.getTable().getName()))
+                        .orElseThrow(() -> new IllegalArgumentException("Table with name: " + query.getTable().getName() + " wasn't found in metadata!"))
+                        .get(query.getDataColumn().getName()))
+                .orElseThrow(() -> new IllegalArgumentException("Column with name: " + query.getDataColumn().getName() + " for table: " + query.getTable().getName() + " wasn't found in metadata!"));
+    }
+
+    @Override
+    public DatasourceQuery toDatasourceQuery(Query query, RelationType relationType) {
+        final DatasourceTable table = query.getTablePair().getDatasourceTableFor(relationType);
+        return DatasourceQuery.builder()
+                .table(table)
+                .keyColumn(query.getTablePair().getKeyColumnPair().getColumnFor(relationType))
+                .dataColumn(query.getColumnPair().getColumnFor(relationType))
+                .build();
+    }
+}
