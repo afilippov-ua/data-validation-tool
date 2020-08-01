@@ -9,7 +9,8 @@ import lombok.Getter;
 @Builder
 @EqualsAndHashCode
 public class TablePairDto {
+    private String id; // TODO ???
     private String name;
-    private DatasourceTableDto left;
-    private DatasourceTableDto right;
+    private DatasourceTableDto leftDatasourceTable;
+    private DatasourceTableDto rightDatasourceTable;
 }

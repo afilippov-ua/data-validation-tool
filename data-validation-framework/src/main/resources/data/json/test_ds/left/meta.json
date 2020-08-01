@@ -1,0 +1,54 @@
+{
+  "tables": [
+    {
+      "name": "users",
+      "primaryKey": "id",
+      "columns": [
+        "id",
+        "username",
+        "password"
+      ]
+    },
+    {
+      "name": "departments",
+      "primaryKey": "id",
+      "columns": [
+        "id",
+        "name",
+        "number_of_employees"
+      ]
+    }
+  ],
+  "columns": [
+    {
+      "tableName": "users",
+      "name": "id",
+      "dataType": "INTEGER"
+    },
+    {
+      "tableName": "users",
+      "name": "username",
+      "dataType": "STRING"
+    },
+    {
+      "tableName": "users",
+      "name": "password",
+      "dataType": "STRING"
+    },
+    {
+      "tableName": "users",
+      "name": "id",
+      "dataType": "INTEGER"
+    },
+    {
+      "tableName": "users",
+      "name": "name",
+      "dataType": "STRING"
+    },
+    {
+      "tableName": "users",
+      "name": "number_of_employees",
+      "dataType": "INTEGER"
+    }
+  ]
+}

@@ -24,7 +24,7 @@ public class LoadDataJob<K, V> implements Callable<ColumnData<K, V>> {
 
     @Override
     public ColumnData<K, V> call() throws Exception {
-        return columnDataCache.getOrLoad(query.getColumn(), () -> {
+        return columnDataCache.getOrLoad(query.getDataColumn(), () -> {
             try {
                 return datasource.getColumnData(query);
             } catch (Exception e) {

@@ -15,12 +15,12 @@ import java.util.List;
 @JsonDeserialize(builder = DatasourceTable.DatasourceTableBuilder.class)
 public class DatasourceTable implements Serializable {
     private String name;
-    private String primaryKey;
+    private String primaryKeyName;
     private List<String> columns;
 
-    DatasourceTable(String name, String primaryKey, List<String> columns) {
+    DatasourceTable(String name, String primaryKeyName, List<String> columns) {
         this.name = name;
-        this.primaryKey = primaryKey;
+        this.primaryKeyName = primaryKeyName;
         this.columns = columns;
     }
 

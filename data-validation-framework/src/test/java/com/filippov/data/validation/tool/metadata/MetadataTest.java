@@ -6,40 +6,37 @@ import com.filippov.data.validation.tool.pair.ColumnPair;
 import com.filippov.data.validation.tool.pair.TablePair;
 import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToDoubleTransformer;
 import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToIntegerTransformer;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import static java.util.Arrays.asList;
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class MetadataTest extends AbstractTest {
 
-    private static final DatasourceTable LEFT_TABLE_1 = LEFT_DATASOURCE.getMetadata().getTableByName(TABLE_A).get();
-    private static final DatasourceTable RIGHT_TABLE_1 = RIGHT_DATASOURCE.getMetadata().getTableByName(TABLE_A).get();
+    private static final DatasourceTable LEFT_TABLE_1 = LEFT_DATASOURCE.getMetadata().getTableByName(TABLE_A);
+    private static final DatasourceTable RIGHT_TABLE_1 = RIGHT_DATASOURCE.getMetadata().getTableByName(TABLE_A);
 
-    private static final DatasourceTable LEFT_TABLE_2 = LEFT_DATASOURCE.getMetadata().getTableByName(TABLE_B).get();
-    private static final DatasourceTable RIGHT_TABLE_2 = RIGHT_DATASOURCE.getMetadata().getTableByName(TABLE_B).get();
+    private static final DatasourceTable LEFT_TABLE_2 = LEFT_DATASOURCE.getMetadata().getTableByName(TABLE_B);
+    private static final DatasourceTable RIGHT_TABLE_2 = RIGHT_DATASOURCE.getMetadata().getTableByName(TABLE_B);
 
     private static final TablePair TABLE_PAIR_1 = TablePair.builder()
             .id("table-pair-id-1")
             .name(LEFT_TABLE_1.getName())
-            .left(LEFT_TABLE_1)
-            .right(RIGHT_TABLE_1)
+            .leftDatasourceTable(LEFT_TABLE_1)
+            .rightDatasourceTable(RIGHT_TABLE_1)
             .build();
 
     private static final TablePair TABLE_PAIR_2 = TablePair.builder()
             .id("table-pair-id-2")
             .name(LEFT_TABLE_2.getName())
-            .left(LEFT_TABLE_2)
-            .right(RIGHT_TABLE_2)
+            .leftDatasourceTable(LEFT_TABLE_2)
+            .rightDatasourceTable(RIGHT_TABLE_2)
             .build();
 
     private static final ColumnPair COLUMN_PAIR_1 = ColumnPair.builder()
             .id("column-pair-id-1")
             .tablePair(TABLE_PAIR_1)
             .name("pair_1")
-            .left(LEFT_DATASOURCE.getMetadata().getColumnByName(TABLE_A, INTEGER_COLUMN).get())
-            .right(RIGHT_DATASOURCE.getMetadata().getColumnByName(TABLE_A, INTEGER_COLUMN).get())
+            .leftDatasourceColumn(LEFT_DATASOURCE.getMetadata().getColumnByName(TABLE_A, INTEGER_COLUMN))
+            .rightDatasourceColumn(RIGHT_DATASOURCE.getMetadata().getColumnByName(TABLE_A, INTEGER_COLUMN))
             .leftTransformer(new ObjectToIntegerTransformer())
             .rightTransformer(new ObjectToIntegerTransformer())
             .build();
@@ -48,8 +45,8 @@ public class MetadataTest extends AbstractTest {
             .id("column-pair-id-2")
             .tablePair(TABLE_PAIR_2)
             .name("pair_2")
-            .left(LEFT_DATASOURCE.getMetadata().getColumnByName(TABLE_B, DOUBLE_COLUMN).get())
-            .right(RIGHT_DATASOURCE.getMetadata().getColumnByName(TABLE_B, DOUBLE_COLUMN).get())
+            .leftDatasourceColumn(LEFT_DATASOURCE.getMetadata().getColumnByName(TABLE_B, DOUBLE_COLUMN))
+            .rightDatasourceColumn(RIGHT_DATASOURCE.getMetadata().getColumnByName(TABLE_B, DOUBLE_COLUMN))
             .leftTransformer(new ObjectToDoubleTransformer())
             .rightTransformer(new ObjectToDoubleTransformer())
             .build();

@@ -5,7 +5,6 @@ import com.filippov.data.validation.tool.datastorage.Query;
 import com.filippov.data.validation.tool.model.ColumnData;
 import com.filippov.data.validation.tool.model.ColumnDataPair;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
@@ -15,21 +14,22 @@ import java.util.concurrent.Future;
 
 @Builder
 @Getter
-@EqualsAndHashCode(of = {"left", "right"})
 public class DataStoragePair {
     private static final ExecutorService executor = Executors.newCachedThreadPool();
 
-    private DataStorage left;
-    private DataStorage right;
+    @Getter
+    private DataStorage leftDataStorage;
+    @Getter
+    private DataStorage rightDataStorage;
 
     @SneakyThrows
     public <K, LV, RV> ColumnDataPair<K, LV, RV> getColumnData(Query query) {
-        final Future<ColumnData<K, LV>> leftFuture = executor.submit(() -> left.getData(query));
-        final Future<ColumnData<K, RV>> rightFuture = executor.submit(() -> right.getData(query));
+        final Future<ColumnData<K, LV>> leftFuture = executor.submit(() -> leftDataStorage.getData(query));
+        final Future<ColumnData<K, RV>> rightFuture = executor.submit(() -> rightDataStorage.getData(query));
 
         return ColumnDataPair.<K, LV, RV>builder()
-                .left(leftFuture.get())
-                .right(rightFuture.get())
+                .leftColumnData(leftFuture.get())
+                .rightColumnData(rightFuture.get())
                 .build();
     }
 }

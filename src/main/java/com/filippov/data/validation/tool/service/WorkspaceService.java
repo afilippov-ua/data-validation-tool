@@ -1,28 +1,26 @@
 package com.filippov.data.validation.tool.service;
 
 import com.filippov.data.validation.tool.model.Workspace;
-import com.filippov.data.validation.tool.storage.repository.WorkspaceRepository;
+import com.filippov.data.validation.tool.repository.data.WorkspaceRepository;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class WorkspaceService {
+    // TODO : cache needed - a lot of calls
     private final WorkspaceRepository workspaceRepository;
 
     public WorkspaceService(WorkspaceRepository workspaceRepository) {
         this.workspaceRepository = workspaceRepository;
     }
 
-    public List<Workspace> get() {
+    public List<Workspace> getAllWorkspaces() {
         return workspaceRepository.findAll();
     }
 
-    public Optional<Workspace> get(String id) {
+    public Optional<Workspace> getWorkspaceById(String id) {
         return workspaceRepository.findById(id);
     }
 

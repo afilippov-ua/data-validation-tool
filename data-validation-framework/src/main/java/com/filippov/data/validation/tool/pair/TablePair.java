@@ -5,24 +5,27 @@ import com.filippov.data.validation.tool.datastorage.RelationType;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 
 import static com.filippov.data.validation.tool.datastorage.RelationType.LEFT;
 import static com.filippov.data.validation.tool.datastorage.RelationType.RIGHT;
 
 @Getter
+@Setter
 @Builder
-@EqualsAndHashCode(of = {"left", "right"})
+@EqualsAndHashCode(of = {"id"})
 public class TablePair {
     private String id;
     private String name;
-    private DatasourceTable left;
-    private DatasourceTable right;
+    private ColumnPair keyColumnPair;
+    private DatasourceTable leftDatasourceTable;
+    private DatasourceTable rightDatasourceTable;
 
-    public DatasourceTable getTableFor(RelationType relationType) {
+    public DatasourceTable getDatasourceTableFor(RelationType relationType) {
         if (relationType == LEFT) {
-            return left;
+            return leftDatasourceTable;
         } else if (relationType == RIGHT) {
-            return right;
+            return leftDatasourceTable;
         } else {
             throw new IllegalArgumentException("Incorrect relation type: " + relationType);
         }

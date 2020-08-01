@@ -5,7 +5,7 @@ import com.filippov.data.validation.tool.dto.cache.CacheRequestDto;
 import com.filippov.data.validation.tool.dto.cache.ColumnPairCacheDetailsDto;
 import com.filippov.data.validation.tool.model.CacheStatus;
 import com.filippov.data.validation.tool.service.CacheService;
-import com.filippov.data.validation.tool.service.DataStoragePairService;
+import com.filippov.data.validation.tool.repository.DataStoragePairRepository;
 import com.filippov.data.validation.tool.service.MetadataService;
 import com.filippov.data.validation.tool.service.WorkspaceService;
 import org.springframework.http.MediaType;
@@ -29,9 +29,9 @@ public class CacheController extends AbstractController {
     private final DtoMapper dtoMapper;
     private final CacheService cacheService;
 
-    public CacheController(WorkspaceService workspaceService, MetadataService metadataService, DataStoragePairService dataStoragePairService, CacheService cacheService,
+    public CacheController(WorkspaceService workspaceService, MetadataService metadataService, DataStoragePairRepository dataStoragePairRepository, CacheService cacheService,
                            DtoMapper dtoMapper) {
-        super(workspaceService, metadataService, dataStoragePairService);
+        super(workspaceService, metadataService, dataStoragePairRepository);
         this.cacheService = cacheService;
         this.dtoMapper = dtoMapper;
     }

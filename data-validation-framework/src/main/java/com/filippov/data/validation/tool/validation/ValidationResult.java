@@ -11,6 +11,7 @@ import java.util.List;
 @Builder
 public class ValidationResult<K> {
     private TablePair tablePair;
-    private ColumnPair columnPair;
+    private ColumnPair keyColumnPair;
+    private ColumnPair dataColumnPair;
     private List<K> failedKeys;
 }

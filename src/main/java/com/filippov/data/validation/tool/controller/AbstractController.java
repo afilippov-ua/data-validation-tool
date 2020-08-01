@@ -4,7 +4,7 @@ import com.filippov.data.validation.tool.metadata.Metadata;
 import com.filippov.data.validation.tool.model.Workspace;
 import com.filippov.data.validation.tool.pair.ColumnPair;
 import com.filippov.data.validation.tool.pair.TablePair;
-import com.filippov.data.validation.tool.service.DataStoragePairService;
+import com.filippov.data.validation.tool.repository.DataStoragePairRepository;
 import com.filippov.data.validation.tool.service.MetadataService;
 import com.filippov.data.validation.tool.service.WorkspaceService;
 import org.springframework.http.HttpStatus;
@@ -12,19 +12,19 @@ import org.springframework.web.server.ResponseStatusException;
 
 public abstract class AbstractController {
 
-    private final WorkspaceService workspaceService;
-    private final MetadataService metadataService;
-    private final DataStoragePairService dataStoragePairService;
+    protected final WorkspaceService workspaceService;
+    protected final MetadataService metadataService;
+    protected final DataStoragePairRepository dataStoragePairRepository;
 
     AbstractController(WorkspaceService workspaceService, MetadataService metadataService,
-                       DataStoragePairService dataStoragePairService) {
+                       DataStoragePairRepository dataStoragePairRepository) {
         this.workspaceService = workspaceService;
         this.metadataService = metadataService;
-        this.dataStoragePairService = dataStoragePairService;
+        this.dataStoragePairRepository = dataStoragePairRepository;
     }
 
     protected Workspace getWorkspace(String workspaceId) {
-        return workspaceService.get(workspaceId).orElseThrow(() ->
+        return workspaceService.getWorkspaceById(workspaceId).orElseThrow(() ->
                 new ResponseStatusException(HttpStatus.NOT_FOUND, "Workspace with id '" + workspaceId + "' was not found"));
     }
 
@@ -41,15 +41,15 @@ public abstract class AbstractController {
                                 + tablePairId + "' for workspace: " + workspaceId + " was not found"));
     }
 
-    protected ColumnPair getColumnPair(String workspaceId, String tablePairName, String columnPairName) {
+    protected ColumnPair getColumnPair(String workspaceId, String tablePairId, String columnPairId) {
         var workspace = getWorkspace(workspaceId);
         var metadata = getMetadata(workspace);
-        var tablePair = getTablePair(workspaceId, tablePairName);
+        var tablePair = getTablePair(workspaceId, tablePairId);
 
-        return metadata.getColumnPair(tablePair, columnPairName)
+        return metadata.getColumnPairById(tablePair, columnPairId)
                 .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Column pair with name '"
-                                + columnPairName + "' for table: " + tablePairName + " for workspace: "
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Column pair with id '"
+                                + columnPairId + "' for table: " + tablePairId + " for workspace: "
                                 + workspaceId + " was not found"));
     }
 }

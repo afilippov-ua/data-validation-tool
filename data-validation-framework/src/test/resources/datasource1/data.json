@@ -1,12 +1,12 @@
 {
   "TableA": {
     "id": {
-      "primaryKey": {
+      "keyColumn": {
         "tableName": "TableA",
         "name": "id",
         "dataType": "INTEGER"
       },
-      "column": {
+      "dataColumn": {
         "tableName": "TableA",
         "name": "id",
         "dataType": "INTEGER"

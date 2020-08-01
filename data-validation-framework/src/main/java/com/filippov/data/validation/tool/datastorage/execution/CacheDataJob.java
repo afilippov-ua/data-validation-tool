@@ -21,7 +21,7 @@ public class CacheDataJob implements Runnable {
 
     @Override
     public void run() {
-        columnDataCache.putIfNotExist(query.getColumn(), () -> {
+        columnDataCache.putIfNotExist(query.getDataColumn(), () -> {
             try {
                 return datasource.getColumnData(query);
             } catch (Exception e) {

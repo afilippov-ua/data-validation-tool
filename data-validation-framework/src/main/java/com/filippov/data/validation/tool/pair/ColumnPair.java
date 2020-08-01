@@ -12,22 +12,22 @@ import static com.filippov.data.validation.tool.datastorage.RelationType.RIGHT;
 
 @Getter
 @Builder
-@EqualsAndHashCode(of = {"name", "left", "right"})
+@EqualsAndHashCode(of = "id")
 public class ColumnPair {
     private String id; // TODO!!!
     private String name;
     private TablePair tablePair;
-    private DatasourceColumn left;
-    private DatasourceColumn right;
+    private DatasourceColumn leftDatasourceColumn;
+    private DatasourceColumn rightDatasourceColumn;
 
-    private Transformer<? super Object, ? extends Object> leftTransformer; // TODO: generics
-    private Transformer<? super Object, ? extends Object> rightTransformer; // TODO: generics
+    private Transformer leftTransformer; // TODO: generics
+    private Transformer rightTransformer; // TODO: generics
 
     public DatasourceColumn getColumnFor(RelationType relationType) {
         if (relationType == LEFT) {
-            return left;
+            return leftDatasourceColumn;
         } else if (relationType == RIGHT) {
-            return right;
+            return rightDatasourceColumn;
         } else {
             throw new IllegalArgumentException("Incorrect relation type: " + relationType);
         }

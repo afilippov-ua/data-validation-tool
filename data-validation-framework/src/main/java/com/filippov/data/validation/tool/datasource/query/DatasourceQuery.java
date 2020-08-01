@@ -11,7 +11,6 @@ import java.util.Map;
 @Builder
 public class DatasourceQuery {
     private DatasourceTable table;
-    private DatasourceColumn primaryKey;
-    private DatasourceColumn column;
-    private Map<String, Object> queryParams;
+    private DatasourceColumn keyColumn;
+    private DatasourceColumn dataColumn;
 }
