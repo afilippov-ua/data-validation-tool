@@ -5,17 +5,17 @@ The idea is to compare columnar data that represented as key-value data.
 For example, we have "DEPARTMENTS" table, and we want to compare data between the current version of our application and a new one.
 We have to bring up two separate versions of our application and check the data:
  
- ![](docs/img/pic-1.png) 
+ ![](img/pic-1.png) 
  
 Here we can see the differences in "ID" column and "RATIO" column. In order to be able to find the discrepancies
 we have to compare the data using some unique key ("ID" in our case). 
 So, the comparison has to be done in a next way:
 
-![](docs/img/pic-2.png) 
+![](img/pic-2.png) 
 
 and the comparison result will look like:
 
-![](docs/img/pic-3.png)
+![](img/pic-3.png)
 
 Using this approach we've found rows that contains changed data. Now we can review
 the discrepancies and will see that:
@@ -33,12 +33,12 @@ The false-positive scenario can happen when we apply some data schema changes.
 For example, in the first version we have two columns "FIRST_NAME" and "LAST_NAME". In a new version of our software 
 we decided to define a new column "NAME" that will contain both the first and the last name. We've also removed "FIRST_NAME" and "LAST_NAME" columns. 
 
-![](docs/img/pic-4.png)
+![](img/pic-4.png)
 
 In this case the validation check will fail, and we'll track and control these changes. To be sure, the changes applied successfully, 
 we can apply some transformation function to the first data source and compare the results with second one:
 
-![](docs/img/pic-5.png)
+![](img/pic-5.png)
 
 ---
 
