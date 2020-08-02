@@ -44,8 +44,11 @@ we can apply some transformation function to the first data source and compare t
 
 ![](docs/img/pic-5.png)
 
+---
+
 The problem is that tracking the data changes is extremely hard, especially when you have a lot of columns and millions of rows in your tables. 
 Is it completely impossible to track it manually with your eyes everytime you deploy a new version of your software.
+
 
 The idea is to create an application that will be able to:
  1. load data from different data source types (web-services, SQL or No-SQL databases, it is also possible to use an application UI for 
