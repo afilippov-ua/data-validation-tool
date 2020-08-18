@@ -22,9 +22,13 @@ Data validation tool (DVT) is a standalone application for columnar data compari
 
 - [MySQL datasource](/docs/supported_data_sources_mysql_data_source.md)
 
-#### 3. First steps:
+#### 3. Features:
+
+- [Data fetching and pre-caching](/docs/features_data_fetching_and_caching.md)
+
+#### 4. First steps:
 
 - [How to configure the application](/docs/first_steps_how_to_configure_the_application.md)
 
-- [How to start the application locally](/docsg/first_steps_how_to_start_the_application_locally.md)
+- [How to start the application locally](/docs/first_steps_how_to_start_the_application_locally.md)
 
