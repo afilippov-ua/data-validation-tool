@@ -5,6 +5,7 @@ import com.filippov.data.validation.tool.datasource.config.JsonDatasourceConfig;
 import com.filippov.data.validation.tool.datasource.config.TestInMemoryDatasourceConfig;
 import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
 import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
+import com.filippov.data.validation.tool.datastorage.RelationType;
 import com.filippov.data.validation.tool.dto.cache.ColumnCacheDetailsDto;
 import com.filippov.data.validation.tool.dto.cache.ColumnPairCacheDetailsDto;
 import com.filippov.data.validation.tool.dto.datasource.DatasourceColumnDto;
@@ -23,6 +24,7 @@ import com.filippov.data.validation.tool.validation.transformer.Transformer;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -33,6 +35,7 @@ import static java.util.stream.Collectors.toMap;
 public class DtoMapper {
     private static final String METADATA_FILE_PATH = "metadataFilePath";
     private static final String DATA_FILE_PATH = "dataFilePath";
+    private static final String RELATION = "relation";
 
     public WorkspaceDto toDto(Workspace workspace) {
         return WorkspaceDto.builder()
@@ -44,21 +47,22 @@ public class DtoMapper {
     }
 
     public DatasourceDefinitionDto toDto(DatasourceConfig datasourceConfig) {
+        final Map<String, Object> configParams = new HashMap<>();
         switch (datasourceConfig.getDatasourceType()) {
             case JSON_DATASOURCE:
-                final JsonDatasourceConfig config = (JsonDatasourceConfig) datasourceConfig;
-                return DatasourceDefinitionDto.builder()
-                        .datasourceType(config.getDatasourceType())
-                        .maxConnections(config.getMaxConnections())
-                        .configParams(
-                                Map.of(
-                                        METADATA_FILE_PATH, config.getMetadataFilePath(),
-                                        DATA_FILE_PATH, config.getDataFilePath()))
-                        .build();
-            case TEST_IN_MEMORY_DATASOURCE:
+                configParams.put(METADATA_FILE_PATH, ((JsonDatasourceConfig) datasourceConfig).getMetadataFilePath());
+                configParams.put(DATA_FILE_PATH, ((JsonDatasourceConfig) datasourceConfig).getDataFilePath());
                 return DatasourceDefinitionDto.builder()
                         .datasourceType(datasourceConfig.getDatasourceType())
                         .maxConnections(datasourceConfig.getMaxConnections())
+                        .configParams(configParams)
+                        .build();
+            case TEST_IN_MEMORY_DATASOURCE:
+                configParams.put(RELATION, ((TestInMemoryDatasourceConfig) datasourceConfig).getRelation());
+                return DatasourceDefinitionDto.builder()
+                        .datasourceType(datasourceConfig.getDatasourceType())
+                        .maxConnections(datasourceConfig.getMaxConnections())
+                        .configParams(configParams)
                         .build();
             default:
                 throw new UnsupportedOperationException("Unsupported datasource type: " + datasourceConfig.getDatasourceType());
@@ -83,7 +87,9 @@ public class DtoMapper {
                         .maxConnections(datasourceDefinitionDto.getMaxConnections())
                         .build();
             case TEST_IN_MEMORY_DATASOURCE:
-                return new TestInMemoryDatasourceConfig();
+                return new TestInMemoryDatasourceConfig(
+                        RelationType.parse((String) datasourceDefinitionDto
+                                .getConfigParams().get("relation")));
             default:
                 throw new UnsupportedOperationException("Unsupported datasource type: " + datasourceDefinitionDto.getDatasourceType());
         }

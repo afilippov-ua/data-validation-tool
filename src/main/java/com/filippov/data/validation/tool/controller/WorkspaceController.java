@@ -51,7 +51,7 @@ public class WorkspaceController {
         return workspaceService.create(dtoMapper.fromDto(workspaceDto));
     }
 
-    @DeleteMapping
+    @DeleteMapping(path = "/{workspaceId}")
     public void deleteWorkspace(@PathVariable("workspaceId") String workspaceId) {
         workspaceService.delete(workspaceId);
     }

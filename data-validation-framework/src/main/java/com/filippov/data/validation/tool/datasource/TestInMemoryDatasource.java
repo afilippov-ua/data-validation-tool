@@ -1,14 +1,15 @@
-package com.filippov.data.validation.tool.datasource.query;
+package com.filippov.data.validation.tool.datasource;
 
-import com.filippov.data.validation.tool.datasource.Datasource;
 import com.filippov.data.validation.tool.datasource.config.DatasourceConfig;
 import com.filippov.data.validation.tool.datasource.config.TestInMemoryDatasourceConfig;
 import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
 import com.filippov.data.validation.tool.datasource.model.DatasourceMetadata;
 import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
+import com.filippov.data.validation.tool.datasource.query.DatasourceQuery;
 import com.filippov.data.validation.tool.datastorage.Query;
 import com.filippov.data.validation.tool.datastorage.RelationType;
 import com.filippov.data.validation.tool.model.ColumnData;
+import lombok.RequiredArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +19,7 @@ import static com.filippov.data.validation.tool.model.DataType.INTEGER;
 import static com.filippov.data.validation.tool.model.DataType.STRING;
 import static java.util.Arrays.asList;
 
+@RequiredArgsConstructor
 public class TestInMemoryDatasource implements Datasource {
     private static final String USERS = "users";
     private static final String DEPARTMENTS = "departments";
@@ -52,18 +54,44 @@ public class TestInMemoryDatasource implements Datasource {
             .columns(asList(U_ID, U_NAME, U_PASS, D_ID, D_NAME, D_NUM))
             .build();
 
-    private static final Map<String, Map<String, ColumnData<?, ?>>> dataMap = buildDataMap();
+    private Map<String, Map<String, ColumnData<?, ?>>> dataMap;
 
-    private static Map<String, Map<String, ColumnData<?, ?>>> buildDataMap() {
+    private final TestInMemoryDatasourceConfig config;
+
+    private Map<String, Map<String, ColumnData<?, ?>>> buildDataMap() {
         final Map<String, ColumnData<?, ?>> userColumns = new HashMap<>();
-        userColumns.put(ID, ColumnData.builder().keyColumn(U_ID).dataColumn(U_ID).keys(asList(1, 2, 3, 4, 5)).data(asList(1, 2, 3, 4, 5)).build());
-        userColumns.put(NAME, ColumnData.builder().keyColumn(U_ID).dataColumn(U_NAME).keys(asList(1, 2, 3, 4, 5)).data(asList("user1", "user2", "user3", "user4", "user5")).build());
-        userColumns.put(PASSWORD, ColumnData.builder().keyColumn(U_ID).dataColumn(U_PASS).keys(asList(1, 2, 3, 4, 5)).data(asList("pass1", "pass2", "pass3", "pass4", "pass5")).build());
+        if (config.getRelation() == RelationType.LEFT) {
+            userColumns.put(ID, ColumnData.builder().keyColumn(U_ID).dataColumn(U_ID).keys(asList(1, 2, 3, 4, 5, 7))
+                    .data(asList(1, 2, 3, 4, 5, 7)).build());
+            userColumns.put(USERNAME, ColumnData.builder().keyColumn(U_ID).dataColumn(U_NAME).keys(asList(1, 2, 3, 4, 5, 7))
+                    .data(asList("user1", "user2", "user3", "user4", "user5", "user7")).build());
+            userColumns.put(PASSWORD, ColumnData.builder().keyColumn(U_ID).dataColumn(U_PASS).keys(asList(1, 2, 3, 4, 5, 7))
+                    .data(asList("pass1", "pass2", "pass3", "pass4", "pass5", "pass7")).build());
+        } else {
+            userColumns.put(ID, ColumnData.builder().keyColumn(U_ID).dataColumn(U_ID).keys(asList(1, 2, 3, 4, 5, 6))
+                    .data(asList(1, 2, 3, 4, 5, 6)).build());
+            userColumns.put(USERNAME, ColumnData.builder().keyColumn(U_ID).dataColumn(U_NAME).keys(asList(1, 2, 3, 4, 5, 6))
+                    .data(asList("user1", "user2_changed", "user3", "user4", "user5", "user6")).build());
+            userColumns.put(PASSWORD, ColumnData.builder().keyColumn(U_ID).dataColumn(U_PASS).keys(asList(1, 2, 3, 4, 5, 6))
+                    .data(asList("pass1", "pass2_changed", "pass3", "pass4", "pass5", "user6")).build());
+        }
 
         final Map<String, ColumnData<?, ?>> departmentColumns = new HashMap<>();
-        departmentColumns.put(ID, ColumnData.builder().keyColumn(D_ID).dataColumn(D_ID).keys(asList(10, 20, 30, 40, 50)).data(asList(10, 20, 30, 40, 50)).build());
-        departmentColumns.put(NAME, ColumnData.builder().keyColumn(D_ID).dataColumn(D_NAME).keys(asList(10, 20, 30, 40, 50)).data(asList("dep1", "dep2", "dep3", "dep4", "dep5")).build());
-        departmentColumns.put(NUMBER_OF_EMPLOYEES, ColumnData.builder().keyColumn(D_ID).dataColumn(D_NUM).keys(asList(10, 20, 30, 40, 50)).data(asList(25, 50, 75, 100, 125)).build());
+        if (config.getRelation() == RelationType.LEFT) {
+            departmentColumns.put(ID, ColumnData.builder().keyColumn(D_ID).dataColumn(D_ID).keys(asList(10, 20, 30, 40, 50, 70))
+                    .data(asList(10, 20, 30, 40, 50, 70)).build());
+            departmentColumns.put(NAME, ColumnData.builder().keyColumn(D_ID).dataColumn(D_NAME).keys(asList(10, 20, 30, 40, 50, 70))
+                    .data(asList("dep1", "dep2", "dep3", "dep4", "dep5", "dep7")).build());
+            departmentColumns.put(NUMBER_OF_EMPLOYEES, ColumnData.builder().keyColumn(D_ID).dataColumn(D_NUM).keys(asList(10, 20, 30, 40, 50, 70))
+                    .data(asList(25, 50, 75, 100, 125, 175)).build());
+        } else {
+            departmentColumns.put(ID, ColumnData.builder().keyColumn(D_ID).dataColumn(D_ID).keys(asList(10, 20, 30, 40, 50, 60))
+                    .data(asList(10, 20, 30, 40, 50, 60)).build());
+            departmentColumns.put(NAME, ColumnData.builder().keyColumn(D_ID).dataColumn(D_NAME).keys(asList(10, 20, 30, 40, 50, 60))
+                    .data(asList("dep1", "dep2_changed", "dep3", "dep4", "dep5", "dep6")).build());
+            departmentColumns.put(NUMBER_OF_EMPLOYEES, ColumnData.builder().keyColumn(D_ID).dataColumn(D_NUM).keys(asList(10, 20, 30, 40, 50, 60))
+                    .data(asList(25, -50, 75, 100, 125, 150)).build());
+        }
 
         final Map<String, Map<String, ColumnData<?, ?>>> dataMap = new HashMap<>();
         dataMap.put(USERS, userColumns);
@@ -74,7 +102,7 @@ public class TestInMemoryDatasource implements Datasource {
 
     @Override
     public DatasourceConfig getConfig() {
-        return new TestInMemoryDatasourceConfig();
+        return config;
     }
 
     @Override
@@ -85,11 +113,15 @@ public class TestInMemoryDatasource implements Datasource {
     @Override
     @SuppressWarnings("unchecked")
     public <K, V> ColumnData<K, V> getColumnData(DatasourceQuery query) {
+        if (dataMap == null) {
+            dataMap = buildDataMap();
+        }
         return (ColumnData<K, V>) Optional.ofNullable(
                 Optional.ofNullable(dataMap.get(query.getTable().getName()))
                         .orElseThrow(() -> new IllegalArgumentException("Table with name: " + query.getTable().getName() + " wasn't found in metadata!"))
                         .get(query.getDataColumn().getName()))
-                .orElseThrow(() -> new IllegalArgumentException("Column with name: " + query.getDataColumn().getName() + " for table: " + query.getTable().getName() + " wasn't found in metadata!"));
+                .orElseThrow(() -> new IllegalArgumentException("Column with name: " + query.getDataColumn().getName() + " for table: "
+                        + query.getTable().getName() + " wasn't found in metadata!"));
     }
 
     @Override
