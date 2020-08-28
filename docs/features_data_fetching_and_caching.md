@@ -17,11 +17,13 @@ columns / tables, application allows you to preload the data from datasource asy
 
 ### Pre-fetching
 
-Application allows you to preload the data from datasources. That means you can define what tables / columns you want to preload and application will do this
+Application allows you to preload the data from datasources. You can define tables / columns you want to preload and application will do this
 in background.
 
-Application loads column data one-by-one, that means application has a queue of requests. That requests can be one of the next two types:
-- user validation requests (have the highest priority);
-- preload requests (have the lowest priority).
+Application loads column data one-by-one. In order not to block user requests in runtime while prefetching is running, application has a queue of requests
+that performs data loading according to the priorities. Requests can be one of the next two types:
+- validation requests called by users in runtime (have the highest priority);
+- data preload requests (have the lowest priority).
+
 That means when multiple users call validation endpoint for some columns their requests will be executed with the highest priority.
 Preload requests will be executed with the lowest priority and only if there is available connection to a datasource.
