@@ -1,66 +1,54 @@
 {
   "tables": [
     {
-      "name": "TableA",
+      "name": "users",
       "primaryKey": "id",
       "columns": [
         "id",
-        "integerColumn",
-        "doubleColumn",
-        "stringColumn"
+        "username",
+        "password"
       ]
     },
     {
-      "name": "TableB",
+      "name": "departments",
       "primaryKey": "id",
       "columns": [
         "id",
-        "integerColumn",
-        "doubleColumn",
-        "stringColumn"
+        "name",
+        "numberOfEmployees"
       ]
     }
   ],
   "columns": [
     {
-      "tableName": "TableA",
+      "tableName": "users",
       "name": "id",
       "dataType": "INTEGER"
     },
     {
-      "tableName": "TableA",
-      "name": "integerColumn",
-      "dataType": "INTEGER"
-    },
-    {
-      "tableName": "TableA",
-      "name": "doubleColumn",
-      "dataType": "DOUBLE"
-    },
-    {
-      "tableName": "TableA",
-      "name": "stringColumn",
+      "tableName": "users",
+      "name": "username",
       "dataType": "STRING"
     },
     {
-      "tableName": "TableB",
+      "tableName": "users",
+      "name": "password",
+      "dataType": "STRING"
+    },
+    {
+      "tableName": "departments",
       "name": "id",
       "dataType": "INTEGER"
     },
     {
-      "tableName": "TableB",
-      "name": "integerColumn",
-      "dataType": "INTEGER"
-    },
-    {
-      "tableName": "TableB",
-      "name": "doubleColumn",
-      "dataType": "DOUBLE"
-    },
-    {
-      "tableName": "TableB",
-      "name": "stringColumn",
+      "tableName": "departments",
+      "name": "name",
       "dataType": "STRING"
+    },
+    {
+      "tableName": "departments",
+      "name": "numberOfEmployees",
+      "dataType": "INTEGER"
     }
   ]
 }
