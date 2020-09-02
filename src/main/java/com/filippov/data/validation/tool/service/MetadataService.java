@@ -41,7 +41,7 @@ public class MetadataService {
 
     public List<ColumnPair> getColumnPairs(Workspace workspace, String tablePairId) {
         final Metadata metadata = getMetadata(workspace);
-        return metadata.getTablePairById(tablePairId)
+        return metadata.getTablePairByIdOrName(tablePairId)
                 .map(tablePair -> metadata.getColumnPairs(tablePair).stream()
                         .filter(columnPair -> columnPair.getTablePair().getId().equals(tablePairId))
                         .collect(Collectors.toList()))

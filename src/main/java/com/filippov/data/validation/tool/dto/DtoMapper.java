@@ -15,8 +15,8 @@ import com.filippov.data.validation.tool.dto.validation.TransformerDto;
 import com.filippov.data.validation.tool.dto.workspace.WorkspaceDto;
 import com.filippov.data.validation.tool.dto.workspace.WorkspaceMetadataDto;
 import com.filippov.data.validation.tool.metadata.Metadata;
-import com.filippov.data.validation.tool.model.ColumnCacheDetails;
-import com.filippov.data.validation.tool.model.ColumnPairCacheDetails;
+import com.filippov.data.validation.tool.model.ColumnDataInfo;
+import com.filippov.data.validation.tool.pair.ColumnDataInfoPair;
 import com.filippov.data.validation.tool.model.Workspace;
 import com.filippov.data.validation.tool.pair.ColumnPair;
 import com.filippov.data.validation.tool.pair.TablePair;
@@ -168,18 +168,18 @@ public class DtoMapper {
                 .build();
     }
 
-    public ColumnCacheDetailsDto toDto(ColumnCacheDetails columnCacheDetails) {
+    public ColumnCacheDetailsDto toDto(ColumnDataInfo columnDataInfo) {
         return ColumnCacheDetailsDto.builder()
-                .cached(columnCacheDetails.isCached())
-                .date(columnCacheDetails.getDate())
+                .cached(columnDataInfo.isCached())
+                .date(columnDataInfo.getDate())
                 .build();
     }
 
-    public ColumnPairCacheDetailsDto toDto(ColumnPairCacheDetails columnPairCacheDetails) {
+    public ColumnPairCacheDetailsDto toDto(ColumnDataInfoPair columnDataInfoPair) {
         return ColumnPairCacheDetailsDto.builder()
-                .columnPair(toDto(columnPairCacheDetails.getColumnPair()))
-                .leftCacheInfo(toDto(columnPairCacheDetails.getLeftCacheInfo()))
-                .rightCacheInfo(toDto(columnPairCacheDetails.getRightCacheInfo()))
+                .columnPair(toDto(columnDataInfoPair.getColumnPair()))
+                .leftCacheInfo(toDto(columnDataInfoPair.getLeftColumnDataInfo()))
+                .rightCacheInfo(toDto(columnDataInfoPair.getRightColumnDataInfo()))
                 .build();
     }
 }

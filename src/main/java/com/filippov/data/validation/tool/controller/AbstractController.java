@@ -23,33 +23,31 @@ public abstract class AbstractController {
         this.dataStoragePairRepository = dataStoragePairRepository;
     }
 
-    protected Workspace getWorkspace(String workspaceId) {
-        return workspaceService.getWorkspaceById(workspaceId).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "Workspace with id '" + workspaceId + "' was not found"));
+    protected Workspace getWorkspaceByIdOrName(String workspace) {
+        return workspaceService.getWorkspaceById(workspace)
+                .orElseGet(() -> workspaceService.getWorkspaceByName(workspace)
+                        .orElseThrow(() ->
+                                new ResponseStatusException(HttpStatus.NOT_FOUND, "Workspace with id or name '" + workspace + "' was not found")));
     }
 
     protected Metadata getMetadata(Workspace workspace) {
         return metadataService.getMetadata(workspace);
     }
 
-    protected TablePair getTablePair(String workspaceId, String tablePairId) {
-        var workspace = getWorkspace(workspaceId);
-        var metadata = getMetadata(workspace);
-        return metadata.getTablePairById(tablePairId)
+    protected TablePair getTablePairByIdOrName(String workspace, String tablePair) {
+        return getMetadata(getWorkspaceByIdOrName(workspace))
+                .getTablePairByIdOrName(tablePair)
                 .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Table pair with id '"
-                                + tablePairId + "' for workspace: " + workspaceId + " was not found"));
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Table pair with id or name: '"
+                                + tablePair + "' for workspace: " + workspace + " was not found"));
     }
 
-    protected ColumnPair getColumnPair(String workspaceId, String tablePairId, String columnPairId) {
-        var workspace = getWorkspace(workspaceId);
-        var metadata = getMetadata(workspace);
-        var tablePair = getTablePair(workspaceId, tablePairId);
-
-        return metadata.getColumnPairById(tablePair, columnPairId)
+    protected ColumnPair getColumnPairByIdOrName(String workspace, String tablePair, String columnPair) {
+        return getMetadata(getWorkspaceByIdOrName(workspace))
+                .getColumnPairByIdOrName(getTablePairByIdOrName(workspace, tablePair), columnPair)
                 .orElseThrow(() ->
-                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Column pair with id '"
-                                + columnPairId + "' for table: " + tablePairId + " for workspace: "
-                                + workspaceId + " was not found"));
+                        new ResponseStatusException(HttpStatus.NOT_FOUND, "Column pair with id or name '"
+                                + columnPair + "' for table: " + tablePair + " for workspace: "
+                                + workspace + " was not found"));
     }
 }

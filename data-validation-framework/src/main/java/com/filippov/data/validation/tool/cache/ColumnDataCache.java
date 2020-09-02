@@ -2,6 +2,7 @@ package com.filippov.data.validation.tool.cache;
 
 import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
 import com.filippov.data.validation.tool.model.ColumnData;
+import com.filippov.data.validation.tool.model.ColumnDataInfo;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -37,6 +38,8 @@ public interface ColumnDataCache {
     void cleanUp();
 
     void close();
+
+    ColumnDataInfo getColumnCacheDetails(DatasourceColumn column);
 
     // TODO:
     // smth like that

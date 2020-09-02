@@ -1,4 +1,4 @@
-package com.filippov.data.validation.tool.executor;
+package com.filippov.data.validation.tool.datastorage.execution;
 
 import lombok.Getter;
 

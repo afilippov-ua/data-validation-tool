@@ -1,11 +1,14 @@
 package com.filippov.data.validation.tool.controller;
 
+import com.filippov.data.validation.tool.dto.ColumnPairDto;
 import com.filippov.data.validation.tool.dto.DtoMapper;
 import com.filippov.data.validation.tool.dto.cache.CacheRequestDto;
 import com.filippov.data.validation.tool.dto.cache.ColumnPairCacheDetailsDto;
-import com.filippov.data.validation.tool.model.CacheStatus;
-import com.filippov.data.validation.tool.service.CacheService;
+import com.filippov.data.validation.tool.model.CachingStatus;
+import com.filippov.data.validation.tool.model.Workspace;
+import com.filippov.data.validation.tool.pair.TablePair;
 import com.filippov.data.validation.tool.repository.DataStoragePairRepository;
+import com.filippov.data.validation.tool.service.CacheService;
 import com.filippov.data.validation.tool.service.MetadataService;
 import com.filippov.data.validation.tool.service.WorkspaceService;
 import org.springframework.http.MediaType;
@@ -21,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 @RestController
 @RequestMapping("workspaces")
@@ -39,7 +43,7 @@ public class CacheController extends AbstractController {
     @GetMapping(path = "/{workspaceId}/tablePairs/{tablePairId}/cacheDetails", produces = MediaType.APPLICATION_JSON_VALUE)
     public List<ColumnPairCacheDetailsDto> getTablePairCacheDetails(@PathVariable("workspaceId") String workspaceId,
                                                                     @PathVariable("tablePairId") String tablePairId) {
-        return cacheService.getTablePairCacheDetails(getWorkspace(workspaceId), getTablePair(workspaceId, tablePairId))
+        return cacheService.getTablePairCacheDetails(getWorkspaceByIdOrName(workspaceId), getTablePairByIdOrName(workspaceId, tablePairId))
                 .stream()
                 .map(dtoMapper::toDto)
                 .collect(toList());
@@ -51,48 +55,84 @@ public class CacheController extends AbstractController {
                                                                @PathVariable("columnPairId") String columnPairId) {
         return dtoMapper.toDto(
                 cacheService.getColumnPairCacheDetails(
-                        getWorkspace(workspaceId),
-                        getTablePair(workspaceId, tablePairId),
-                        getColumnPair(workspaceId, tablePairId, columnPairId)));
+                        getWorkspaceByIdOrName(workspaceId),
+                        getTablePairByIdOrName(workspaceId, tablePairId),
+                        getColumnPairByIdOrName(workspaceId, tablePairId, columnPairId)));
+    }
+
+    @PostMapping(path = "/{workspaceId}/tablePairs/{tablePairId}/cache")
+    public CachingStatus processCachingCommand(@PathVariable("workspaceId") String workspaceId,
+                                               @PathVariable("tablePairId") String tablePairId,
+                                               @RequestBody CacheRequestDto cacheRequestDto) {
+
+        final Workspace workspace = getWorkspaceByIdOrName(workspaceId);
+        final TablePair tablePair = getTablePairByIdOrName(workspaceId, tablePairId);
+        final List<CachingStatus> result = metadataService.getMetadata(workspace)
+                .getColumnPairs(tablePair)
+                .stream()
+                .map(columnPair ->
+                        cacheService.processCachingCommand(
+                                workspace,
+                                tablePair,
+                                columnPair,
+                                cacheRequestDto.getCacheFetchingCommand()))
+                .collect(toList());
+
+        return result.size() > 0 ? result.get(0) : CachingStatus.NON_DEFINED;
     }
 
     @PostMapping(path = "/{workspaceId}/tablePairs/{tablePairId}/columnPairs/{columnPairId}/cache")
-    public CacheStatus processCachingCommand(@PathVariable("workspaceId") String workspaceId,
-                                             @PathVariable("tablePairId") String tablePairId,
-                                             @PathVariable("columnPairId") String columnPairId,
-                                             @RequestBody CacheRequestDto cacheRequestDto) {
+    public CachingStatus processCachingCommand(@PathVariable("workspaceId") String workspaceId,
+                                               @PathVariable("tablePairId") String tablePairId,
+                                               @PathVariable("columnPairId") String columnPairId,
+                                               @RequestBody CacheRequestDto cacheRequestDto) {
         return cacheService.processCachingCommand(
-                getWorkspace(workspaceId),
-                getTablePair(workspaceId, tablePairId),
-                getColumnPair(workspaceId, tablePairId, columnPairId),
+                getWorkspaceByIdOrName(workspaceId),
+                getTablePairByIdOrName(workspaceId, tablePairId),
+                getColumnPairByIdOrName(workspaceId, tablePairId, columnPairId),
                 cacheRequestDto.getCacheFetchingCommand());
     }
 
     @GetMapping(path = "/{workspaceId}/tablePairs/{tablePairId}/cache/status", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Map<String, CacheStatus> getTablePairCacheStatus(@PathVariable("workspaceId") String workspaceId,
-                                                            @PathVariable("tablePairId") String tablePairId) {
+    public Map<String, CachingStatus> getTablePairCacheStatus(@PathVariable("workspaceId") String workspaceId,
+                                                                     @PathVariable("tablePairId") String tablePairId) {
         return cacheService.getTablePairCacheStatus(
-                getWorkspace(workspaceId),
-                getTablePair(workspaceId, tablePairId));
+                getWorkspaceByIdOrName(workspaceId),
+                getTablePairByIdOrName(workspaceId, tablePairId))
+                .entrySet()
+                .stream()
+                .collect(toMap(
+                        entry -> entry.getKey().getName(),
+                        Map.Entry::getValue));
     }
 
     @GetMapping(path = "/{workspaceId}/tablePairs/{tablePairId}/columnPairs/{columnPairId}/cache/status", produces = MediaType.APPLICATION_JSON_VALUE)
-    public CacheStatus getColumnPairCacheStatus(@PathVariable("workspaceId") String workspaceId,
-                                                @PathVariable("tablePairId") String tablePairId,
-                                                @PathVariable("columnPairId") String columnPairId) {
+    public CachingStatus getColumnPairCacheStatus(@PathVariable("workspaceId") String workspaceId,
+                                                  @PathVariable("tablePairId") String tablePairId,
+                                                  @PathVariable("columnPairId") String columnPairId) {
         return cacheService.getColumnPairCacheStatus(
-                getWorkspace(workspaceId),
-                getTablePair(workspaceId, tablePairId),
-                getColumnPair(workspaceId, tablePairId, columnPairId));
+                getWorkspaceByIdOrName(workspaceId),
+                getTablePairByIdOrName(workspaceId, tablePairId),
+                getColumnPairByIdOrName(workspaceId, tablePairId, columnPairId));
+    }
+
+    @DeleteMapping(path = "/{workspaceId}/tablePairs/{tablePairId}/cache")
+    public void deleteTableCache(@PathVariable("workspaceId") String workspaceId,
+                                 @PathVariable("tablePairId") String tablePairId) {
+        final Workspace workspace = getWorkspaceByIdOrName(workspaceId);
+        final TablePair tablePair = getTablePairByIdOrName(workspaceId, tablePairId);
+        metadataService.getMetadata(workspace)
+                .getColumnPairs(tablePair)
+                .forEach(columnPair -> cacheService.deleteCacheForColumnPair(workspace, tablePair, columnPair));
     }
 
     @DeleteMapping(path = "/{workspaceId}/tablePairs/{tablePairId}/columnPairs/{columnPairId}/cache")
-    public boolean deleteCache(@PathVariable("workspaceId") String workspaceId,
-                               @PathVariable("tablePairId") String tablePairId,
-                               @PathVariable("columnPairId") String columnPairId) {
-        return cacheService.deleteCacheForColumnPair(
-                getWorkspace(workspaceId),
-                getTablePair(workspaceId, tablePairId),
-                getColumnPair(workspaceId, tablePairId, columnPairId));
+    public void deleteColumnCache(@PathVariable("workspaceId") String workspaceId,
+                                  @PathVariable("tablePairId") String tablePairId,
+                                  @PathVariable("columnPairId") String columnPairId) {
+        cacheService.deleteCacheForColumnPair(
+                getWorkspaceByIdOrName(workspaceId),
+                getTablePairByIdOrName(workspaceId, tablePairId),
+                getColumnPairByIdOrName(workspaceId, tablePairId, columnPairId));
     }
 }

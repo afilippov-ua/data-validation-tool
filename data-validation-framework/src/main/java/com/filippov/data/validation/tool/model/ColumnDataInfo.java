@@ -9,7 +9,7 @@ import java.time.Instant;
 @Getter
 @Builder
 @EqualsAndHashCode
-public class ColumnCacheDetails {
+public class ColumnDataInfo {
     private boolean cached;
     private Instant date;
 }

@@ -1,4 +1,4 @@
-package com.filippov.data.validation.tool.datastorage.execution;
+package com.filippov.data.validation.tool.datastorage.execution.job;
 
 import com.filippov.data.validation.tool.datasource.Datasource;
 import com.filippov.data.validation.tool.datasource.query.DatasourceQuery;
@@ -11,9 +11,9 @@ import java.util.concurrent.Callable;
 
 @Slf4j
 public class LoadDataJob<K, V> implements Callable<ColumnData<K, V>> {
-    private ColumnDataCache columnDataCache;
-    private Datasource datasource;
-    private DatasourceQuery query;
+    private final ColumnDataCache columnDataCache;
+    private final Datasource datasource;
+    private final DatasourceQuery query;
 
     @Builder
     public LoadDataJob(ColumnDataCache columnDataCache, Datasource datasource, DatasourceQuery query) {

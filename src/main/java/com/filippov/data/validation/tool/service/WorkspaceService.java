@@ -24,6 +24,10 @@ public class WorkspaceService {
         return workspaceRepository.findById(id);
     }
 
+    public Optional<Workspace> getWorkspaceByName(String name) {
+        return workspaceRepository.findByName(name);
+    }
+
     public String create(Workspace workspace) {
         final Workspace ws = workspaceRepository.save(workspace);
         return ws.getId();

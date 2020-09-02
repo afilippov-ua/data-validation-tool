@@ -43,9 +43,9 @@ public class ValidationController extends AbstractController {
                                                   @RequestParam("offset") int offset,
                                                   @RequestParam("limit") int limit) {
 
-        final Workspace workspace = getWorkspace(workspaceId);
-        final TablePair tablePair = getTablePair(workspaceId, tablePairId);
-        final ColumnPair columnPair = getColumnPair(workspaceId, tablePairId, columnPairId);
+        final Workspace workspace = getWorkspaceByIdOrName(workspaceId);
+        final TablePair tablePair = getTablePairByIdOrName(workspaceId, tablePairId);
+        final ColumnPair columnPair = getColumnPairByIdOrName(workspaceId, tablePairId, columnPairId);
 
         final ValidationResult<?> validationResult = validationService.validate(
                 workspace,
