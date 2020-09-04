@@ -4,7 +4,7 @@ dependencies {
     implementation('org.projectlombok:lombok:1.18.4')
     annotationProcessor('org.projectlombok:lombok:1.18.4')
 
-    implementation('com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.7')
+    implementation('com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.2')
     implementation('ch.qos.logback:logback-classic:1.2.3')
 
     testImplementation('org.assertj:assertj-core:3.11.1')

@@ -8,8 +8,10 @@ import com.filippov.data.validation.tool.repository.DataStoragePairRepository;
 import com.filippov.data.validation.tool.validation.DefaultDataValidator;
 import com.filippov.data.validation.tool.validation.ValidationResult;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ValidationService {
@@ -17,13 +19,16 @@ public class ValidationService {
     private final DataStoragePairRepository dataStoragePairRepository;
 
     public <K, LV, RV> ValidationResult<K> validate(Workspace workspace, Query query) {
+        log.debug("Starting validation execution for workspace: {} and query: {}", workspace.getId(), query);
         final DataStoragePair dataStoragePair = dataStoragePairRepository.getOrLoad(workspace);
         final ColumnDataPair<K, LV, RV> columnDataPair = dataStoragePair.getColumnData(query);
-        return DefaultDataValidator.builder()
+        final ValidationResult<K> result = DefaultDataValidator.builder()
                 .tablePair(query.getTablePair())
                 .keyColumnPair(query.getTablePair().getKeyColumnPair())
                 .dataColumnPair(query.getColumnPair())
                 .build()
                 .validate(columnDataPair.getLeftColumnData(), columnDataPair.getRightColumnData());
+        log.debug("Validation has been successfully executed for workspace: {} and query: {}", workspace.getId(), query);
+        return result;
     }
 }

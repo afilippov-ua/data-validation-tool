@@ -3,10 +3,10 @@ package com.filippov.data.validation.tool.datastorage;
 import com.filippov.data.validation.tool.cache.ColumnDataCache;
 import com.filippov.data.validation.tool.datasource.Datasource;
 import com.filippov.data.validation.tool.datasource.query.DatasourceQuery;
+import com.filippov.data.validation.tool.datastorage.execution.Priority;
+import com.filippov.data.validation.tool.datastorage.execution.executor.DataStorageExecutor;
 import com.filippov.data.validation.tool.datastorage.execution.job.CacheDataJob;
 import com.filippov.data.validation.tool.datastorage.execution.job.LoadDataJob;
-import com.filippov.data.validation.tool.datastorage.execution.executor.DataStorageExecutor;
-import com.filippov.data.validation.tool.datastorage.execution.Priority;
 import com.filippov.data.validation.tool.model.CachingStatus;
 import com.filippov.data.validation.tool.model.ColumnData;
 import com.filippov.data.validation.tool.model.ColumnDataInfo;
@@ -49,11 +49,12 @@ public class DefaultDataStorage implements DataStorage {
     @SneakyThrows
     @SuppressWarnings("unchecked")
     public <K, V> ColumnData<K, V> getData(Query query) {
-        final DatasourceQuery datasourceQuery = datasource.toDatasourceQuery(query, config.getRelationType());
-        return cache.getOrLoad(
-                datasourceQuery.getDataColumn(),
+        log.debug("Fetching column data has been started with query: {} from storage: {} and datasource: {}", query, config, datasource);
+        final ColumnData<K, V> result = cache.getOrLoad(
+                query.getColumnPair().getColumnFor(config.getRelationType()),
                 () -> {
                     try {
+                        final DatasourceQuery datasourceQuery = datasource.toDatasourceQuery(query, config.getRelationType());
                         return (ColumnData<K, V>) executor.submitWithPriority(
                                 LoadDataJob.builder()
                                         .columnDataCache(cache)
@@ -64,20 +65,29 @@ public class DefaultDataStorage implements DataStorage {
                                 datasourceQuery)
                                 .get();
                     } catch (ExecutionException | InterruptedException e) {
-                        log.error("Loading data from {} datasource has been failed", config.getRelationType(), e);
-                        throw new RuntimeException(e);
+                        throw new RuntimeException("Loading data from " + config.getRelationType() + " datasource: " + datasource +
+                                " with query: " + query + " has been failed", e);
                     }
                 });
+        log.debug("Fetching column data has been finished with query: {} from storage: {} and datasource: {}", query, config, datasource);
+        return result;
     }
 
     @Override
     public ColumnDataInfo getColumnDataInfo(Query query) {
+        log.debug("Fetching column data info has been started for {} storage, datasource: {} and config: {} with query: {}",
+                config.getRelationType(), datasource, config, query);
         final DatasourceQuery datasourceQuery = datasource.toDatasourceQuery(query, config.getRelationType());
-        return cache.getColumnCacheDetails(datasourceQuery.getDataColumn());
+        final ColumnDataInfo result = cache.getColumnCacheDetails(datasourceQuery.getDataColumn());
+        log.debug("Fetching column data info has been finished for {} storage, datasource: {} and config: {} with query: {}",
+                config.getRelationType(), datasource, config, query);
+        return result;
     }
 
     @Override
     public void preloadInBackground(Query query) {
+        log.debug("Starting preloading in background from {} storage, datasource: {} and config: {} with query: {}",
+                config.getRelationType(), datasource, config, query);
         final DatasourceQuery datasourceQuery = datasource.toDatasourceQuery(query, config.getRelationType());
         if (cache.exist(datasourceQuery.getDataColumn())) {
             log.debug("Cache for table: " + query.getTablePair().getName() + " and column: "
@@ -99,6 +109,8 @@ public class DefaultDataStorage implements DataStorage {
 
     @Override
     public void stopPreloadInBackground(Query query) {
+        log.debug("Stopping preloading in background from {} storage, datasource: {} and config: {} with query: {}",
+                config.getRelationType(), datasource, config, query);
         executor.remove(Priority.LOW, datasource.toDatasourceQuery(query, config.getRelationType()));
     }
 
@@ -114,6 +126,7 @@ public class DefaultDataStorage implements DataStorage {
 
     @Override
     public void deleteCache(Query query) {
+        log.debug("Deleting cache from {} storage, datasource: {} and config: {} with query: {}", config.getRelationType(), datasource, config, query);
         cache.delete(query.getColumnPair().getColumnFor(config.getRelationType()));
     }
 }

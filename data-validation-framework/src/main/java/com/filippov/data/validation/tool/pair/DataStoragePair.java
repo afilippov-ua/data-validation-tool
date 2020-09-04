@@ -13,14 +13,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 @Builder
-@Getter
 public class DataStoragePair {
     private static final ExecutorService executor = Executors.newCachedThreadPool();
 
     @Getter
-    private DataStorage leftDataStorage;
+    private final DataStorage leftDataStorage;
     @Getter
-    private DataStorage rightDataStorage;
+    private final DataStorage rightDataStorage;
 
     @SneakyThrows
     public <K, LV, RV> ColumnDataPair<K, LV, RV> getColumnData(Query query) {

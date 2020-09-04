@@ -4,6 +4,7 @@ import com.filippov.data.validation.tool.factory.DataStorageFactory;
 import com.filippov.data.validation.tool.factory.DatasourceFactory;
 import com.filippov.data.validation.tool.model.Workspace;
 import com.filippov.data.validation.tool.pair.DataStoragePair;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -12,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static com.filippov.data.validation.tool.datastorage.RelationType.LEFT;
 import static com.filippov.data.validation.tool.datastorage.RelationType.RIGHT;
 
+@Slf4j
 @Component
 public class DataStoragePairRepository {
     private final Map<Workspace, DataStoragePair> cache;

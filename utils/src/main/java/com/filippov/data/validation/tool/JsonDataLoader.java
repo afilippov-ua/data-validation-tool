@@ -20,7 +20,7 @@ public class JsonDataLoader {
     }
 
     @SneakyThrows
-    public <T> T loadData(String resourceName, TypeReference typeReference) {
+    public <T> T loadData(String resourceName, TypeReference<T> typeReference) {
         final ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setVisibility(VisibilityChecker.Std.defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY));
         return objectMapper.readValue(this.getClass().getClassLoader().getResourceAsStream(resourceName), typeReference);

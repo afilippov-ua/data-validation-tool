@@ -31,6 +31,7 @@ import java.util.function.Function;
 
 import static java.util.stream.Collectors.toMap;
 
+// TODO: decompose to a set of separate mappers: too large
 @Component
 public class DtoMapper {
     private static final String METADATA_FILE_PATH = "metadataFilePath";

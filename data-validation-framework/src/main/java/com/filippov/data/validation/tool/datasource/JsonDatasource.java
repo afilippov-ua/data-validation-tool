@@ -10,35 +10,37 @@ import com.filippov.data.validation.tool.datasource.query.DatasourceQuery;
 import com.filippov.data.validation.tool.datastorage.Query;
 import com.filippov.data.validation.tool.datastorage.RelationType;
 import com.filippov.data.validation.tool.model.ColumnData;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class JsonDatasource implements Datasource {
-    private JsonDatasourceConfig datasourceConfig;
-    private DatasourceMetadata metadata;
-    private Map<DatasourceColumn, ColumnData<?, ?>> dataMap = new HashMap<>();
+    private final JsonDatasourceConfig datasourceConfig;
+    private final DatasourceMetadata metadata;
+    private final Map<DatasourceColumn, ColumnData<?, ?>> dataMap = new HashMap<>();
 
     public JsonDatasource(JsonDatasourceConfig datasourceConfig) {
         this.datasourceConfig = datasourceConfig;
+        this.metadata = loadMetadata();
     }
 
     @Override
     public DatasourceMetadata getMetadata() {
-        if (metadata == null) {
-            metadata = new JsonDataLoader().loadData(datasourceConfig.getMetadataFilePath(), new TypeReference<DatasourceMetadata>() {
-            });
-        }
         return metadata;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public <K, V> ColumnData<K, V> getColumnData(DatasourceQuery query) {
+        log.debug("Loading data from JSON-datasource with query: {}", query);
         if (dataMap.isEmpty()) {
             loadData();
         }
-        return (ColumnData<K, V>) dataMap.get(query.getDataColumn());
+        final ColumnData<K, V> result = (ColumnData<K, V>) dataMap.get(query.getDataColumn());
+        log.debug("Data from JSON-datasource has been successfully loaded with query: {}", query);
+        return result;
     }
 
     @Override
@@ -47,13 +49,13 @@ public class JsonDatasource implements Datasource {
     }
 
     private void loadData() {
-        final Map<String, Map<String, ColumnData>> data = new JsonDataLoader()
-                .loadData(datasourceConfig.getDataFilePath(), new TypeReference<Map<String, Map<String, ColumnData>>>() {
+        final Map<String, Map<String, ColumnData<?, ?>>> data = new JsonDataLoader()
+                .loadData(datasourceConfig.getDataFilePath(), new TypeReference<Map<String, Map<String, ColumnData<?, ?>>>>() {
                 });
 
         for (DatasourceTable table : getMetadata().getTables()) {
             if (data.containsKey(table.getName())) {
-                final Map<String, ColumnData> columnDataMap = data.get(table.getName());
+                final Map<String, ColumnData<?, ?>> columnDataMap = data.get(table.getName());
                 for (String columnName : table.getColumns()) {
                     DatasourceColumn column = getMetadata().getColumnByName(table.getName(), columnName);
                     if (columnDataMap.containsKey(column.getName())) {
@@ -75,5 +77,16 @@ public class JsonDatasource implements Datasource {
                 .keyColumn(query.getTablePair().getKeyColumnPair().getColumnFor(relationType))
                 .dataColumn(query.getColumnPair().getColumnFor(relationType))
                 .build();
+    }
+
+
+
+    private DatasourceMetadata loadMetadata() {
+        return new JsonDataLoader().loadData(datasourceConfig.getMetadataFilePath(), new TypeReference<>() {
+        });
+    }
+
+    public String toString() {
+        return "JsonDatasource(datasourceConfig=" + this.datasourceConfig + ")";
     }
 }

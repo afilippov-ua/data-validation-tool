@@ -4,6 +4,7 @@ import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -12,12 +13,13 @@ import java.util.Map;
 import java.util.Set;
 
 @Getter
+@ToString(of = {"keyColumn", "dataColumn"})
 @EqualsAndHashCode(of = {"keyColumn", "dataColumn"})
 public class ColumnData<K, V> implements Serializable {
 
-    private DatasourceColumn keyColumn;
-    private DatasourceColumn dataColumn;
-    private Map<K, V> dataMap;
+    private final DatasourceColumn keyColumn;
+    private final DatasourceColumn dataColumn;
+    private final Map<K, V> dataMap;
 
     @Builder
     public ColumnData(DatasourceColumn keyColumn, DatasourceColumn dataColumn, List<K> keys, List<V> data) {

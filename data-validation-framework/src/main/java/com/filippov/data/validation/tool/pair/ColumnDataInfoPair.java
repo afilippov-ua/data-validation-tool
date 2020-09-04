@@ -4,13 +4,15 @@ import com.filippov.data.validation.tool.model.ColumnDataInfo;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @Builder
+@ToString
 @EqualsAndHashCode
 public class ColumnDataInfoPair {
-    private TablePair tablePair;
-    private ColumnPair columnPair;
-    private ColumnDataInfo leftColumnDataInfo;
-    private ColumnDataInfo rightColumnDataInfo;
+    private final TablePair tablePair;
+    private final ColumnPair columnPair;
+    private final ColumnDataInfo leftColumnDataInfo;
+    private final ColumnDataInfo rightColumnDataInfo;
 }

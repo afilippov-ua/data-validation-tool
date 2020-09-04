@@ -11,9 +11,12 @@ public interface ColumnDataCache {
 
     <K, V> Optional<ColumnData<K, V>> get(DatasourceColumn column);
 
+    @SuppressWarnings("unchecked")
     default <K, V> ColumnData<K, V> getOrLoad(DatasourceColumn column, Supplier<ColumnData<K, V>> supplier) {
         if (exist(column)) {
-            return (ColumnData<K, V>) get(column).get();
+            return (ColumnData<K, V>) get(column)
+                    .orElseThrow(() -> new RuntimeException("Failed to load column data for table: "
+                            + column.getTableName() + " and  column: " + column.getName()));
         } else {
             final ColumnData<K, V> data = supplier.get();
             put(column, data);

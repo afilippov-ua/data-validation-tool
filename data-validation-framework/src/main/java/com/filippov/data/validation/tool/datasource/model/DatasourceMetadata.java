@@ -1,19 +1,19 @@
 package com.filippov.data.validation.tool.datasource.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@JsonDeserialize(builder = DatasourceMetadata.DatasourceMetadataBuilder.class)
 public class DatasourceMetadata {
-    private List<DatasourceTable> tables;
-    private List<DatasourceColumn> columns;
+    private final List<DatasourceTable> tables;
+    private final List<DatasourceColumn> columns;
 
     public boolean isTableExist(String tableName) {
         return tables.stream()

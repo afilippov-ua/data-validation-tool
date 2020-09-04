@@ -1,5 +1,6 @@
 package com.filippov.data.validation.tool.validation;
 
+import com.filippov.data.validation.tool.Timer;
 import com.filippov.data.validation.tool.model.ColumnData;
 import com.filippov.data.validation.tool.pair.ColumnPair;
 import com.filippov.data.validation.tool.pair.TablePair;
@@ -23,6 +24,9 @@ public class DefaultDataValidator implements DataValidator {
 
     @Override
     public <K, LV, RV> ValidationResult<K> validate(ColumnData<K, LV> leftData, ColumnData<K, RV> rightData) {
+        log.debug("Starting validation for left data: {} and right data: {}", leftData, rightData);
+        final Timer timer = Timer.start();
+
         final List<K> allKeys = Stream.concat(
                 leftData.getKeys().stream(),
                 rightData.getKeys().stream())
@@ -47,11 +51,15 @@ public class DefaultDataValidator implements DataValidator {
             }
         }
 
-        return ValidationResult.<K>builder()
+        final ValidationResult<K> result = ValidationResult.<K>builder()
                 .tablePair(tablePair)
                 .keyColumnPair(keyColumnPair)
                 .dataColumnPair(dataColumnPair)
                 .failedKeys(failedKeys)
                 .build();
+
+        log.debug("Validation execution has been finished for left data: {} and right data: {}. Number of failed keys: {}. Execution time: {}",
+                leftData, rightData, failedKeys.size(), timer.stop());
+        return result;
     }
 }

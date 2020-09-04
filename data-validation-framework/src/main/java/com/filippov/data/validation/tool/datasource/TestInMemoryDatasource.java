@@ -10,6 +10,7 @@ import com.filippov.data.validation.tool.datastorage.Query;
 import com.filippov.data.validation.tool.datastorage.RelationType;
 import com.filippov.data.validation.tool.model.ColumnData;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +20,7 @@ import static com.filippov.data.validation.tool.model.DataType.INTEGER;
 import static com.filippov.data.validation.tool.model.DataType.STRING;
 import static java.util.Arrays.asList;
 
+@Slf4j
 @RequiredArgsConstructor
 public class TestInMemoryDatasource implements Datasource {
     private static final String USERS = "users";
@@ -113,15 +115,19 @@ public class TestInMemoryDatasource implements Datasource {
     @Override
     @SuppressWarnings("unchecked")
     public <K, V> ColumnData<K, V> getColumnData(DatasourceQuery query) {
+        log.debug("Loading data from Test-in-memory-datasource with query: {}", query);
         if (dataMap == null) {
             dataMap = buildDataMap();
         }
-        return (ColumnData<K, V>) Optional.ofNullable(
+        final ColumnData<K, V> result = (ColumnData<K, V>) Optional.ofNullable(
                 Optional.ofNullable(dataMap.get(query.getTable().getName()))
                         .orElseThrow(() -> new IllegalArgumentException("Table with name: " + query.getTable().getName() + " wasn't found in metadata!"))
                         .get(query.getDataColumn().getName()))
                 .orElseThrow(() -> new IllegalArgumentException("Column with name: " + query.getDataColumn().getName() + " for table: "
                         + query.getTable().getName() + " wasn't found in metadata!"));
+
+        log.debug("Data from Test-in-memory-datasource has been successfully loaded with query: {}", query);
+        return result;
     }
 
     @Override
@@ -132,5 +138,9 @@ public class TestInMemoryDatasource implements Datasource {
                 .keyColumn(query.getTablePair().getKeyColumnPair().getColumnFor(relationType))
                 .dataColumn(query.getColumnPair().getColumnFor(relationType))
                 .build();
+    }
+
+    public String toString() {
+        return "TestInMemoryDatasource(" + this.config.getRelation() + ")";
     }
 }

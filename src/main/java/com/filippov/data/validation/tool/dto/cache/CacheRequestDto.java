@@ -1,19 +1,21 @@
 package com.filippov.data.validation.tool.dto.cache;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.filippov.data.validation.tool.model.CacheFetchingCommand;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Getter
-@Builder
 @EqualsAndHashCode
-@NoArgsConstructor
-@AllArgsConstructor
+@Builder
+@ToString
 public class CacheRequestDto {
-    private CacheFetchingCommand cacheFetchingCommand;
+    private final CacheFetchingCommand cacheFetchingCommand;
 
-
+    @JsonCreator
+    public CacheRequestDto(CacheFetchingCommand cacheFetchingCommand) {
+        this.cacheFetchingCommand = cacheFetchingCommand;
+    }
 }

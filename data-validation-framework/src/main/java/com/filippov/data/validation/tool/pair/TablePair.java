@@ -30,4 +30,9 @@ public class TablePair {
             throw new IllegalArgumentException("Incorrect relation type: " + relationType);
         }
     }
+
+
+    public String toString() {
+        return "TablePair(" + this.getName() + ")";
+    }
 }

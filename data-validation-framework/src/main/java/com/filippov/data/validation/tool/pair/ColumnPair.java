@@ -14,14 +14,14 @@ import static com.filippov.data.validation.tool.datastorage.RelationType.RIGHT;
 @Builder
 @EqualsAndHashCode(of = "id")
 public class ColumnPair {
-    private String id; // TODO!!!
-    private String name;
-    private TablePair tablePair;
-    private DatasourceColumn leftDatasourceColumn;
-    private DatasourceColumn rightDatasourceColumn;
+    private final String id;
+    private final String name;
+    private final TablePair tablePair;
+    private final DatasourceColumn leftDatasourceColumn;
+    private final DatasourceColumn rightDatasourceColumn;
 
-    private Transformer leftTransformer; // TODO: generics
-    private Transformer rightTransformer; // TODO: generics
+    private final Transformer leftTransformer; // TODO: generics
+    private final Transformer rightTransformer; // TODO: generics
 
     public DatasourceColumn getColumnFor(RelationType relationType) {
         if (relationType == LEFT) {
@@ -31,5 +31,10 @@ public class ColumnPair {
         } else {
             throw new IllegalArgumentException("Incorrect relation type: " + relationType);
         }
+    }
+
+
+    public String toString() {
+        return "ColumnPair(" + this.getName() + ")";
     }
 }

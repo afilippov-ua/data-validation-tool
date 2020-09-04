@@ -1,12 +1,15 @@
 package com.filippov.data.validation.tool.datastorage.execution.job;
 
+import com.filippov.data.validation.tool.cache.ColumnDataCache;
 import com.filippov.data.validation.tool.datasource.Datasource;
 import com.filippov.data.validation.tool.datasource.query.DatasourceQuery;
-import com.filippov.data.validation.tool.cache.ColumnDataCache;
+import com.filippov.data.validation.tool.model.ColumnData;
 import lombok.Builder;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@ToString(of = {"datasource", "query"})
 public class CacheDataJob implements Runnable {
     private final ColumnDataCache columnDataCache;
     private final Datasource datasource;
@@ -21,12 +24,14 @@ public class CacheDataJob implements Runnable {
 
     @Override
     public void run() {
+        log.debug("Caching data job has been started for datasource: {} and query: {}", datasource, query);
         columnDataCache.putIfNotExist(query.getDataColumn(), () -> {
             try {
-                return datasource.getColumnData(query);
+                final ColumnData<?, ?> result = datasource.getColumnData(query);
+                log.debug("Caching data job has been finished for datasource: {} and query: {}", datasource, query);
+                return result;
             } catch (Exception e) {
-                log.error("Loading data from datasource has been failed", e);
-                throw new RuntimeException(e);
+                throw new RuntimeException("Loading data from datasource has been failed for datasource: " + datasource + " and query: " + query, e);
             }
         });
     }

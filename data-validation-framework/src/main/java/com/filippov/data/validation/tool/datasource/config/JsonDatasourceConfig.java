@@ -9,9 +9,9 @@ import lombok.ToString;
 @Builder
 @ToString
 public class JsonDatasourceConfig implements DatasourceConfig {
-    private String metadataFilePath;
-    private String dataFilePath;
-    private int maxConnections;
+    private final String metadataFilePath;
+    private final String dataFilePath;
+    private final int maxConnections;
 
     @Override
     public DatasourceType getDatasourceType() {

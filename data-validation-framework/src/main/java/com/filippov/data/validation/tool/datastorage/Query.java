@@ -8,6 +8,11 @@ import lombok.Getter;
 @Getter
 @Builder
 public class Query {
-    private TablePair tablePair;
-    private ColumnPair columnPair;
+    private final TablePair tablePair;
+    private final ColumnPair columnPair;
+
+
+    public String toString() {
+        return "Query(" + this.getTablePair() + ", " + this.getColumnPair() + ")";
+    }
 }

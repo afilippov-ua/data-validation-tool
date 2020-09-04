@@ -10,6 +10,7 @@ import com.filippov.data.validation.tool.pair.DataStoragePair;
 import com.filippov.data.validation.tool.pair.TablePair;
 import com.filippov.data.validation.tool.repository.DataStoragePairRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import static com.filippov.data.validation.tool.model.CachingStatus.RUNNING;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class CacheService {
@@ -30,15 +32,22 @@ public class CacheService {
     private final DataStoragePairRepository dataStoragePairRepository;
 
     public List<ColumnDataInfoPair> getTablePairCacheDetails(Workspace workspace, TablePair tablePair) {
-        return metadataService.getMetadata(workspace)
+        log.debug("Getting table pair cache details for workspace: {} and table pair: {}", workspace.getId(), tablePair.getName());
+        final List<ColumnDataInfoPair> result = metadataService.getMetadata(workspace)
                 .getColumnPairs(tablePair).stream()
                 .map(columnPair -> getColumnPairCacheDetails(workspace, tablePair, columnPair))
                 .collect(toList());
+
+        log.debug("Table pair cache details were fetched successfully: {}", result);
+        return result;
     }
 
     public ColumnDataInfoPair getColumnPairCacheDetails(Workspace workspace, TablePair tablePair, ColumnPair columnPair) {
+        log.debug("Getting column pair cache details for workspace: {}, table pair: {} and columnPair: {}",
+                workspace.getId(), tablePair.getName(), columnPair.getName());
+
         final DataStoragePair dataStoragePair = dataStoragePairRepository.getOrLoad(workspace);
-        return ColumnDataInfoPair.builder()
+        final ColumnDataInfoPair result = ColumnDataInfoPair.builder()
                 .tablePair(tablePair)
                 .columnPair(columnPair)
                 .leftColumnDataInfo(
@@ -54,9 +63,17 @@ public class CacheService {
                                         .columnPair(columnPair)
                                         .build()))
                 .build();
+
+        log.debug("Column pair cache details has been successfully fetched for workspace: {}, table pair: {} and columnPair: {}. ColumnDataInfoPair: {}",
+                workspace.getId(), tablePair.getName(), columnPair.getName(), result);
+
+        return result;
     }
 
     public void deleteCacheForColumnPair(Workspace workspace, TablePair tablePair, ColumnPair columnPair) {
+        log.debug("Deleting column cache for workspace: {}, table pair: {} and columnPair: {}",
+                workspace.getId(), tablePair.getName(), columnPair.getName());
+
         final DataStoragePair dataStoragePair = dataStoragePairRepository.getOrLoad(workspace);
         dataStoragePair.getLeftDataStorage().deleteCache(
                 Query.builder()
@@ -68,6 +85,9 @@ public class CacheService {
                         .tablePair(tablePair)
                         .columnPair(columnPair)
                         .build());
+
+        log.debug("Column cache for workspace: {}, table pair: {} and columnPair: {} has been successfully deleted",
+                workspace.getId(), tablePair.getName(), columnPair.getName());
     }
 
     public CachingStatus processCachingCommand(Workspace workspace, TablePair tablePair, ColumnPair columnPair, CacheFetchingCommand cacheFetchingCommand) {
@@ -82,15 +102,25 @@ public class CacheService {
     }
 
     public Map<ColumnPair, CachingStatus> getTablePairCacheStatus(Workspace workspace, TablePair tablePair) {
-        return metadataService.getMetadata(workspace)
+        log.debug("Getting table pair cache status for workspace: {} and table pair: {}",
+                workspace.getId(), tablePair.getName());
+
+        final Map<ColumnPair, CachingStatus> result = metadataService.getMetadata(workspace)
                 .getColumnPairs(tablePair).stream()
                 .collect(toMap(
                         Function.identity(),
                         columnPair -> getColumnPairCacheStatus(workspace, tablePair, columnPair)));
 
+        log.debug("Returning table pair cache status for workspace: {} and table pair: {}",
+                workspace.getId(), tablePair.getName());
+
+        return result;
     }
 
     public CachingStatus getColumnPairCacheStatus(Workspace workspace, TablePair tablePair, ColumnPair columnPair) {
+        log.debug("Getting column pair cache status for workspace: {}, table pair: {} and column pair: {}",
+                workspace.getId(), tablePair.getName(), columnPair.getName());
+
         final DataStoragePair dataStoragePair = dataStoragePairRepository.getOrLoad(workspace);
         final CachingStatus leftStatus = dataStoragePair.getLeftDataStorage()
                 .getCachingStatus(
@@ -104,10 +134,18 @@ public class CacheService {
                                 .tablePair(tablePair)
                                 .columnPair(columnPair)
                                 .build());
-        return getCachingStatusPair(leftStatus, rightStatus);
+        final CachingStatus result = getCachingStatusPair(leftStatus, rightStatus);
+
+        log.debug("Returning column pair cache status for workspace: {}, table pair: {} and columnPair: {}",
+                workspace.getId(), tablePair.getName(), columnPair.getName());
+
+        return result;
     }
 
     public CachingStatus startCaching(Workspace workspace, TablePair tablePair, ColumnPair columnPair) {
+        log.debug("Starting caching for workspace: {}, table pair: {} and columnPair: {}",
+                workspace.getId(), tablePair.getName(), columnPair.getName());
+
         final DataStoragePair dataStoragePair = dataStoragePairRepository.getOrLoad(workspace);
         dataStoragePair.getLeftDataStorage().preloadInBackground(
                 Query.builder()
@@ -119,10 +157,17 @@ public class CacheService {
                         .tablePair(tablePair)
                         .columnPair(columnPair)
                         .build());
+
+        log.debug("Caching has been successfully started for workspace: {}, table pair: {} and columnPair: {}",
+                workspace.getId(), tablePair.getName(), columnPair.getName());
+
         return CachingStatus.STARTED;
     }
 
     public CachingStatus stopCaching(Workspace workspace, TablePair tablePair, ColumnPair columnPair) {
+        log.debug("Stopping caching for workspace: {}, table pair: {} and columnPair: {}",
+                workspace.getId(), tablePair.getName(), columnPair.getName());
+
         final DataStoragePair dataStoragePair = dataStoragePairRepository.getOrLoad(workspace);
         dataStoragePair.getLeftDataStorage().stopPreloadInBackground(
                 Query.builder()
@@ -134,6 +179,10 @@ public class CacheService {
                         .tablePair(tablePair)
                         .columnPair(columnPair)
                         .build());
+
+        log.debug("Caching has been successfully stopped for workspace: {}, table pair: {} and columnPair: {}",
+                workspace.getId(), tablePair.getName(), columnPair.getName());
+
         return CachingStatus.STOPPED;
     }
 

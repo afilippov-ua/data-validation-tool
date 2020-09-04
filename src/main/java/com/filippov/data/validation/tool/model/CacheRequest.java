@@ -10,8 +10,8 @@ import lombok.Getter;
 @Builder
 @EqualsAndHashCode
 public class CacheRequest {
-    private Workspace workspace;
-    private TablePair tablePair;
-    private ColumnPair columnPair;
-    private CacheFetchingCommand cacheFetchingCommand;
+    private final Workspace workspace;
+    private final TablePair tablePair;
+    private final ColumnPair columnPair;
+    private final CacheFetchingCommand cacheFetchingCommand;
 }

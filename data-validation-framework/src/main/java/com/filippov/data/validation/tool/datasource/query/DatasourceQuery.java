@@ -10,7 +10,12 @@ import lombok.Getter;
 @Builder
 @EqualsAndHashCode
 public class DatasourceQuery {
-    private DatasourceTable table;
-    private DatasourceColumn keyColumn;
-    private DatasourceColumn dataColumn;
+    private final DatasourceTable table;
+    private final DatasourceColumn keyColumn;
+    private final DatasourceColumn dataColumn;
+
+
+    public String toString() {
+        return "DatasourceQuery(keyColumn=" + this.getKeyColumn() + ", dataColumn=" + this.getDataColumn() + ")";
+    }
 }

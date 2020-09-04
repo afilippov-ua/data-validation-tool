@@ -30,7 +30,7 @@ public class RuntimeMetadataBinder implements MetadataBinder {
     @Override
     public Metadata bind(DatasourceMetadata leftMetadata, DatasourceMetadata rightMetadata) {
         Timer timer = Timer.start();
-        log.debug("Runtime metadata binder was started");
+        log.debug("Runtime metadata binder has been started");
 
         final List<ColumnPair> columnPairs = new ArrayList<>();
         final List<TablePair> tablePairs = new ArrayList<>();
@@ -90,7 +90,7 @@ public class RuntimeMetadataBinder implements MetadataBinder {
             }
         }
 
-        log.debug("Runtime metadata binder was finished. Execution time: {}", timer.stop());
+        log.debug("Runtime metadata binder has been finished. Execution time: {}", timer.stop());
 
         return Metadata.builder()
                 .tablePairs(tablePairs)

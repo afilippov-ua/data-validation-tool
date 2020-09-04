@@ -10,13 +10,13 @@ import org.springframework.data.annotation.Id;
 
 @Getter
 @Setter
-@ToString
+@ToString(of = {"id", "name"})
 @Builder(toBuilder = true)
 @EqualsAndHashCode(of = "id")
 public class Workspace {
     @Id
-    private String id;
-    private String name;
-    private DatasourceConfig leftDatasourceConfig;
-    private DatasourceConfig rightDatasourceConfig;
+    private final String id;
+    private final String name;
+    private final DatasourceConfig leftDatasourceConfig;
+    private final DatasourceConfig rightDatasourceConfig;
 }

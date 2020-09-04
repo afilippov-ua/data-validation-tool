@@ -1,9 +1,11 @@
 package com.filippov.data.validation.tool.controller;
 
+import com.filippov.data.validation.tool.Timer;
 import com.filippov.data.validation.tool.binder.DataBinder;
 import com.filippov.data.validation.tool.datastorage.Query;
 import com.filippov.data.validation.tool.dto.DtoMapper;
 import com.filippov.data.validation.tool.dto.validation.ValidationDataDto;
+import com.filippov.data.validation.tool.model.ColumnDataPair;
 import com.filippov.data.validation.tool.model.Workspace;
 import com.filippov.data.validation.tool.pair.ColumnPair;
 import com.filippov.data.validation.tool.pair.TablePair;
@@ -12,6 +14,7 @@ import com.filippov.data.validation.tool.service.MetadataService;
 import com.filippov.data.validation.tool.service.ValidationService;
 import com.filippov.data.validation.tool.service.WorkspaceService;
 import com.filippov.data.validation.tool.validation.ValidationResult;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import static java.util.stream.Collectors.toList;
 
+@Slf4j
 @RestController
 @RequestMapping("validationResults")
 public class ValidationController extends AbstractController {
@@ -43,6 +47,10 @@ public class ValidationController extends AbstractController {
                                                   @RequestParam("offset") int offset,
                                                   @RequestParam("limit") int limit) {
 
+        log.debug("Calling 'getValidationResults' endpoint for workspaceId: {}, tablePairId: {}, columnPairId: {}, offset: {}, limit: {}",
+                workspaceId, tablePairId, columnPairId, offset, limit);
+        final Timer timer = Timer.start();
+
         final Workspace workspace = getWorkspaceByIdOrName(workspaceId);
         final TablePair tablePair = getTablePairByIdOrName(workspaceId, tablePairId);
         final ColumnPair columnPair = getColumnPairByIdOrName(workspaceId, tablePairId, columnPairId);
@@ -54,15 +62,25 @@ public class ValidationController extends AbstractController {
                         .columnPair(columnPair)
                         .build());
 
-        return ValidationDataDto.builder()
+        final ColumnDataPair<Object, Object, Object> columnDataPair = dataStoragePairRepository.getOrLoad(workspace)
+                .getColumnData(Query.builder()
+                        .tablePair(tablePair)
+                        .columnPair(columnPair)
+                        .build());
+
+        final ValidationDataDto result = ValidationDataDto.builder()
                 .tablePair(dtoMapper.toDto(validationResult.getTablePair()))
                 .keyColumnPair(dtoMapper.toDto(validationResult.getKeyColumnPair()))
                 .dataColumnPair(dtoMapper.toDto(validationResult.getDataColumnPair()))
                 .failedRows(validationResult.getFailedKeys().stream()
-                        .map(id -> dataBinder.bind(workspace, tablePair, columnPair, id))
+                        .map(id -> dataBinder.bind(columnDataPair, columnPair, id))
                         .skip(offset)
                         .limit(limit)
                         .collect(toList()))
                 .build();
+
+        log.debug("Validation finished for workspaceId: {}, tablePairId: {}, columnPairId: {}. Execution time: {}",
+                workspaceId, tablePairId, columnPairId, timer.stop());
+        return result;
     }
 }

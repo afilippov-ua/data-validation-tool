@@ -12,9 +12,9 @@ import java.io.Serializable;
 @EqualsAndHashCode(of = {"tableName", "name"})
 @JsonDeserialize(builder = DatasourceColumn.DatasourceColumnBuilder.class)
 public class DatasourceColumn implements Serializable {
-    private String tableName;
-    private String name;
-    private DataType dataType;
+    private final String tableName;
+    private final String name;
+    private final DataType dataType;
 
     DatasourceColumn(String tableName, String name, DataType dataType) {
         this.tableName = tableName;
@@ -25,6 +25,11 @@ public class DatasourceColumn implements Serializable {
     public static DatasourceColumnBuilder builder() {
         return new DatasourceColumnBuilder();
     }
+
+    public String toString() {
+        return "DatasourceColumn(" + this.getTableName() + ":" + this.getName() + ")";
+    }
+
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class DatasourceColumnBuilder {
@@ -52,10 +57,6 @@ public class DatasourceColumn implements Serializable {
 
         public DatasourceColumn build() {
             return new DatasourceColumn(tableName, name, dataType);
-        }
-
-        public String toString() {
-            return "DatasourceColumn.DatasourceColumnBuilder(tableName=" + this.tableName + ", name=" + this.name + ", dataType=" + this.dataType + ")";
         }
     }
 }

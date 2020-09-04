@@ -14,9 +14,9 @@ import java.util.List;
 @EqualsAndHashCode(of = {"name"})
 @JsonDeserialize(builder = DatasourceTable.DatasourceTableBuilder.class)
 public class DatasourceTable implements Serializable {
-    private String name;
-    private String primaryKeyName;
-    private List<String> columns;
+    private final String name;
+    private final String primaryKeyName;
+    private final List<String> columns;
 
     DatasourceTable(String name, String primaryKeyName, List<String> columns) {
         this.name = name;
@@ -26,6 +26,10 @@ public class DatasourceTable implements Serializable {
 
     public static DatasourceTableBuilder builder() {
         return new DatasourceTableBuilder();
+    }
+
+    public String toString() {
+        return "DatasourceTable(" + this.getName() + ")";
     }
 
     @JsonPOJOBuilder(withPrefix = "")
@@ -54,10 +58,6 @@ public class DatasourceTable implements Serializable {
 
         public DatasourceTable build() {
             return new DatasourceTable(name, primaryKey, columns);
-        }
-
-        public String toString() {
-            return "DatasourceTable.DatasourceTableBuilder(name=" + this.name + ", primaryKey=" + this.primaryKey + ", columns=" + this.columns + ")";
         }
     }
 }
