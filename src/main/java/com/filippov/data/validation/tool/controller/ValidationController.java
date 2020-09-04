@@ -2,6 +2,7 @@ package com.filippov.data.validation.tool.controller;
 
 import com.filippov.data.validation.tool.Timer;
 import com.filippov.data.validation.tool.binder.DataBinder;
+import com.filippov.data.validation.tool.controller.validation.InputValidator;
 import com.filippov.data.validation.tool.datastorage.Query;
 import com.filippov.data.validation.tool.dto.DtoMapper;
 import com.filippov.data.validation.tool.dto.validation.ValidationDataDto;
@@ -28,14 +29,12 @@ import static java.util.stream.Collectors.toList;
 @RestController
 @RequestMapping("validationResults")
 public class ValidationController extends AbstractController {
-    private final DtoMapper dtoMapper;
     private final DataBinder dataBinder;
     private final ValidationService validationService;
 
     public ValidationController(WorkspaceService workspaceService, MetadataService metadataService, DataStoragePairRepository dataStoragePairRepository,
                                 DtoMapper dtoMapper, DataBinder dataBinder, ValidationService validationService) {
-        super(workspaceService, metadataService, dataStoragePairRepository);
-        this.dtoMapper = dtoMapper;
+        super(workspaceService, metadataService, dataStoragePairRepository, dtoMapper);
         this.dataBinder = dataBinder;
         this.validationService = validationService;
     }
@@ -44,16 +43,24 @@ public class ValidationController extends AbstractController {
     public ValidationDataDto getValidationResults(@PathVariable("workspaceId") String workspaceId,
                                                   @PathVariable("tablePairId") String tablePairId,
                                                   @PathVariable("columnPairId") String columnPairId,
-                                                  @RequestParam("offset") int offset,
-                                                  @RequestParam("limit") int limit) {
+                                                  @RequestParam("offset") Integer offset,
+                                                  @RequestParam("limit") Integer limit) {
 
         log.debug("Calling 'getValidationResults' endpoint for workspaceId: {}, tablePairId: {}, columnPairId: {}, offset: {}, limit: {}",
                 workspaceId, tablePairId, columnPairId, offset, limit);
         final Timer timer = Timer.start();
 
+        InputValidator.builder()
+                .withWorkspaceId(workspaceId)
+                .withTablePairId(tablePairId)
+                .withColumnPairId(columnPairId)
+                .withOffset(offset)
+                .withLimit(limit)
+                .validate();
+
         final Workspace workspace = getWorkspaceByIdOrName(workspaceId);
-        final TablePair tablePair = getTablePairByIdOrName(workspaceId, tablePairId);
-        final ColumnPair columnPair = getColumnPairByIdOrName(workspaceId, tablePairId, columnPairId);
+        final TablePair tablePair = getTablePairByIdOrName(workspace, tablePairId);
+        final ColumnPair columnPair = getColumnPairByIdOrName(workspace, tablePair, columnPairId);
 
         final ValidationResult<?> validationResult = validationService.validate(
                 workspace,

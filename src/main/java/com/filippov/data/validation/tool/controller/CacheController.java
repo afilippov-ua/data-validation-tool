@@ -1,11 +1,13 @@
 package com.filippov.data.validation.tool.controller;
 
 import com.filippov.data.validation.tool.Timer;
+import com.filippov.data.validation.tool.controller.validation.InputValidator;
 import com.filippov.data.validation.tool.dto.DtoMapper;
 import com.filippov.data.validation.tool.dto.cache.CacheRequestDto;
 import com.filippov.data.validation.tool.dto.cache.ColumnPairCacheDetailsDto;
 import com.filippov.data.validation.tool.model.CachingStatus;
 import com.filippov.data.validation.tool.model.Workspace;
+import com.filippov.data.validation.tool.pair.ColumnPair;
 import com.filippov.data.validation.tool.pair.TablePair;
 import com.filippov.data.validation.tool.repository.DataStoragePairRepository;
 import com.filippov.data.validation.tool.service.CacheService;
@@ -32,14 +34,12 @@ import static java.util.stream.Collectors.toMap;
 @RequestMapping("workspaces")
 public class CacheController extends AbstractController {
 
-    private final DtoMapper dtoMapper;
     private final CacheService cacheService;
 
     public CacheController(WorkspaceService workspaceService, MetadataService metadataService, DataStoragePairRepository dataStoragePairRepository,
                            CacheService cacheService, DtoMapper dtoMapper) {
-        super(workspaceService, metadataService, dataStoragePairRepository);
+        super(workspaceService, metadataService, dataStoragePairRepository, dtoMapper);
         this.cacheService = cacheService;
-        this.dtoMapper = dtoMapper;
     }
 
     @GetMapping(path = "/{workspaceId}/tablePairs/{tablePairId}/cacheDetails", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,9 +48,15 @@ public class CacheController extends AbstractController {
         log.debug("Calling 'getTablePairCacheDetails' endpoint for workspace id: {} and table pair id: {}", workspaceId, tablePairId);
         final Timer timer = Timer.start();
 
+        InputValidator.builder()
+                .withWorkspaceId(workspaceId)
+                .withTablePairId(tablePairId)
+                .validate();
+
+        final Workspace workspace = getWorkspaceByIdOrName(workspaceId);
+        final TablePair tablePair = getTablePairByIdOrName(workspace, tablePairId);
         final List<ColumnPairCacheDetailsDto> result =
-                cacheService.getTablePairCacheDetails(getWorkspaceByIdOrName(workspaceId), getTablePairByIdOrName(workspaceId, tablePairId))
-                        .stream()
+                cacheService.getTablePairCacheDetails(workspace, tablePair).stream()
                         .map(dtoMapper::toDto)
                         .collect(toList());
 
@@ -66,11 +72,16 @@ public class CacheController extends AbstractController {
                 workspaceId, tablePairId, columnPairId);
         final Timer timer = Timer.start();
 
-        final ColumnPairCacheDetailsDto result = dtoMapper.toDto(
-                cacheService.getColumnPairCacheDetails(
-                        getWorkspaceByIdOrName(workspaceId),
-                        getTablePairByIdOrName(workspaceId, tablePairId),
-                        getColumnPairByIdOrName(workspaceId, tablePairId, columnPairId)));
+        InputValidator.builder()
+                .withWorkspaceId(workspaceId)
+                .withTablePairId(tablePairId)
+                .withColumnPairId(columnPairId)
+                .validate();
+
+        final Workspace workspace = getWorkspaceByIdOrName(workspaceId);
+        final TablePair tablePair = getTablePairByIdOrName(workspace, tablePairId);
+        final ColumnPair columnPair = getColumnPairByIdOrName(workspace, tablePair, columnPairId);
+        final ColumnPairCacheDetailsDto result = dtoMapper.toDto(cacheService.getColumnPairCacheDetails(workspace, tablePair, columnPair));
 
         log.debug("Returning column pair cache details for workspace id: {}, table pair id: {} and column pair id: {}. Execution time: {}",
                 workspaceId, tablePairId, columnPairId, timer.stop());
@@ -86,8 +97,14 @@ public class CacheController extends AbstractController {
                 workspaceId, tablePairId, cacheRequestDto);
         final Timer timer = Timer.start();
 
+        InputValidator.builder()
+                .withWorkspaceId(workspaceId)
+                .withTablePairId(tablePairId)
+                .withCacheRequestDto(cacheRequestDto)
+                .validate();
+
         final Workspace workspace = getWorkspaceByIdOrName(workspaceId);
-        final TablePair tablePair = getTablePairByIdOrName(workspaceId, tablePairId);
+        final TablePair tablePair = getTablePairByIdOrName(workspace, tablePairId);
         final List<CachingStatus> result = metadataService.getMetadata(workspace)
                 .getColumnPairs(tablePair)
                 .stream()
@@ -113,11 +130,17 @@ public class CacheController extends AbstractController {
                 workspaceId, tablePairId, columnPairId, cacheRequestDto);
         final Timer timer = Timer.start();
 
-        final CachingStatus result = cacheService.processCachingCommand(
-                getWorkspaceByIdOrName(workspaceId),
-                getTablePairByIdOrName(workspaceId, tablePairId),
-                getColumnPairByIdOrName(workspaceId, tablePairId, columnPairId),
-                cacheRequestDto.getCacheFetchingCommand());
+        InputValidator.builder()
+                .withWorkspaceId(workspaceId)
+                .withTablePairId(tablePairId)
+                .withColumnPairId(columnPairId)
+                .withCacheRequestDto(cacheRequestDto)
+                .validate();
+
+        final Workspace workspace = getWorkspaceByIdOrName(workspaceId);
+        final TablePair tablePair = getTablePairByIdOrName(workspace, tablePairId);
+        final ColumnPair columnPair = getColumnPairByIdOrName(workspace, tablePair, columnPairId);
+        final CachingStatus result = cacheService.processCachingCommand(workspace, tablePair, columnPair, cacheRequestDto.getCacheFetchingCommand());
 
         log.debug("Caching command has been processed for workspaceId: {}, tablePairId: {}, columnPairId: {} with cacheRequestDto: {}. Execution time: {}",
                 workspaceId, tablePairId, columnPairId, cacheRequestDto, timer.stop());
@@ -130,9 +153,14 @@ public class CacheController extends AbstractController {
         log.debug("Calling 'getTablePairCacheStatus' endpoint for workspaceId: {} and tablePairId: {}", workspaceId, tablePairId);
         final Timer timer = Timer.start();
 
-        final Map<String, CachingStatus> result = cacheService.getTablePairCacheStatus(
-                getWorkspaceByIdOrName(workspaceId),
-                getTablePairByIdOrName(workspaceId, tablePairId))
+        InputValidator.builder()
+                .withWorkspaceId(workspaceId)
+                .withTablePairId(tablePairId)
+                .validate();
+
+        final Workspace workspace = getWorkspaceByIdOrName(workspaceId);
+        final TablePair tablePair = getTablePairByIdOrName(workspace, tablePairId);
+        final Map<String, CachingStatus> result = cacheService.getTablePairCacheStatus(workspace, tablePair)
                 .entrySet()
                 .stream()
                 .collect(toMap(
@@ -152,10 +180,16 @@ public class CacheController extends AbstractController {
                 workspaceId, tablePairId, columnPairId);
         final Timer timer = Timer.start();
 
-        final CachingStatus result = cacheService.getColumnPairCacheStatus(
-                getWorkspaceByIdOrName(workspaceId),
-                getTablePairByIdOrName(workspaceId, tablePairId),
-                getColumnPairByIdOrName(workspaceId, tablePairId, columnPairId));
+        InputValidator.builder()
+                .withWorkspaceId(workspaceId)
+                .withTablePairId(tablePairId)
+                .withColumnPairId(columnPairId)
+                .validate();
+
+        final Workspace workspace = getWorkspaceByIdOrName(workspaceId);
+        final TablePair tablePair = getTablePairByIdOrName(workspace, tablePairId);
+        final ColumnPair columnPair = getColumnPairByIdOrName(workspace, tablePair, columnPairId);
+        final CachingStatus result = cacheService.getColumnPairCacheStatus(workspace, tablePair, columnPair);
 
         log.debug("Returning column pair cache status for workspaceId: {}, tablePairId: {} and columnPairId: {}. Execution time: {}",
                 workspaceId, tablePairId, columnPairId, timer.stop());
@@ -168,8 +202,13 @@ public class CacheController extends AbstractController {
         log.debug("Calling 'deleteTableCache' endpoint for workspaceId: {} and tablePairId: {}", workspaceId, tablePairId);
         final Timer timer = Timer.start();
 
+        InputValidator.builder()
+                .withWorkspaceId(workspaceId)
+                .withTablePairId(tablePairId)
+                .validate();
+
         final Workspace workspace = getWorkspaceByIdOrName(workspaceId);
-        final TablePair tablePair = getTablePairByIdOrName(workspaceId, tablePairId);
+        final TablePair tablePair = getTablePairByIdOrName(workspace, tablePairId);
         metadataService.getMetadata(workspace)
                 .getColumnPairs(tablePair)
                 .forEach(columnPair -> cacheService.deleteCacheForColumnPair(workspace, tablePair, columnPair));
@@ -185,10 +224,16 @@ public class CacheController extends AbstractController {
                 workspaceId, tablePairId, columnPairId);
         final Timer timer = Timer.start();
 
-        cacheService.deleteCacheForColumnPair(
-                getWorkspaceByIdOrName(workspaceId),
-                getTablePairByIdOrName(workspaceId, tablePairId),
-                getColumnPairByIdOrName(workspaceId, tablePairId, columnPairId));
+        InputValidator.builder()
+                .withWorkspaceId(workspaceId)
+                .withTablePairId(tablePairId)
+                .withColumnPairId(columnPairId)
+                .validate();
+
+        final Workspace workspace = getWorkspaceByIdOrName(workspaceId);
+        final TablePair tablePair = getTablePairByIdOrName(workspace, tablePairId);
+        final ColumnPair columnPair = getColumnPairByIdOrName(workspace, tablePair, columnPairId);
+        cacheService.deleteCacheForColumnPair(workspace, tablePair, columnPair);
 
         log.debug("Cache has been deleted for workspaceId: {}, tablePairId: {} and columnPairId: {}. Execution time: {}",
                 workspaceId, tablePairId, columnPairId, timer.stop());

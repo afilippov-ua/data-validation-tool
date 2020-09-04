@@ -15,8 +15,8 @@ import org.springframework.data.annotation.Id;
 @EqualsAndHashCode(of = "id")
 public class Workspace {
     @Id
-    private final String id;
-    private final String name;
-    private final DatasourceConfig leftDatasourceConfig;
-    private final DatasourceConfig rightDatasourceConfig;
+    private String id;
+    private String name;
+    private DatasourceConfig leftDatasourceConfig;
+    private DatasourceConfig rightDatasourceConfig;
 }

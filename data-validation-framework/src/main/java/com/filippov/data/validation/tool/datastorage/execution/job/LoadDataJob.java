@@ -25,6 +25,7 @@ public class LoadDataJob<K, V> implements Callable<ColumnData<K, V>> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ColumnData<K, V> call() throws Exception {
         log.debug("Loading data job has been started for datasource: {} and query: {}", datasource, query);
         return columnDataCache.get(query.getDataColumn())

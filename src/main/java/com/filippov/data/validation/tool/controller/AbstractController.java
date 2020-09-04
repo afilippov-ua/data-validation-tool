@@ -1,5 +1,6 @@
 package com.filippov.data.validation.tool.controller;
 
+import com.filippov.data.validation.tool.dto.DtoMapper;
 import com.filippov.data.validation.tool.metadata.Metadata;
 import com.filippov.data.validation.tool.model.Workspace;
 import com.filippov.data.validation.tool.pair.ColumnPair;
@@ -15,12 +16,14 @@ public abstract class AbstractController {
     protected final WorkspaceService workspaceService;
     protected final MetadataService metadataService;
     protected final DataStoragePairRepository dataStoragePairRepository;
+    protected final DtoMapper dtoMapper;
 
     AbstractController(WorkspaceService workspaceService, MetadataService metadataService,
-                       DataStoragePairRepository dataStoragePairRepository) {
+                       DataStoragePairRepository dataStoragePairRepository, DtoMapper dtoMapper) {
         this.workspaceService = workspaceService;
         this.metadataService = metadataService;
         this.dataStoragePairRepository = dataStoragePairRepository;
+        this.dtoMapper = dtoMapper;
     }
 
     protected Workspace getWorkspaceByIdOrName(String workspace) {
@@ -34,20 +37,20 @@ public abstract class AbstractController {
         return metadataService.getMetadata(workspace);
     }
 
-    protected TablePair getTablePairByIdOrName(String workspace, String tablePair) {
-        return getMetadata(getWorkspaceByIdOrName(workspace))
+    protected TablePair getTablePairByIdOrName(Workspace workspace, String tablePair) {
+        return getMetadata(workspace)
                 .getTablePairByIdOrName(tablePair)
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "Table pair with id or name: '"
-                                + tablePair + "' for workspace: " + workspace + " was not found"));
+                                + tablePair + "' for workspace: " + workspace.getName() + " was not found"));
     }
 
-    protected ColumnPair getColumnPairByIdOrName(String workspace, String tablePair, String columnPair) {
-        return getMetadata(getWorkspaceByIdOrName(workspace))
-                .getColumnPairByIdOrName(getTablePairByIdOrName(workspace, tablePair), columnPair)
+    protected ColumnPair getColumnPairByIdOrName(Workspace workspace, TablePair tablePair, String columnPair) {
+        return getMetadata(workspace)
+                .getColumnPairByIdOrName(tablePair, columnPair)
                 .orElseThrow(() ->
                         new ResponseStatusException(HttpStatus.NOT_FOUND, "Column pair with id or name '"
-                                + columnPair + "' for table: " + tablePair + " for workspace: "
-                                + workspace + " was not found"));
+                                + columnPair + "' for table: " + tablePair.getName() + " for workspace: "
+                                + workspace.getName() + " was not found"));
     }
 }

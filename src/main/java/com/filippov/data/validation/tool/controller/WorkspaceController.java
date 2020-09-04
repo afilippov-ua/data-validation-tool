@@ -1,14 +1,16 @@
 package com.filippov.data.validation.tool.controller;
 
 import com.filippov.data.validation.tool.Timer;
+import com.filippov.data.validation.tool.controller.validation.InputValidator;
 import com.filippov.data.validation.tool.dto.ColumnPairDto;
 import com.filippov.data.validation.tool.dto.DtoMapper;
 import com.filippov.data.validation.tool.dto.TablePairDto;
 import com.filippov.data.validation.tool.dto.workspace.WorkspaceDto;
 import com.filippov.data.validation.tool.dto.workspace.WorkspaceMetadataDto;
+import com.filippov.data.validation.tool.model.Workspace;
+import com.filippov.data.validation.tool.repository.DataStoragePairRepository;
 import com.filippov.data.validation.tool.service.MetadataService;
 import com.filippov.data.validation.tool.service.WorkspaceService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,22 +20,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @Slf4j
 @RestController
 @RequestMapping("workspaces")
-@RequiredArgsConstructor
-public class WorkspaceController {
+public class WorkspaceController extends AbstractController {
 
-    private final WorkspaceService workspaceService;
-    private final MetadataService metadataService;
-    private final DtoMapper dtoMapper;
+    public WorkspaceController(WorkspaceService workspaceService, MetadataService metadataService, DataStoragePairRepository dataStoragePairRepository, DtoMapper dtoMapper) {
+        super(workspaceService, metadataService, dataStoragePairRepository, dtoMapper);
+    }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<WorkspaceDto> getWorkspaces() {
@@ -53,9 +52,11 @@ public class WorkspaceController {
         log.debug("Calling 'getWorkspace' endpoint for workspace id: {}", workspaceId);
         final Timer timer = Timer.start();
 
-        final WorkspaceDto result = workspaceService.getWorkspaceById(workspaceId)
-                .map(dtoMapper::toDto)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Unable to find workspace by id: " + workspaceId));
+        InputValidator.builder()
+                .withWorkspaceId(workspaceId)
+                .validate();
+
+        final WorkspaceDto result = dtoMapper.toDto(getWorkspaceByIdOrName(workspaceId));
 
         log.debug("Returning workspace by workspaceId: {}. Execution time: {}", workspaceId, timer.stop());
         return result;
@@ -65,6 +66,10 @@ public class WorkspaceController {
     public String createWorkspace(@RequestBody WorkspaceDto workspaceDto) {
         log.debug("Calling 'createWorkspace' endpoint for workspace dto: {}", workspaceDto);
         final Timer timer = Timer.start();
+
+        InputValidator.builder()
+                .withWorkspaceDto(workspaceDto)
+                .validate();
 
         final String result = workspaceService.create(dtoMapper.fromDto(workspaceDto));
 
@@ -77,7 +82,12 @@ public class WorkspaceController {
         log.debug("Calling 'deleteWorkspace' endpoint for workspace id: {}", workspaceId);
         final Timer timer = Timer.start();
 
-        workspaceService.delete(workspaceId);
+        InputValidator.builder()
+                .withWorkspaceId(workspaceId)
+                .validate();
+
+        final Workspace workspace = getWorkspaceByIdOrName(workspaceId);
+        workspaceService.delete(workspace.getId());
 
         log.debug("Workspace with id: {} has been successfully deleted. Execution time: {}", workspaceId, timer.stop());
     }
@@ -87,10 +97,12 @@ public class WorkspaceController {
         log.debug("Calling 'getWorkspaceMetadata' endpoint for workspace id: {}", workspaceId);
         final Timer timer = Timer.start();
 
-        final WorkspaceMetadataDto result = workspaceService.getWorkspaceById(workspaceId)
-                .map(metadataService::getMetadata)
-                .map(dtoMapper::toDto)
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Unable to find workspace by id: " + workspaceId));
+        InputValidator.builder()
+                .withWorkspaceId(workspaceId)
+                .validate();
+
+        final Workspace workspace = getWorkspaceByIdOrName(workspaceId);
+        final WorkspaceMetadataDto result = dtoMapper.toDto(metadataService.getMetadata(workspace));
 
         log.debug("Returning workspace metadata by workspace id: {}. Execution time: {}", workspaceId, timer.stop());
         return result;
@@ -101,11 +113,14 @@ public class WorkspaceController {
         log.debug("Calling 'getTablePairs' endpoint for workspace id: {}", workspaceId);
         final Timer timer = Timer.start();
 
-        final List<TablePairDto> result = workspaceService.getWorkspaceById(workspaceId)
-                .map(workspace -> metadataService.getTablePairs(workspace).stream()
-                        .map(dtoMapper::toDto)
-                        .collect(toList()))
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Unable to find workspace by id: " + workspaceId));
+        InputValidator.builder()
+                .withWorkspaceId(workspaceId)
+                .validate();
+
+        final Workspace workspace = getWorkspaceByIdOrName(workspaceId);
+        final List<TablePairDto> result = metadataService.getTablePairs(workspace).stream()
+                .map(dtoMapper::toDto)
+                .collect(toList());
 
         log.debug("Returning table pairs by workspace id: {}. Execution time: {}", workspaceId, timer.stop());
         return result;
@@ -116,12 +131,15 @@ public class WorkspaceController {
         log.debug("Calling 'getColumnPairs' endpoint for workspace id: {} and table pair id: {}", workspaceId, tablePairId);
         final Timer timer = Timer.start();
 
-        // TODO: check table pair name
-        final List<ColumnPairDto> result = workspaceService.getWorkspaceById(workspaceId)
-                .map(workspace -> metadataService.getColumnPairs(workspace, tablePairId).stream()
-                        .map(dtoMapper::toDto)
-                        .collect(toList()))
-                .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Unable to find workspace by id: " + workspaceId));
+        InputValidator.builder()
+                .withWorkspaceId(workspaceId)
+                .withTablePairId(tablePairId)
+                .validate();
+
+        final Workspace workspace = getWorkspaceByIdOrName(workspaceId);
+        final List<ColumnPairDto> result = metadataService.getColumnPairs(workspace, tablePairId).stream()
+                .map(dtoMapper::toDto)
+                .collect(toList());
 
         log.debug("Returning column pairs for workspace id: {} and table pair id: {}. Execution time: {}", workspaceId, tablePairId, timer.stop());
         return result;
