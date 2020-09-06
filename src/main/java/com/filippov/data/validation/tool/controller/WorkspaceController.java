@@ -24,6 +24,7 @@ import com.filippov.data.validation.tool.dto.TablePairDto;
 import com.filippov.data.validation.tool.dto.workspace.WorkspaceDto;
 import com.filippov.data.validation.tool.dto.workspace.WorkspaceMetadataDto;
 import com.filippov.data.validation.tool.model.Workspace;
+import com.filippov.data.validation.tool.pair.TablePair;
 import com.filippov.data.validation.tool.repository.DataStoragePairRepository;
 import com.filippov.data.validation.tool.service.MetadataService;
 import com.filippov.data.validation.tool.service.WorkspaceService;
@@ -46,7 +47,8 @@ import static java.util.stream.Collectors.toList;
 @RequestMapping("workspaces")
 public class WorkspaceController extends AbstractController {
 
-    public WorkspaceController(WorkspaceService workspaceService, MetadataService metadataService, DataStoragePairRepository dataStoragePairRepository, DtoMapper dtoMapper) {
+    public WorkspaceController(WorkspaceService workspaceService, MetadataService metadataService,
+                               DataStoragePairRepository dataStoragePairRepository, DtoMapper dtoMapper) {
         super(workspaceService, metadataService, dataStoragePairRepository, dtoMapper);
     }
 
@@ -78,7 +80,7 @@ public class WorkspaceController extends AbstractController {
         return result;
     }
 
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(produces = MediaType.TEXT_PLAIN_VALUE)
     public String createWorkspace(@RequestBody WorkspaceDto workspaceDto) {
         log.debug("Calling 'createWorkspace' endpoint for workspace dto: {}", workspaceDto);
         final Timer timer = Timer.start();
@@ -153,7 +155,8 @@ public class WorkspaceController extends AbstractController {
                 .validate();
 
         final Workspace workspace = getWorkspaceByIdOrName(workspaceId);
-        final List<ColumnPairDto> result = metadataService.getColumnPairs(workspace, tablePairId).stream()
+        final TablePair tablePair = getTablePairByIdOrName(workspace, tablePairId);
+        final List<ColumnPairDto> result = metadataService.getColumnPairs(workspace, tablePair).stream()
                 .map(dtoMapper::toDto)
                 .collect(toList());
 

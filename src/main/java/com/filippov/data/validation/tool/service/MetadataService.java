@@ -61,15 +61,14 @@ public class MetadataService {
         return result;
     }
 
-    public List<ColumnPair> getColumnPairs(Workspace workspace, String tablePairId) {
-        log.debug("Getting list of column pairs for workspace: {} and table pair: {}", workspace.getId(), tablePairId);
+    public List<ColumnPair> getColumnPairs(Workspace workspace, TablePair tablePair) {
+        log.debug("Getting list of column pairs for workspace: {} and table pair: {}", workspace.getId(), tablePair);
         final Metadata metadata = getMetadata(workspace);
-        final List<ColumnPair> result = metadata.getTablePairByIdOrName(tablePairId)
-                .map(tablePair -> metadata.getColumnPairs(tablePair).stream()
-                        .filter(columnPair -> columnPair.getTablePair().getId().equals(tablePairId))
-                        .collect(Collectors.toList()))
-                .orElseThrow(() -> new IllegalArgumentException("Incorrect table pair name: " + tablePairId));
-        log.debug("List of column pairs for workspace: {} and table pair: {}", workspace.getId(), tablePairId);
+        final List<ColumnPair> result = metadata.getColumnPairs(tablePair).stream()
+                .filter(columnPair -> columnPair.getTablePair().equals(tablePair))
+                .collect(Collectors.toList());
+
+        log.debug("List of column pairs for workspace: {} and table pair: {}", workspace.getId(), tablePair);
         return result;
     }
 }

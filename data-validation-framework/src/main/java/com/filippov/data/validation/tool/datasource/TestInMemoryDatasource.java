@@ -71,10 +71,8 @@ public class TestInMemoryDatasource implements Datasource {
                             .build()))
             .columns(asList(U_ID, U_NAME, U_PASS, D_ID, D_NAME, D_NUM))
             .build();
-
-    private Map<String, Map<String, ColumnData<?, ?>>> dataMap;
-
     private final TestInMemoryDatasourceConfig config;
+    private Map<String, Map<String, ColumnData<?, ?>>> dataMap;
 
     private Map<String, Map<String, ColumnData<?, ?>>> buildDataMap() {
         final Map<String, ColumnData<?, ?>> userColumns = new HashMap<>();

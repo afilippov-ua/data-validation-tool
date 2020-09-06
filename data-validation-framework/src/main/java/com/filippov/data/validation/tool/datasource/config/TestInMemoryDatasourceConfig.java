@@ -28,6 +28,7 @@ import static com.filippov.data.validation.tool.datasource.model.DatasourceType.
 public class TestInMemoryDatasourceConfig implements DatasourceConfig {
 
     private final RelationType relationType;
+    private final Integer maxConnections;
 
     @Override
     public DatasourceType getDatasourceType() {
@@ -36,7 +37,7 @@ public class TestInMemoryDatasourceConfig implements DatasourceConfig {
 
     @Override
     public int getMaxConnections() {
-        return 1;
+        return maxConnections;
     }
 
     public RelationType getRelation() {

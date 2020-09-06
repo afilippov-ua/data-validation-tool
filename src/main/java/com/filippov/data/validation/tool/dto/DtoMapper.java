@@ -106,7 +106,8 @@ public class DtoMapper {
             case TEST_IN_MEMORY_DATASOURCE:
                 return new TestInMemoryDatasourceConfig(
                         RelationType.parse((String) datasourceDefinitionDto
-                                .getConfigParams().get("relation")));
+                                .getConfigParams().get("relation")),
+                        datasourceDefinitionDto.getMaxConnections());
             default:
                 throw new UnsupportedOperationException("Unsupported datasource type: " + datasourceDefinitionDto.getDatasourceType());
         }
