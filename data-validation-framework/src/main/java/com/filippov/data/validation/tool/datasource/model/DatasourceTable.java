@@ -16,7 +16,8 @@
 
 package com.filippov.data.validation.tool.datasource.model;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -28,15 +29,15 @@ import java.util.List;
 @Getter
 @Setter
 @EqualsAndHashCode(of = {"name"})
-@JsonDeserialize(builder = DatasourceTable.DatasourceTableBuilder.class)
 public class DatasourceTable implements Serializable {
     private final String name;
-    private final String primaryKeyName;
+    private final String primaryKey;
     private final List<String> columns;
 
-    DatasourceTable(String name, String primaryKeyName, List<String> columns) {
+    @JsonCreator
+    DatasourceTable(@JsonProperty("name") String name, @JsonProperty("primaryKey") String primaryKey, @JsonProperty("columns") List<String> columns) {
         this.name = name;
-        this.primaryKeyName = primaryKeyName;
+        this.primaryKey = primaryKey;
         this.columns = columns;
     }
 

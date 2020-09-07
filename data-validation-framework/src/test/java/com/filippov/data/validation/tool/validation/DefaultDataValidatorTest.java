@@ -17,51 +17,77 @@
 package com.filippov.data.validation.tool.validation;
 
 import com.filippov.data.validation.tool.AbstractTest;
+import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
+import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
+import com.filippov.data.validation.tool.datastorage.Query;
+import com.filippov.data.validation.tool.model.ColumnDataPair;
+import com.filippov.data.validation.tool.pair.ColumnPair;
+import com.filippov.data.validation.tool.pair.TablePair;
+import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToIntegerTransformer;
+import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToStringTransformer;
+import org.junit.jupiter.api.Test;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultDataValidatorTest extends AbstractTest {
 
-//    @Test
-//    void validatorTest() {
-//        final DatasourceTable leftTable = LEFT_DATASOURCE.getMetadata().getTableByName(TABLE_A).get();
-//        final DatasourceTable rightTable = RIGHT_DATASOURCE.getMetadata().getTableByName(TABLE_A).get();
-//        final TablePair tablePair = TablePair.builder()
-//                .id(uuidGenerator.generateRandomUuid())
-//                .name(TABLE_A)
-//                .left(leftTable)
-//                .right(rightTable)
-//                .build();
-//
-//        final DatasourceColumn leftColumn = LEFT_DATASOURCE.getMetadata().getColumnByName(leftTable.getName(), INTEGER_COLUMN).get();
-//        final DatasourceColumn rightColumn = RIGHT_DATASOURCE.getMetadata().getColumnByName(rightTable.getName(), INTEGER_COLUMN).get();
-//        final ColumnPair columnPair = ColumnPair.builder()
-//                .id(uuidGenerator.generateRandomUuid())
-//                .tablePair(tablePair)
-//                .name(INTEGER_COLUMN)
-//                .left(leftColumn)
-//                .right(rightColumn)
-//                .leftTransformer(new ObjectToIntegerTransformer())
-//                .rightTransformer(new ObjectToIntegerTransformer())
-//                .build();
-//
-//        final ColumnDataPair<Integer, String, String> columnDataPair = storagePair.getColumnData(
-//                Query.builder()
-//                        .tablePair(tablePair)
-//                        .columnPair(columnPair)
-//                        .build());
-//
-//        final ValidationResult<Integer> validationResult = DefaultDataValidator.builder()
-//                .tablePair(tablePair)
-//                .columnPair(columnPair)
-//                .build()
-//                .validate(columnDataPair.getLeft(), columnDataPair.getRight());
-//
-//        assertThat(validationResult).isNotNull();
-//        assertThat(validationResult.getTablePair()).isEqualTo(tablePair);
-//        assertThat(validationResult.getColumnPair()).isEqualTo(columnPair);
-//        assertThat(validationResult.getFailedKeys())
-//                .isNotEmpty()
-//                .isEqualTo(asList(988, 989, 990, 991, 992, 993, 994, 995, 996, 997, 998, 999));
-//    }
+    @Test
+    void validatorTest() {
+        final DatasourceTable leftTable = LEFT_DATASOURCE.getMetadata().getTableByName(USERS);
+        final DatasourceTable rightTable = RIGHT_DATASOURCE.getMetadata().getTableByName(USERS);
+        final TablePair tablePair = TablePair.builder()
+                .id(UUID_GENERATOR.generateRandomUuid())
+                .name(USERS)
+                .leftDatasourceTable(leftTable)
+                .rightDatasourceTable(rightTable)
+                .build();
+
+        final DatasourceColumn leftKeyColumn = LEFT_DATASOURCE.getMetadata().getColumnByName(USERS, USERS_ID);
+        final DatasourceColumn rightKeyColumn = RIGHT_DATASOURCE.getMetadata().getColumnByName(USERS, USERS_ID);
+        final ColumnPair keyColumnPair = ColumnPair.builder()
+                .id(UUID_GENERATOR.generateRandomUuid())
+                .name(USERS_ID)
+                .tablePair(tablePair)
+                .leftDatasourceColumn(leftKeyColumn)
+                .rightDatasourceColumn(rightKeyColumn)
+                .leftTransformer(new ObjectToIntegerTransformer())
+                .rightTransformer(new ObjectToIntegerTransformer())
+                .build();
+
+        tablePair.setKeyColumnPair(keyColumnPair);
+
+        final DatasourceColumn leftDataColumn = LEFT_DATASOURCE.getMetadata().getColumnByName(USERS, USERS_USERNAME);
+        final DatasourceColumn rightDataColumn = RIGHT_DATASOURCE.getMetadata().getColumnByName(USERS, USERS_USERNAME);
+        final ColumnPair dataColumnPair = ColumnPair.builder()
+                .id(UUID_GENERATOR.generateRandomUuid())
+                .name(USERS_USERNAME)
+                .tablePair(tablePair)
+                .leftDatasourceColumn(leftDataColumn)
+                .rightDatasourceColumn(rightDataColumn)
+                .leftTransformer(new ObjectToStringTransformer())
+                .rightTransformer(new ObjectToStringTransformer())
+                .build();
+
+        final ColumnDataPair<Integer, String, String> columnDataPair = STORAGE_PAIR.getColumnData(
+                Query.builder()
+                        .tablePair(tablePair)
+                        .columnPair(dataColumnPair)
+                        .build());
+
+        final ValidationResult<Integer> validationResult = DefaultDataValidator.builder()
+                .tablePair(tablePair)
+                .keyColumnPair(keyColumnPair)
+                .dataColumnPair(dataColumnPair)
+                .build()
+                .validate(columnDataPair.getLeftColumnData(), columnDataPair.getRightColumnData());
+
+        assertThat(validationResult).isNotNull();
+        assertThat(validationResult.getTablePair()).isEqualTo(tablePair);
+        assertThat(validationResult.getKeyColumnPair()).isEqualTo(keyColumnPair);
+        assertThat(validationResult.getDataColumnPair()).isEqualTo(dataColumnPair);
+        assertThat(validationResult.getFailedKeys())
+                .isNotEmpty()
+                .isEqualTo(asList("2", "6", "7"));
+    }
 }

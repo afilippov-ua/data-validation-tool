@@ -173,7 +173,7 @@ public class DtoMapper {
     public DatasourceTableDto toDto(DatasourceTable datasourceTable) {
         return DatasourceTableDto.builder()
                 .name(datasourceTable.getName())
-                .primaryKey(datasourceTable.getPrimaryKeyName())
+                .primaryKey(datasourceTable.getPrimaryKey())
                 .columns(datasourceTable.getColumns())
                 .build();
     }

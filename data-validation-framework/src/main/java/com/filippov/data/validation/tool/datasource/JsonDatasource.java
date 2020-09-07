@@ -66,7 +66,7 @@ public class JsonDatasource implements Datasource {
 
     private void loadData() {
         final Map<String, Map<String, ColumnData<?, ?>>> data = new JsonDataLoader()
-                .loadData(datasourceConfig.getDataFilePath(), new TypeReference<Map<String, Map<String, ColumnData<?, ?>>>>() {
+                .loadData(datasourceConfig.getDataFilePath(), new TypeReference<>() {
                 });
 
         for (DatasourceTable table : getMetadata().getTables()) {
@@ -94,7 +94,6 @@ public class JsonDatasource implements Datasource {
                 .dataColumn(query.getColumnPair().getColumnFor(relationType))
                 .build();
     }
-
 
 
     private DatasourceMetadata loadMetadata() {

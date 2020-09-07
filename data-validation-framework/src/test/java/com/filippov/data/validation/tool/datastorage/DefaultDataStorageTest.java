@@ -17,8 +17,8 @@
 package com.filippov.data.validation.tool.datastorage;
 
 import com.filippov.data.validation.tool.AbstractTest;
+import com.filippov.data.validation.tool.cache.InMemoryColumnDataCache;
 import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
-import com.filippov.data.validation.tool.datasource.model.DatasourceMetadata;
 import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
 import com.filippov.data.validation.tool.model.ColumnData;
 import com.filippov.data.validation.tool.pair.ColumnPair;
@@ -27,66 +27,111 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.filippov.data.validation.tool.datastorage.RelationType.LEFT;
-import static com.filippov.data.validation.tool.datastorage.RelationType.RIGHT;
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DefaultDataStorageTest extends AbstractTest {
 
-//    private static final List<Integer> IDS = asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-//
-//    static Object[][] columnProvider() {
-//        return new Object[][]{
-//                {ID, IDS},
-//                {INTEGER_COLUMN, asList(0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20)},
-//                {DOUBLE_COLUMN, asList(0.0, 4.0, 8.0, 12.0, 16.0, 20.0, 24.0, 28.0, 32.0, 36.0, 40.0)},
-//                {STRING_COLUMN, asList("stringValue0", "stringValue1", "stringValue2", "stringValue3", "stringValue4", "stringValue5", "stringValue6", "stringValue7",
-//                        "stringValue8", "stringValue9", "stringValue10")}
-//        };
-//    }
-//
-//    @Test
-//    void getRelationTypeTest() {
-//        assertThat(leftStorage.getConfig().getRelationType()).isEqualTo(LEFT);
-//        assertThat(rightStorage.getConfig().getRelationType()).isEqualTo(RIGHT);
-//    }
-//
-//    @Test
-//    void getDatasourceTest() {
-//        assertThat(leftStorage.getConfig().getDatasource()).isEqualTo(LEFT_DATASOURCE);
-//        assertThat(rightStorage.getConfig().getDatasource()).isEqualTo(RIGHT_DATASOURCE);
-//    }
-//
-//    @ParameterizedTest()
-//    @MethodSource("columnProvider")
-//    void getDataTest(String columnName, List<?> expectedValues) {
-//        DatasourceMetadata leftMetadata = leftStorage.getConfig().getDatasource().getMetadata();
-//        DatasourceMetadata rightMetadata = rightStorage.getConfig().getDatasource().getMetadata();
-//
-//        final DatasourceTable leftTable = leftMetadata.getTableByName(TABLE_A).get();
-//        final DatasourceTable rightTable = rightMetadata.getTableByName(TABLE_A).get();
-//
-//        final DatasourceColumn leftIdColumn = leftMetadata.getColumnByName(leftTable.getName(), ID).get();
-//
-//        final DatasourceColumn leftColumn = leftMetadata.getColumnByName(leftTable.getName(), columnName).get();
-//        final DatasourceColumn rightColumn = rightMetadata.getColumnByName(rightTable.getName(), columnName).get();
-//
-//        final ColumnData<Integer, ?> data = leftStorage.getData(
-//                Query.builder()
-//                        .tablePair(TablePair.builder().id("table-pair-id-1").left(leftTable).right(rightTable).build())
-//                        .columnPair(ColumnPair.builder().id("column-pair-id-1").left(leftColumn).right(rightColumn).build())
-//                        .build());
-//
-//        assertThat(data).isNotNull();
-//        assertThat(data.getPrimaryKey()).isEqualTo(leftIdColumn);
-//        assertThat(data.getColumn()).isEqualTo(leftColumn);
-//        assertThat(data.getKeys().stream().limit(11).collect(toList())).isEqualTo(asList(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
-//        for (int id : IDS) {
-//            assertThat(data.getValueByKey(id)).isEqualTo(expectedValues);
-//        }
-//    }
+    private static final List<String> IDS = asList("1", "2", "3", "4", "5", "7");
+
+    static Object[][] columnProvider() {
+        return new Object[][]{
+                {USERS_ID, IDS},
+                {USERS_USERNAME, asList("user1", "user2", "user3", "user4", "user5", "user7")},
+                {USERS_PASSWORD, asList("pass1", "pass2", "pass3", "pass4", "pass5", "pass7")}
+        };
+    }
+
+    @Test
+    void getConfigTest() {
+        final DataStorageConfig expectedConfig = DataStorageConfig.builder()
+                .relationType(LEFT)
+                .maxConnections(1)
+                .build();
+        ;
+        final DefaultDataStorage storage = new DefaultDataStorage(expectedConfig, LEFT_DATASOURCE, new InMemoryColumnDataCache());
+
+        assertThat(storage.getConfig()).isEqualTo(expectedConfig);
+    }
+
+    @Test
+    void getDatasourceTest() {
+        final DefaultDataStorage storage = new DefaultDataStorage(
+                DataStorageConfig.builder()
+                        .relationType(LEFT)
+                        .maxConnections(1)
+                        .build(),
+                LEFT_DATASOURCE,
+                new InMemoryColumnDataCache());
+
+        assertThat(storage.getDatasource()).isEqualTo(LEFT_DATASOURCE);
+    }
+
+    @ParameterizedTest()
+    @MethodSource("columnProvider")
+    void getDataTest(String columnName, List<Object> expectedValues) {
+        final DefaultDataStorage storage = new DefaultDataStorage(
+                DataStorageConfig.builder()
+                        .relationType(LEFT)
+                        .maxConnections(1)
+                        .build(),
+                LEFT_DATASOURCE,
+                new InMemoryColumnDataCache());
+
+        final DatasourceTable leftTable = LEFT_DATASOURCE.getMetadata().getTableByName(USERS);
+        final DatasourceTable rightTable = RIGHT_DATASOURCE.getMetadata().getTableByName(USERS);
+
+        final DatasourceColumn leftKeyColumn = LEFT_DATASOURCE.getMetadata().getColumnByName(leftTable.getName(), USERS_ID);
+        final DatasourceColumn rightKeyColumn = RIGHT_DATASOURCE.getMetadata().getColumnByName(leftTable.getName(), USERS_ID);
+
+        final DatasourceColumn leftDataColumn = LEFT_DATASOURCE.getMetadata().getColumnByName(leftTable.getName(), columnName);
+        final DatasourceColumn rightDataColumn = RIGHT_DATASOURCE.getMetadata().getColumnByName(rightTable.getName(), columnName);
+
+        final TablePair tablePair = TablePair.builder()
+                .id(UUID_GENERATOR.generateRandomUuid())
+                .name(leftTable.getName())
+                .leftDatasourceTable(leftTable)
+                .rightDatasourceTable(rightTable)
+                .build();
+
+        final ColumnPair keyColumnPair = ColumnPair.builder()
+                .id(UUID_GENERATOR.generateRandomUuid())
+                .name(leftKeyColumn.getName())
+                .tablePair(tablePair)
+                .leftDatasourceColumn(leftKeyColumn)
+                .rightDatasourceColumn(rightKeyColumn)
+                .build();
+
+        final ColumnPair dataColumnPair = ColumnPair.builder()
+                .id(UUID_GENERATOR.generateRandomUuid())
+                .name(columnName)
+                .tablePair(tablePair)
+                .leftDatasourceColumn(leftDataColumn)
+                .rightDatasourceColumn(rightDataColumn)
+                .build();
+
+        tablePair.setKeyColumnPair(keyColumnPair);
+
+        final ColumnData<String, ?> data = storage.getData(
+                Query.builder()
+                        .tablePair(tablePair)
+                        .columnPair(dataColumnPair)
+                        .build());
+
+        assertThat(data).isNotNull();
+        assertThat(data.getKeyColumn()).isEqualTo(leftKeyColumn);
+        assertThat(data.getDataColumn()).isEqualTo(leftDataColumn);
+        assertThat(data.getKeys().stream().sorted().collect(Collectors.toList())).isEqualTo(IDS);
+
+        final List<Object> values = new ArrayList<>();
+        for (String key : IDS) {
+            values.add(data.getValueByKey(key));
+        }
+        assertThat(values).isEqualTo(expectedValues);
+    }
 }

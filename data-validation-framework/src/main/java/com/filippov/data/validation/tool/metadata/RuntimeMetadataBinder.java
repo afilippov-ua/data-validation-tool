@@ -98,7 +98,7 @@ public class RuntimeMetadataBinder implements MetadataBinder {
                                 .build();
 
                         columnPairs.add(columnPair);
-                        if (leftColumn.getName().equals(leftTable.getPrimaryKeyName())) {
+                        if (leftColumn.getName().equals(leftTable.getPrimaryKey())) {
                             tablePair.setKeyColumnPair(columnPair);
                         }
                     }

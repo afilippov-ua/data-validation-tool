@@ -4,171 +4,123 @@
       "keyColumn": {
         "tableName": "users",
         "name": "id",
-        "dataType": "INTEGER"
+        "dataType": "STRING"
       },
       "dataColumn": {
         "tableName": "users",
         "name": "id",
-        "dataType": "INTEGER"
+        "dataType": "STRING"
       },
-      "keys": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "values": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ]
+      "dataMap": {
+        "1": "1",
+        "2": "2",
+        "3": "3",
+        "4": "4",
+        "5": "5",
+        "6": "6"
+      }
     },
     "username": {
       "keyColumn": {
         "tableName": "users",
         "name": "id",
-        "dataType": "INTEGER"
+        "dataType": "STRING"
       },
       "dataColumn": {
         "tableName": "users",
         "name": "username",
         "dataType": "STRING"
       },
-      "keys": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "values": [
-        "user1",
-        "user2_changed",
-        "user3",
-        "user4",
-        "user5",
-        "user6"
-      ]
+      "dataMap": {
+        "1": "user1",
+        "2": "user2_changed",
+        "3": "user3",
+        "4": "user4",
+        "5": "user5",
+        "6": "user6"
+      }
     },
     "password": {
       "keyColumn": {
         "tableName": "users",
         "name": "id",
-        "dataType": "INTEGER"
+        "dataType": "STRING"
       },
       "dataColumn": {
         "tableName": "users",
         "name": "password",
         "dataType": "STRING"
       },
-      "keys": [
-        1,
-        2,
-        3,
-        4,
-        5,
-        6
-      ],
-      "values": [
-        "pass1",
-        "pass2_changed",
-        "pass3",
-        "pass4",
-        "pass5",
-        "pass6"
-      ]
+      "dataMap": {
+        "1": "pass1",
+        "2": "pass2_changed",
+        "3": "pass3",
+        "4": "pass4",
+        "5": "pass5",
+        "6": "pass6"
+      }
     }
   },
   "departments": {
     "id": {
-      "primaryKey": {
+      "keyColumn": {
         "tableName": "departments",
         "name": "id",
-        "dataType": "INTEGER"
+        "dataType": "STRING"
       },
-      "column": {
+      "dataColumn": {
         "tableName": "departments",
         "name": "id",
-        "dataType": "INTEGER"
+        "dataType": "STRING"
       },
-      "keys": [
-        10,
-        20,
-        30,
-        40,
-        50,
-        60
-      ],
-      "values": [
-        10,
-        20,
-        30,
-        40,
-        50,
-        60
-      ]
+      "dataMap": {
+        "10": "10",
+        "20": "20",
+        "30": "30",
+        "40": "40",
+        "50": "50",
+        "60": "60"
+      }
     },
     "name": {
-      "primaryKey": {
+      "keyColumn": {
         "tableName": "departments",
         "name": "id",
-        "dataType": "INTEGER"
+        "dataType": "STRING"
       },
-      "column": {
+      "dataColumn": {
         "tableName": "departments",
         "name": "name",
         "dataType": "STRING"
       },
-      "keys": [
-        10,
-        20,
-        30,
-        40,
-        50,
-        60
-      ],
-      "values": [
-        "dep1",
-        "dep2_changed",
-        "dep3",
-        "dep4",
-        "dep5",
-        "dep6"
-      ]
+      "dataMap": {
+        "10": "dep1",
+        "20": "dep2_changed",
+        "30": "dep3",
+        "40": "dep4",
+        "50": "dep5",
+        "60": "dep6"
+      }
     },
-    "numberOfEmployees": {
-      "primaryKey": {
+    "number_of_employees": {
+      "keyColumn": {
         "tableName": "departments",
         "name": "id",
-        "dataType": "INTEGER"
+        "dataType": "STRING"
       },
-      "column": {
+      "dataColumn": {
         "tableName": "departments",
-        "name": "numberOfEmployees",
+        "name": "number_of_employees",
         "dataType": "INTEGER"
       },
-      "keys": [
-        10,
-        20,
-        30,
-        40,
-        50,
-        60
-      ],
-      "values": [
-        25,
-        50,
-        75,
-        100,
-        125,
-        150
-      ]
+      "dataMap": {
+        "10": 25,
+        "20": 50,
+        "30": 75,
+        "40": 100,
+        "50": 125,
+        "60": 150
+      }
     }
   }
 }

@@ -15,7 +15,7 @@
       "columns": [
         "id",
         "name",
-        "numberOfEmployees"
+        "number_of_employees"
       ]
     }
   ],
@@ -23,7 +23,7 @@
     {
       "tableName": "users",
       "name": "id",
-      "dataType": "INTEGER"
+      "dataType": "STRING"
     },
     {
       "tableName": "users",
@@ -38,7 +38,7 @@
     {
       "tableName": "departments",
       "name": "id",
-      "dataType": "INTEGER"
+      "dataType": "STRING"
     },
     {
       "tableName": "departments",
@@ -47,7 +47,7 @@
     },
     {
       "tableName": "departments",
-      "name": "numberOfEmployees",
+      "name": "number_of_employees",
       "dataType": "INTEGER"
     }
   ]

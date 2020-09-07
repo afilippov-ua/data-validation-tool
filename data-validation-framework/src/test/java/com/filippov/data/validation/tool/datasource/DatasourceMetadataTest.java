@@ -20,7 +20,6 @@ import com.filippov.data.validation.tool.AbstractTest;
 import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
 import com.filippov.data.validation.tool.datasource.model.DatasourceMetadata;
 import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
-import com.filippov.data.validation.tool.model.DataType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -30,39 +29,36 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 class DatasourceMetadataTest extends AbstractTest {
-    private static final DatasourceTable table1 = DatasourceTable.builder().name(TABLE_A).build();
-    private static final DatasourceTable table2 = DatasourceTable.builder().name(TABLE_B).build();
 
-    private static final DatasourceColumn column1 = DatasourceColumn.builder().tableName(TABLE_A).name(INTEGER_COLUMN).dataType(DataType.INTEGER).build();
-    private static final DatasourceColumn column2 = DatasourceColumn.builder().tableName(TABLE_A).name(DOUBLE_COLUMN).dataType(DataType.DOUBLE).build();
-    private static final DatasourceColumn column3 = DatasourceColumn.builder().tableName(TABLE_B).name(INTEGER_COLUMN).dataType(DataType.INTEGER).build();
-    private static final DatasourceColumn column4 = DatasourceColumn.builder().tableName(TABLE_B).name(DOUBLE_COLUMN).dataType(DataType.DOUBLE).build();
-
-    private static final DatasourceMetadata metadata = DatasourceMetadata.builder()
-            .tables(asList(table1, table2))
-            .columns(asList(column1, column2, column3, column4))
+    protected final DatasourceMetadata metadata = DatasourceMetadata.builder()
+            .tables(asList(USERS_TABLE, DEPARTMENTS_TABLE))
+            .columns(asList(
+                    USERS_ID_COLUMN, USERS_USERNAME_COLUMN, USERS_PASSWORD_COLUMN,
+                    DEPARTMENTS_ID_COLUMN, DEPARTMENTS_NAME_COLUMN, DEPARTMENTS_NUMBER_OF_EMPLOYEES_COLUMN))
             .build();
 
     static Object[][] tableNameProvider() {
         return new Object[][]{
-                {TABLE_A, table1},
-                {TABLE_B, table2}
+                {USERS, USERS_TABLE},
+                {DEPARTMENTS, DEPARTMENTS_TABLE}
         };
     }
 
     static Object[][] columnNameProvider() {
         return new Object[][]{
-                {TABLE_A, INTEGER_COLUMN, column1},
-                {TABLE_A, DOUBLE_COLUMN, column2},
-                {TABLE_B, INTEGER_COLUMN, column3},
-                {TABLE_B, DOUBLE_COLUMN, column4}
+                {USERS, USERS_ID, USERS_ID_COLUMN},
+                {USERS, USERS_ID, USERS_ID_COLUMN},
+                {USERS, USERS_ID, USERS_ID_COLUMN},
+                {DEPARTMENTS, DEPARTMENTS_ID, DEPARTMENTS_ID_COLUMN},
+                {DEPARTMENTS, DEPARTMENTS_NAME, DEPARTMENTS_NAME_COLUMN},
+                {DEPARTMENTS, DEPARTMENTS_NUMBER_OF_EMPLOYEES, DEPARTMENTS_NUMBER_OF_EMPLOYEES_COLUMN}
         };
     }
 
     @ParameterizedTest()
     @MethodSource("tableNameProvider")
-    void getTableByNameTest(String columnName, DatasourceTable expectedTable) {
-        assertThat(metadata.getTableByName(columnName)).isEqualTo(expectedTable);
+    void getTableByNameTest(String tableName, DatasourceTable expectedTable) {
+        assertThat(metadata.getTableByName(tableName)).isEqualTo(expectedTable);
     }
 
     @Test
@@ -81,7 +77,7 @@ class DatasourceMetadataTest extends AbstractTest {
     @Test
     void incorrectColumnsNameTest() {
         assertThatExceptionOfType(IllegalArgumentException.class)
-                .isThrownBy(() -> metadata.getColumnByName(TABLE_A, "incorrect name"))
+                .isThrownBy(() -> metadata.getColumnByName(USERS, "incorrect name"))
                 .withNoCause();
     }
 }

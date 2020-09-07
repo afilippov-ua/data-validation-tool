@@ -17,84 +17,81 @@
 package com.filippov.data.validation.tool.metadata;
 
 import com.filippov.data.validation.tool.AbstractTest;
-//import com.filippov.data.validation.tool.datasource.model.DatasourceMetadata;
-//import com.filippov.data.validation.tool.utils.uuid.RandomUuidRuntimeGenerator;
-//import com.filippov.data.validation.tool.pair.ColumnPair;
-//import com.filippov.data.validation.tool.pair.TablePair;
-//import org.junit.jupiter.api.Test;
-//
-//import java.util.HashSet;
-//import java.util.List;
-//import java.util.Set;
-//
-//import static java.util.Arrays.asList;
-//import static org.assertj.core.api.Assertions.assertThat;
+import com.filippov.data.validation.tool.pair.ColumnPair;
+import com.filippov.data.validation.tool.pair.TablePair;
+import com.filippov.data.validation.tool.utils.uuid.RandomUuidRuntimeGenerator;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class RuntimeMetadataBinderTest extends AbstractTest {
 
-//    @Test
-//    void correctMetadataProcessingTest() {
-//        final Metadata bindedMetadata = new RuntimeMetadataBinder(new RandomUuidRuntimeGenerator())
-//                .bind(LEFT_DATASOURCE.getMetadata(), RIGHT_DATASOURCE.getMetadata());
-//        final TablePair tablePair = bindedMetadata.getTablePairByName(TABLE_A).get();
-//
-//        final Set<ColumnPair> expectedColumnPairs = new HashSet<>(asList(
-//                columnPair(tablePair, ID),
-//                columnPair(tablePair, INTEGER_COLUMN),
-//                columnPair(tablePair, DOUBLE_COLUMN),
-//                columnPair(tablePair, STRING_COLUMN),
-//                columnPair(tablePair, ID),
-//                columnPair(tablePair, INTEGER_COLUMN),
-//                columnPair(tablePair, DOUBLE_COLUMN),
-//                columnPair(tablePair, STRING_COLUMN)));
-//
-//        assertThat(bindedMetadata)
-//                .isNotNull()
-//                .extracting(metadata -> new HashSet<>(metadata.getColumnPairs(tablePair)))
-//                .isEqualTo(expectedColumnPairs);
-//    }
-//
-//    @Test
-//    void incorrectMetadataTest() {
-//        final DatasourceMetadata leftMetadata = DatasourceMetadata.builder()
-//                .tables(List.of(LEFT_DATASOURCE.getMetadata().getTableByName(TABLE_A).get()))
-//                .columns(asList(
-//                        LEFT_DATASOURCE.getMetadata().getColumnByName(TABLE_A, ID).get(),
-//                        LEFT_DATASOURCE.getMetadata().getColumnByName(TABLE_A, INTEGER_COLUMN).get(),
-//                        LEFT_DATASOURCE.getMetadata().getColumnByName(TABLE_A, DOUBLE_COLUMN).get()))
-//                .build();
-//
-//        final DatasourceMetadata rightMetadata = DatasourceMetadata.builder()
-//                .tables(asList(RIGHT_DATASOURCE.getMetadata().getTableByName(TABLE_A).get(), RIGHT_DATASOURCE.getMetadata().getTableByName(TABLE_B).get()))
-//                .columns(asList(
-//                        RIGHT_DATASOURCE.getMetadata().getColumnByName(TABLE_A, ID).get(),
-//                        RIGHT_DATASOURCE.getMetadata().getColumnByName(TABLE_A, INTEGER_COLUMN).get(),
-//                        RIGHT_DATASOURCE.getMetadata().getColumnByName(TABLE_A, STRING_COLUMN).get(),
-//                        RIGHT_DATASOURCE.getMetadata().getColumnByName(TABLE_B, ID).get(),
-//                        RIGHT_DATASOURCE.getMetadata().getColumnByName(TABLE_B, STRING_COLUMN).get()))
-//                .build();
-//
-//        final Metadata bindedMetadata = new RuntimeMetadataBinder(new RandomUuidRuntimeGenerator())
-//                .bind(leftMetadata, rightMetadata);
-//        final TablePair tablePair = bindedMetadata.getTablePairByName(TABLE_A).get();
-//
-//        final Set<ColumnPair> expectedColumnPairs = new HashSet<>(asList(
-//                columnPair(tablePair, ID),
-//                columnPair(tablePair, INTEGER_COLUMN)));
-//
-//        assertThat(bindedMetadata)
-//                .isNotNull()
-//                .extracting(metadata -> new HashSet<>(metadata.getColumnPairs(tablePair)))
-//                .isEqualTo(expectedColumnPairs);
-//    }
-//
-//    private ColumnPair columnPair(TablePair tablePair, String columnName) {
-//        return ColumnPair.builder()
-//                .id(columnName)
-//                .name(columnName)
-//                .tablePair(tablePair)
-//                .leftDatasourceColumn(LEFT_DATASOURCE.getMetadata().getColumnByName(tablePair.getLeftDatasourceTable().getName(), columnName).get())
-//                .rightDatasourceColumn(RIGHT_DATASOURCE.getMetadata().getColumnByName(tablePair.getRightDatasourceTable().getName(), columnName).get())
-//                .build();
-//    }
+    static Object[][] tablePairProvider() {
+        return new Object[][]{
+                {USERS, USERS_TABLE_PAIR},
+                {DEPARTMENTS, DEPARTMENTS_TABLE_PAIR}
+        };
+    }
+
+    static Object[][] columnPairProvider() {
+        return new Object[][]{
+                {USERS, USERS_ID, USERS_ID_COLUMN_PAIR},
+                {USERS, USERS_USERNAME, USERS_USERNAME_COLUMN_PAIR},
+                {USERS, USERS_PASSWORD, USERS_PASSWORD_COLUMN_PAIR},
+                {DEPARTMENTS, DEPARTMENTS_ID, DEPARTMENTS_ID_COLUMN_PAIR},
+                {DEPARTMENTS, DEPARTMENTS_NAME, DEPARTMENTS_NAME_COLUMN_PAIR},
+                {DEPARTMENTS, DEPARTMENTS_NUMBER_OF_EMPLOYEES, DEPARTMENTS_NUMBER_OF_EMPLOYEES_COLUMN_PAIR}
+        };
+    }
+
+    @ParameterizedTest()
+    @MethodSource("tablePairProvider")
+    void tablePairBinderTest(String tablePairName, TablePair expectedTablePair) {
+        final Metadata bindedMetadata = new RuntimeMetadataBinder(new RandomUuidRuntimeGenerator())
+                .bind(LEFT_DATASOURCE.getMetadata(), RIGHT_DATASOURCE.getMetadata());
+
+        assertThat(bindedMetadata.getTablePairByName(tablePairName)).isNotEmpty();
+        final TablePair tablePair = bindedMetadata.getTablePairByName(tablePairName).get();
+        assertThat(tablePair.getName()).isEqualTo(expectedTablePair.getName());
+        assertThat(tablePair.getLeftDatasourceTable()).isEqualTo(expectedTablePair.getLeftDatasourceTable());
+        assertThat(tablePair.getRightDatasourceTable()).isEqualTo(expectedTablePair.getRightDatasourceTable());
+
+        final ColumnPair keyColumnPair = tablePair.getKeyColumnPair();
+        assertThat(keyColumnPair.getName()).isEqualTo(expectedTablePair.getKeyColumnPair().getName());
+        assertThat(keyColumnPair.getTablePair()).isEqualTo(tablePair);
+        assertThat(keyColumnPair.getLeftDatasourceColumn()).isEqualTo(expectedTablePair.getKeyColumnPair().getLeftDatasourceColumn());
+        assertThat(keyColumnPair.getRightDatasourceColumn()).isEqualTo(expectedTablePair.getKeyColumnPair().getRightDatasourceColumn());
+        assertThat(keyColumnPair.getLeftTransformer())
+                .isExactlyInstanceOf(expectedTablePair.getKeyColumnPair().getLeftTransformer().getClass());
+        assertThat(keyColumnPair.getRightTransformer())
+                .isExactlyInstanceOf(expectedTablePair.getKeyColumnPair().getRightTransformer().getClass());
+
+    }
+
+    @ParameterizedTest()
+    @MethodSource("columnPairProvider")
+    void tablePairBinderTest(String tablePairName, String columnPairName, ColumnPair expectedColumnPair) {
+        final Metadata bindedMetadata = new RuntimeMetadataBinder(new RandomUuidRuntimeGenerator())
+                .bind(LEFT_DATASOURCE.getMetadata(), RIGHT_DATASOURCE.getMetadata());
+
+        final Optional<TablePair> tablePairOptional = bindedMetadata.getTablePairByName(tablePairName);
+        assertThat(tablePairOptional).isNotEmpty();
+
+        final TablePair tablePair = tablePairOptional.get();
+
+        assertThat(bindedMetadata.getColumnPairByName(tablePair, columnPairName)).isNotEmpty();
+
+        final ColumnPair columnPair = bindedMetadata.getColumnPairByName(tablePair, columnPairName).get();
+        assertThat(columnPair.getName()).isEqualTo(expectedColumnPair.getName());
+        assertThat(columnPair.getTablePair()).isEqualTo(tablePair);
+        assertThat(columnPair.getLeftDatasourceColumn()).isEqualTo(expectedColumnPair.getLeftDatasourceColumn());
+        assertThat(columnPair.getRightDatasourceColumn()).isEqualTo(expectedColumnPair.getRightDatasourceColumn());
+        assertThat(columnPair.getLeftTransformer())
+                .isExactlyInstanceOf(expectedColumnPair.getLeftTransformer().getClass());
+        assertThat(columnPair.getRightTransformer())
+                .isExactlyInstanceOf(expectedColumnPair.getRightTransformer().getClass());
+    }
 }
