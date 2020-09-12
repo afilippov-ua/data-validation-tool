@@ -18,7 +18,6 @@ package com.filippov.data.validation.tool.datasource.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -32,6 +31,12 @@ public class DatasourceMetadata {
 
     @JsonCreator
     public DatasourceMetadata(@JsonProperty("tables") List<DatasourceTable> tables, @JsonProperty("columns") List<DatasourceColumn> columns) {
+        if (tables == null) {
+            throw new IllegalArgumentException("Incorrect input: tables is null");
+        }
+        if (columns == null) {
+            throw new IllegalArgumentException("Incorrect input: columns is null");
+        }
         this.tables = tables;
         this.columns = columns;
     }

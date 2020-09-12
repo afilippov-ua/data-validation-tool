@@ -19,36 +19,178 @@ package com.filippov.data.validation.tool.metadata;
 import com.filippov.data.validation.tool.AbstractTest;
 import com.filippov.data.validation.tool.pair.ColumnPair;
 import com.filippov.data.validation.tool.pair.TablePair;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.List;
+
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class MetadataTest extends AbstractTest {
 
-    private static final Metadata METADATA = Metadata.builder()
-            .tablePairs(asList(USERS_TABLE_PAIR, DEPARTMENTS_TABLE_PAIR))
-            .columnPairs(asList(USERS_ID_COLUMN_PAIR, USERS_USERNAME_COLUMN_PAIR, USERS_PASSWORD_COLUMN_PAIR,
-                    DEPARTMENTS_ID_COLUMN_PAIR, DEPARTMENTS_NAME_COLUMN_PAIR, DEPARTMENTS_NUMBER_OF_EMPLOYEES_COLUMN_PAIR))
-            .build();
+    private static final List<TablePair> TABLE_PAIRS = asList(USERS_TABLE_PAIR, DEPARTMENTS_TABLE_PAIR);
+    private static final List<ColumnPair> COLUMN_PAIRS = asList(USERS_ID_COLUMN_PAIR, USERS_USERNAME_COLUMN_PAIR, USERS_PASSWORD_COLUMN_PAIR,
+            DEPARTMENTS_ID_COLUMN_PAIR, DEPARTMENTS_NAME_COLUMN_PAIR, DEPARTMENTS_NUMBER_OF_EMPLOYEES_COLUMN_PAIR);
 
-    static Object[][] columnNameProvider() {
+    static Object[][] tablePairProvider() {
         return new Object[][]{
-                {USERS_TABLE_PAIR, USERS_ID, USERS_ID_COLUMN_PAIR},
-                {USERS_TABLE_PAIR, USERS_USERNAME, USERS_USERNAME_COLUMN_PAIR},
-                {USERS_TABLE_PAIR, USERS_PASSWORD, USERS_PASSWORD_COLUMN_PAIR},
-                {DEPARTMENTS_TABLE_PAIR, DEPARTMENTS_ID, DEPARTMENTS_ID_COLUMN_PAIR},
-                {DEPARTMENTS_TABLE_PAIR, DEPARTMENTS_NAME, DEPARTMENTS_NAME_COLUMN_PAIR},
-                {DEPARTMENTS_TABLE_PAIR, DEPARTMENTS_NUMBER_OF_EMPLOYEES, DEPARTMENTS_NUMBER_OF_EMPLOYEES_COLUMN_PAIR}
+                {USERS_TABLE_PAIR},
+                {DEPARTMENTS_TABLE_PAIR}
         };
     }
 
-    @ParameterizedTest()
-    @MethodSource("columnNameProvider")
-    void getColumnPairTest(TablePair tablePair, String columnName, ColumnPair expectedColumnPair) {
-        assertThat(METADATA.getColumnPairByName(tablePair, columnName))
-                .isNotEmpty()
-                .hasValue(expectedColumnPair);
+    static Object[][] columnPairProvider() {
+        return new Object[][]{
+                {USERS_TABLE_PAIR, USERS_ID_COLUMN_PAIR},
+                {USERS_TABLE_PAIR, USERS_USERNAME_COLUMN_PAIR},
+                {USERS_TABLE_PAIR, USERS_PASSWORD_COLUMN_PAIR},
+                {DEPARTMENTS_TABLE_PAIR, DEPARTMENTS_ID_COLUMN_PAIR},
+                {DEPARTMENTS_TABLE_PAIR, DEPARTMENTS_NAME_COLUMN_PAIR},
+                {DEPARTMENTS_TABLE_PAIR, DEPARTMENTS_NUMBER_OF_EMPLOYEES_COLUMN_PAIR}
+        };
     }
+
+    static Object[][] incorrectInputProvider() {
+        return new Object[][]{
+                {null, emptyList()},
+                {emptyList(), null},
+        };
+    }
+
+    @Test
+    void getTablePairsTest() {
+        final Metadata metadata = Metadata.builder()
+                .tablePairs(TABLE_PAIRS)
+                .columnPairs(COLUMN_PAIRS)
+                .build();
+
+        assertThat(metadata.getTablePairs())
+                .isNotNull()
+                .isNotEmpty()
+                .contains(USERS_TABLE_PAIR, DEPARTMENTS_TABLE_PAIR);
+    }
+
+    @ParameterizedTest()
+    @MethodSource("tablePairProvider")
+    void getTablePairByIdTest(TablePair tablePair) {
+        final Metadata metadata = Metadata.builder()
+                .tablePairs(TABLE_PAIRS)
+                .columnPairs(COLUMN_PAIRS)
+                .build();
+
+        assertThat(metadata.getTablePairById(tablePair.getId()))
+                .isNotNull()
+                .isNotEmpty()
+                .hasValue(tablePair);
+    }
+
+    @ParameterizedTest()
+    @MethodSource("tablePairProvider")
+    void getTablePairByNameTest(TablePair tablePair) {
+        final Metadata metadata = Metadata.builder()
+                .tablePairs(TABLE_PAIRS)
+                .columnPairs(COLUMN_PAIRS)
+                .build();
+
+        assertThat(metadata.getTablePairByName(tablePair.getName()))
+                .isNotNull()
+                .isNotEmpty()
+                .hasValue(tablePair);
+    }
+
+    @ParameterizedTest()
+    @MethodSource("tablePairProvider")
+    void getTablePairByIdOrNameTest(TablePair tablePair) {
+        final Metadata metadata = Metadata.builder()
+                .tablePairs(TABLE_PAIRS)
+                .columnPairs(COLUMN_PAIRS)
+                .build();
+
+        assertThat(tablePair.getId()).isNotEqualTo(tablePair.getName());
+
+        assertThat(metadata.getTablePairByIdOrName(tablePair.getId()))
+                .isNotNull()
+                .isNotEmpty()
+                .hasValue(tablePair);
+        assertThat(metadata.getTablePairByIdOrName(tablePair.getName()))
+                .isNotNull()
+                .isNotEmpty()
+                .hasValue(tablePair);
+    }
+
+    @Test
+    void getColumnPairsTest() {
+        final Metadata metadata = Metadata.builder()
+                .tablePairs(TABLE_PAIRS)
+                .columnPairs(COLUMN_PAIRS)
+                .build();
+
+        assertThat(metadata.getColumnPairs(USERS_TABLE_PAIR))
+                .isNotNull()
+                .isNotEmpty()
+                .contains(USERS_ID_COLUMN_PAIR, USERS_USERNAME_COLUMN_PAIR, USERS_PASSWORD_COLUMN_PAIR);
+        assertThat(metadata.getColumnPairs(DEPARTMENTS_TABLE_PAIR))
+                .isNotNull()
+                .isNotEmpty()
+                .contains(DEPARTMENTS_ID_COLUMN_PAIR, DEPARTMENTS_NAME_COLUMN_PAIR, DEPARTMENTS_NUMBER_OF_EMPLOYEES_COLUMN_PAIR);
+    }
+
+    @ParameterizedTest()
+    @MethodSource("columnPairProvider")
+    void getColumnPairByIdTest(TablePair tablePair, ColumnPair columnPair) {
+        final Metadata metadata = Metadata.builder()
+                .tablePairs(TABLE_PAIRS)
+                .columnPairs(COLUMN_PAIRS)
+                .build();
+
+        assertThat(metadata.getColumnPairById(tablePair, columnPair.getId()))
+                .isNotEmpty()
+                .hasValue(columnPair);
+    }
+
+    @ParameterizedTest()
+    @MethodSource("columnPairProvider")
+    void getColumnPairByNameTest(TablePair tablePair, ColumnPair columnPair) {
+        final Metadata metadata = Metadata.builder()
+                .tablePairs(TABLE_PAIRS)
+                .columnPairs(COLUMN_PAIRS)
+                .build();
+
+        assertThat(metadata.getColumnPairByName(tablePair, columnPair.getName()))
+                .isNotEmpty()
+                .hasValue(columnPair);
+    }
+
+    @ParameterizedTest()
+    @MethodSource("columnPairProvider")
+    void getColumnPairByIdOrNameTest(TablePair tablePair, ColumnPair columnPair) {
+        final Metadata metadata = Metadata.builder()
+                .tablePairs(TABLE_PAIRS)
+                .columnPairs(COLUMN_PAIRS)
+                .build();
+
+        assertThat(columnPair.getId()).isNotEqualTo(columnPair.getName());
+
+        assertThat(metadata.getColumnPairByIdOrName(tablePair, columnPair.getId()))
+                .isNotNull()
+                .isNotEmpty()
+                .hasValue(columnPair);
+        assertThat(metadata.getColumnPairByIdOrName(tablePair, columnPair.getName()))
+                .isNotNull()
+                .isNotEmpty()
+                .hasValue(columnPair);
+    }
+
+    @ParameterizedTest()
+    @MethodSource("incorrectInputProvider")
+    void metadataConstructorIncorrectInputTest(List<TablePair> tablePairs, List<ColumnPair> columnPairs) {
+        assertThatThrownBy(() -> new Metadata(tablePairs, columnPairs))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+
 }

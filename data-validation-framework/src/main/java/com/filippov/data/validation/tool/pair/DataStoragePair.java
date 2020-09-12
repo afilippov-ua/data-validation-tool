@@ -19,7 +19,6 @@ package com.filippov.data.validation.tool.pair;
 import com.filippov.data.validation.tool.datastorage.DataStorage;
 import com.filippov.data.validation.tool.datastorage.Query;
 import com.filippov.data.validation.tool.model.ColumnData;
-import com.filippov.data.validation.tool.model.ColumnDataPair;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -31,6 +30,17 @@ import java.util.concurrent.Future;
 @Builder
 public class DataStoragePair {
     private static final ExecutorService executor = Executors.newCachedThreadPool();
+
+    public DataStoragePair(DataStorage leftDataStorage, DataStorage rightDataStorage) {
+        if (leftDataStorage == null) {
+            throw new IllegalArgumentException("Incorrect input: leftDataStorage is null");
+        }
+        if (rightDataStorage == null) {
+            throw new IllegalArgumentException("Incorrect input: rightDataStorage is null");
+        }
+        this.leftDataStorage = leftDataStorage;
+        this.rightDataStorage = rightDataStorage;
+    }
 
     @Getter
     private final DataStorage leftDataStorage;

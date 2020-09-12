@@ -27,6 +27,16 @@ public class Query {
     private final TablePair tablePair;
     private final ColumnPair columnPair;
 
+    public Query(TablePair tablePair, ColumnPair columnPair) {
+        if (tablePair == null) {
+            throw new IllegalArgumentException("Incorrect input: table pair is null");
+        }
+        if (columnPair == null) {
+            throw new IllegalArgumentException("Incorrect input: column pair is null");
+        }
+        this.tablePair = tablePair;
+        this.columnPair = columnPair;
+    }
 
     public String toString() {
         return "Query(" + this.getTablePair() + ", " + this.getColumnPair() + ")";

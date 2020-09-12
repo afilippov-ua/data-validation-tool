@@ -14,8 +14,9 @@
  *   limitations under the License.
  */
 
-package com.filippov.data.validation.tool.model;
+package com.filippov.data.validation.tool.pair;
 
+import com.filippov.data.validation.tool.model.ColumnData;
 import lombok.Builder;
 import lombok.ToString;
 
@@ -24,6 +25,17 @@ import lombok.ToString;
 public class ColumnDataPair<K, LV, RV> {
     private final ColumnData<K, LV> leftColumnData;
     private final ColumnData<K, RV> rightColumnData;
+
+    public ColumnDataPair(ColumnData<K, LV> leftColumnData, ColumnData<K, RV> rightColumnData) {
+        if (leftColumnData == null) {
+            throw new IllegalArgumentException("Incorrect input: left column data is null");
+        }
+        if (rightColumnData == null) {
+            throw new IllegalArgumentException("Incorrect input: right column data is null");
+        }
+        this.leftColumnData = leftColumnData;
+        this.rightColumnData = rightColumnData;
+    }
 
     public ColumnData<K, LV> getLeftColumnData() {
         return leftColumnData;

@@ -22,7 +22,7 @@ import com.filippov.data.validation.tool.controller.validation.InputValidator;
 import com.filippov.data.validation.tool.datastorage.Query;
 import com.filippov.data.validation.tool.dto.DtoMapper;
 import com.filippov.data.validation.tool.dto.validation.ValidationDataDto;
-import com.filippov.data.validation.tool.model.ColumnDataPair;
+import com.filippov.data.validation.tool.pair.ColumnDataPair;
 import com.filippov.data.validation.tool.model.Workspace;
 import com.filippov.data.validation.tool.pair.ColumnPair;
 import com.filippov.data.validation.tool.pair.TablePair;

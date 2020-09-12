@@ -28,11 +28,26 @@ public class DefaultDataStorageFactory implements DataStorageFactory {
     private final ColumnDataCacheFactory columnDataCacheFactory;
 
     public DefaultDataStorageFactory(ColumnDataCacheFactory columnDataCacheFactory) {
+        if (columnDataCacheFactory == null) {
+            throw new IllegalArgumentException("Incorrect input: columnDataCacheFactory is null");
+        }
         this.columnDataCacheFactory = columnDataCacheFactory;
     }
 
     @Override
     public DataStorage create(Datasource datasource, RelationType relationType, Integer maxConnections) {
+        if (datasource == null) {
+            throw new IllegalArgumentException("Incorrect input: datasource is null");
+        }
+        if (relationType == null) {
+            throw new IllegalArgumentException("Incorrect input: relationType is null");
+        }
+        if (maxConnections == null) {
+            throw new IllegalArgumentException("Incorrect input: maxConnections is null");
+        }
+        if (maxConnections <= 0) {
+            throw new IllegalArgumentException("Incorrect input: maxConnections is less or equal zero");
+        }
         log.debug("Creating data storage for datasource: {}, relation type: {} and maxConnection: {}", datasource, relationType, maxConnections);
         return DefaultDataStorage.builder()
                 .config(DataStorageConfig.builder()

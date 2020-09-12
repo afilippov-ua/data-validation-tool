@@ -36,6 +36,12 @@ public class Metadata {
 
     @Builder
     public Metadata(List<TablePair> tablePairs, List<ColumnPair> columnPairs) {
+        if (tablePairs == null) {
+            throw new IllegalArgumentException("Incorrect input: tablePairs is null");
+        }
+        if (columnPairs == null) {
+            throw new IllegalArgumentException("Incorrect input: columnPairs is null");
+        }
         this.tablePairsById = tablePairs.stream().collect(toMap(
                 TablePair::getId,
                 Function.identity()));

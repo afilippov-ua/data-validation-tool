@@ -14,23 +14,24 @@
  *   limitations under the License.
  */
 
-package com.filippov.data.validation.tool.datasource;
+package com.filippov.data.validation.tool.datasource.model;
 
 import com.filippov.data.validation.tool.AbstractTest;
-import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
-import com.filippov.data.validation.tool.datasource.model.DatasourceMetadata;
-import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class DatasourceMetadataTest extends AbstractTest {
 
-    protected final DatasourceMetadata metadata = DatasourceMetadata.builder()
+    private final DatasourceMetadata metadata = DatasourceMetadata.builder()
             .tables(asList(USERS_TABLE, DEPARTMENTS_TABLE))
             .columns(asList(
                     USERS_ID_COLUMN, USERS_USERNAME_COLUMN, USERS_PASSWORD_COLUMN,
@@ -53,6 +54,20 @@ class DatasourceMetadataTest extends AbstractTest {
                 {DEPARTMENTS, DEPARTMENTS_NAME, DEPARTMENTS_NAME_COLUMN},
                 {DEPARTMENTS, DEPARTMENTS_NUMBER_OF_EMPLOYEES, DEPARTMENTS_NUMBER_OF_EMPLOYEES_COLUMN}
         };
+    }
+
+    static Object[][] incorrectInputProvider() {
+        return new Object[][]{
+                {null, new ArrayList<>()},
+                {new ArrayList<>(), null}
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("incorrectInputProvider")
+    void incorrectInputTest(List<DatasourceTable> tables, List<DatasourceColumn> columns) {
+        assertThatThrownBy(() -> new DatasourceMetadata(tables, columns))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @ParameterizedTest()

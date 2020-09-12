@@ -20,7 +20,7 @@ import com.filippov.data.validation.tool.AbstractTest;
 import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
 import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
 import com.filippov.data.validation.tool.datastorage.Query;
-import com.filippov.data.validation.tool.model.ColumnDataPair;
+import com.filippov.data.validation.tool.pair.ColumnDataPair;
 import com.filippov.data.validation.tool.pair.ColumnPair;
 import com.filippov.data.validation.tool.pair.TablePair;
 import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToIntegerTransformer;

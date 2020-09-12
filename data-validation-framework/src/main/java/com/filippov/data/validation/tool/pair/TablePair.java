@@ -22,6 +22,7 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 import static com.filippov.data.validation.tool.datastorage.RelationType.LEFT;
 import static com.filippov.data.validation.tool.datastorage.RelationType.RIGHT;
@@ -36,6 +37,26 @@ public class TablePair {
     private ColumnPair keyColumnPair;
     private DatasourceTable leftDatasourceTable;
     private DatasourceTable rightDatasourceTable;
+
+    public TablePair(String id, String name, ColumnPair keyColumnPair, DatasourceTable leftDatasourceTable, DatasourceTable rightDatasourceTable) {
+        if (StringUtils.isEmpty(id)) {
+            throw new IllegalArgumentException("Incorrect input: id is null or empty");
+        }
+        if (StringUtils.isEmpty(name)) {
+            throw new IllegalArgumentException("Incorrect input: name is null or empty");
+        }
+        if (leftDatasourceTable == null) {
+            throw new IllegalArgumentException("Incorrect input: leftDatasourceTable is null");
+        }
+        if (rightDatasourceTable == null) {
+            throw new IllegalArgumentException("Incorrect input: rightDatasourceTable is null");
+        }
+        this.id = id;
+        this.name = name;
+        this.keyColumnPair = keyColumnPair;
+        this.leftDatasourceTable = leftDatasourceTable;
+        this.rightDatasourceTable = rightDatasourceTable;
+    }
 
     public DatasourceTable getDatasourceTableFor(RelationType relationType) {
         if (relationType == LEFT) {

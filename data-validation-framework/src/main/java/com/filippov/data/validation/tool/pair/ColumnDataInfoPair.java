@@ -31,4 +31,23 @@ public class ColumnDataInfoPair {
     private final ColumnPair columnPair;
     private final ColumnDataInfo leftColumnDataInfo;
     private final ColumnDataInfo rightColumnDataInfo;
+
+    public ColumnDataInfoPair(TablePair tablePair, ColumnPair columnPair, ColumnDataInfo leftColumnDataInfo, ColumnDataInfo rightColumnDataInfo) {
+        if (tablePair == null) {
+            throw new IllegalArgumentException("Incorrect input: tablePair is null");
+        }
+        if (columnPair == null) {
+            throw new IllegalArgumentException("Incorrect input: columnPair is null");
+        }
+        if (leftColumnDataInfo == null) {
+            throw new IllegalArgumentException("Incorrect input: leftColumnDataInfo is null");
+        }
+        if (rightColumnDataInfo == null) {
+            throw new IllegalArgumentException("Incorrect input: rightColumnDataInfo is null");
+        }
+        this.tablePair = tablePair;
+        this.columnPair = columnPair;
+        this.leftColumnDataInfo = leftColumnDataInfo;
+        this.rightColumnDataInfo = rightColumnDataInfo;
+    }
 }

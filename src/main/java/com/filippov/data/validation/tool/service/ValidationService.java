@@ -17,7 +17,7 @@
 package com.filippov.data.validation.tool.service;
 
 import com.filippov.data.validation.tool.datastorage.Query;
-import com.filippov.data.validation.tool.model.ColumnDataPair;
+import com.filippov.data.validation.tool.pair.ColumnDataPair;
 import com.filippov.data.validation.tool.model.Workspace;
 import com.filippov.data.validation.tool.pair.DataStoragePair;
 import com.filippov.data.validation.tool.repository.DataStoragePairRepository;

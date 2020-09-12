@@ -29,6 +29,9 @@ public class DefaultDatasourceFactory implements DatasourceFactory {
 
     @Override
     public Datasource create(DatasourceConfig datasourceConfig) {
+        if (datasourceConfig == null) {
+            throw new IllegalArgumentException("Incorrect input: datasourceConfig is null");
+        }
         switch (datasourceConfig.getDatasourceType()) {
             case JSON_DATASOURCE:
                 log.debug("Creating 'JsonDatasource' for datasource config: {}", datasourceConfig);

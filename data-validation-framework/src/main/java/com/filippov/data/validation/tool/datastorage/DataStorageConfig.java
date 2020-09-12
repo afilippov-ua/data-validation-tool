@@ -28,4 +28,18 @@ import lombok.ToString;
 public class DataStorageConfig {
     private final RelationType relationType;
     private final Integer maxConnections;
+
+    DataStorageConfig(RelationType relationType, Integer maxConnections) {
+        if (relationType == null) {
+            throw new IllegalArgumentException("Incorrect input: relation type is null");
+        }
+        if (maxConnections == null) {
+            throw new IllegalArgumentException("Incorrect input: maxConnections is null");
+        }
+        if (maxConnections <= 0) {
+            throw new IllegalArgumentException("Incorrect input: maxConnections is less or equal zero");
+        }
+        this.relationType = relationType;
+        this.maxConnections = maxConnections;
+    }
 }

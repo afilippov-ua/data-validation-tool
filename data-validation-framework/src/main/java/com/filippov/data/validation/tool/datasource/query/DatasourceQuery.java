@@ -30,6 +30,20 @@ public class DatasourceQuery {
     private final DatasourceColumn keyColumn;
     private final DatasourceColumn dataColumn;
 
+    DatasourceQuery(DatasourceTable table, DatasourceColumn keyColumn, DatasourceColumn dataColumn) {
+        if (table == null) {
+            throw new IllegalArgumentException("Incorrect input: table is null");
+        }
+        if (keyColumn == null) {
+            throw new IllegalArgumentException("Incorrect input: keyColumn is null");
+        }
+        if (dataColumn == null) {
+            throw new IllegalArgumentException("Incorrect input: dataColumn is null");
+        }
+        this.table = table;
+        this.keyColumn = keyColumn;
+        this.dataColumn = dataColumn;
+    }
 
     public String toString() {
         return "DatasourceQuery(keyColumn=" + this.getKeyColumn() + ", dataColumn=" + this.getDataColumn() + ")";

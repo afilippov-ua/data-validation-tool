@@ -32,4 +32,23 @@ public class ValidationResult<K> {
     private final ColumnPair keyColumnPair;
     private final ColumnPair dataColumnPair;
     private final List<K> failedKeys;
+
+    public ValidationResult(TablePair tablePair, ColumnPair keyColumnPair, ColumnPair dataColumnPair, List<K> failedKeys) {
+        if (tablePair == null) {
+            throw new IllegalArgumentException("Incorrect input: tablePair is null");
+        }
+        if (keyColumnPair == null) {
+            throw new IllegalArgumentException("Incorrect input: keyColumnPair is null");
+        }
+        if (dataColumnPair == null) {
+            throw new IllegalArgumentException("Incorrect input: dataColumnPair is null");
+        }
+        if (failedKeys == null) {
+            throw new IllegalArgumentException("Incorrect input: failedKeys is null");
+        }
+        this.tablePair = tablePair;
+        this.keyColumnPair = keyColumnPair;
+        this.dataColumnPair = dataColumnPair;
+        this.failedKeys = failedKeys;
+    }
 }

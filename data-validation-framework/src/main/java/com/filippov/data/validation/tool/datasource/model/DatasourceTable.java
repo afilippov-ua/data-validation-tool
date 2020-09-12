@@ -18,16 +18,18 @@ package com.filippov.data.validation.tool.datasource.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.util.List;
 
 @Getter
 @Setter
+@Builder
 @EqualsAndHashCode(of = {"name"})
 public class DatasourceTable implements Serializable {
     private final String name;
@@ -36,45 +38,21 @@ public class DatasourceTable implements Serializable {
 
     @JsonCreator
     DatasourceTable(@JsonProperty("name") String name, @JsonProperty("primaryKey") String primaryKey, @JsonProperty("columns") List<String> columns) {
+        if (name == null || StringUtils.isEmpty(name)) {
+            throw new IllegalArgumentException("Incorrect input: name is null or empty");
+        }
+        if (primaryKey == null || StringUtils.isEmpty(primaryKey)) {
+            throw new IllegalArgumentException("Incorrect input: primaryKey is null or empty");
+        }
+        if (columns == null) {
+            throw new IllegalArgumentException("Incorrect input: columns is null");
+        }
         this.name = name;
         this.primaryKey = primaryKey;
         this.columns = columns;
     }
 
-    public static DatasourceTableBuilder builder() {
-        return new DatasourceTableBuilder();
-    }
-
     public String toString() {
         return "DatasourceTable(" + this.getName() + ")";
-    }
-
-    @JsonPOJOBuilder(withPrefix = "")
-    public static class DatasourceTableBuilder {
-        private String name;
-        private String primaryKey;
-        private List<String> columns;
-
-        DatasourceTableBuilder() {
-        }
-
-        public DatasourceTableBuilder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public DatasourceTableBuilder primaryKey(String primaryKey) {
-            this.primaryKey = primaryKey;
-            return this;
-        }
-
-        public DatasourceTableBuilder columns(List<String> columns) {
-            this.columns = columns;
-            return this;
-        }
-
-        public DatasourceTable build() {
-            return new DatasourceTable(name, primaryKey, columns);
-        }
     }
 }

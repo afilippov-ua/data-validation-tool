@@ -45,6 +45,15 @@ public class ColumnData<K, V> implements Serializable {
     public ColumnData(@JsonProperty("keyColumn") DatasourceColumn keyColumn,
                       @JsonProperty("dataColumn") DatasourceColumn dataColumn,
                       @JsonProperty("dataMap") Map<K, V> dataMap) {
+        if (keyColumn == null) {
+            throw new IllegalArgumentException("Incorrect input: key column is null");
+        }
+        if (dataColumn == null) {
+            throw new IllegalArgumentException("Incorrect input: data column is null");
+        }
+        if (dataMap == null) {
+            throw new IllegalArgumentException("Incorrect input: dataMap column is null");
+        }
         this.keyColumn = keyColumn;
         this.dataColumn = dataColumn;
         this.dataMap = dataMap;

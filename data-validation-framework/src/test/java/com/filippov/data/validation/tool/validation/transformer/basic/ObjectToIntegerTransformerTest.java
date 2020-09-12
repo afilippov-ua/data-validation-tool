@@ -14,9 +14,8 @@
  *   limitations under the License.
  */
 
-package com.filippov.data.validation.tool.validation.transformer;
+package com.filippov.data.validation.tool.validation.transformer.basic;
 
-import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToIntegerTransformer;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 

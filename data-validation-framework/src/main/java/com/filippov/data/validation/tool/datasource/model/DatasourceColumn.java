@@ -21,6 +21,7 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.filippov.data.validation.tool.model.DataType;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 
@@ -33,6 +34,7 @@ public class DatasourceColumn implements Serializable {
     private final DataType dataType;
 
     DatasourceColumn(String tableName, String name, DataType dataType) {
+        validateInput(tableName, name, dataType);
         this.tableName = tableName;
         this.name = name;
         this.dataType = dataType;
@@ -40,6 +42,24 @@ public class DatasourceColumn implements Serializable {
 
     public static DatasourceColumnBuilder builder() {
         return new DatasourceColumnBuilder();
+    }
+
+    private void validateInput(String tableName, String name, DataType dataType) {
+        if (tableName == null) {
+            throw new IllegalArgumentException("Incorrect input: tableName is null");
+        }
+        if (StringUtils.isEmpty(tableName)) {
+            throw new IllegalArgumentException("Incorrect input: tableName is empty");
+        }
+        if (name == null) {
+            throw new IllegalArgumentException("Incorrect input: name is null");
+        }
+        if (StringUtils.isEmpty(name)) {
+            throw new IllegalArgumentException("Incorrect input: name is empty");
+        }
+        if (dataType == null) {
+            throw new IllegalArgumentException("Incorrect input: dataType is null");
+        }
     }
 
     public String toString() {

@@ -26,6 +26,9 @@ public class DefaultColumnDataCacheFactory implements ColumnDataCacheFactory {
 
     @Override
     public ColumnDataCache getOrCreateForDatasource(Datasource datasource) {
+        if (datasource == null) {
+            throw new IllegalArgumentException("Incorrect input: datasource is null");
+        }
         log.debug("Creating column data cache for datasource: {}. Using: InMemoryColumnDataCache", datasource);
         return new InMemoryColumnDataCache(); // TODO: use in-memory only for now
     }

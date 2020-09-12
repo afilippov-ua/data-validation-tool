@@ -14,14 +14,11 @@
  *   limitations under the License.
  */
 
-package com.filippov.data.validation.tool.datastorage.cache;
+package com.filippov.data.validation.tool.cache;
 
 import com.filippov.data.validation.tool.AbstractTest;
-import com.filippov.data.validation.tool.cache.ColumnDataCache;
-import com.filippov.data.validation.tool.cache.InMemoryColumnDataCache;
-import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
-import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
 import com.filippov.data.validation.tool.model.ColumnData;
+import com.filippov.data.validation.tool.model.ColumnDataInfo;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -35,32 +32,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class InMemoryColumnDataCacheTest extends AbstractTest {
-    private static final String TEST_TABLE_NAME = "test-table-name";
-    private static final String PK_COLUMN_NAME = "pk";
-    private static final String TEST_COLUMN_NAME = "test-column-name";
 
-    private static final DatasourceTable TABLE;
-    private static final DatasourceColumn PK;
-    private static final DatasourceColumn TEST_COLUMN;
-    private static final List<Integer> IDS;
-    private static final List<String> VALUES;
+    private static final List<Integer> IDS = asList(1, 2, 3, 4, 5, 6, 7);
+    private static final List<String> VALUES = asList("str1", "str2", "str3", "str4", "str5", "str6", "str7");
+    private static final ColumnData<Integer, ?> TEST_DATA = ColumnData.<Integer, String>builder()
+            .keyColumn(USERS_ID_COLUMN)
+            .dataColumn(USERS_USERNAME_COLUMN)
+            .keys(IDS)
+            .data(VALUES)
+            .build();
     private static final Map<Integer, String> DATA_MAP;
-    private static final ColumnData<Integer, ?> TEST_DATA;
 
     static {
-        PK = DatasourceColumn.builder().name(PK_COLUMN_NAME).tableName(TEST_TABLE_NAME).build();
-        TEST_COLUMN = DatasourceColumn.builder().name(TEST_COLUMN_NAME).tableName(TEST_TABLE_NAME).build();
-
-        TABLE = DatasourceTable.builder()
-                .primaryKey(PK.getName())
-                .columns(asList(PK.getName(), TEST_COLUMN.getName()))
-                .name(TEST_TABLE_NAME)
-                .build();
-
-        IDS = asList(1, 2, 3, 4, 5, 6, 7);
-        VALUES = asList("str1", "str2", "str3", "str4", "str5", "str6", "str7");
-        TEST_DATA = ColumnData.<Integer, String>builder().keyColumn(PK).dataColumn(TEST_COLUMN).keys(IDS).data(VALUES).build();
-
         DATA_MAP = new HashMap<>();
         for (int i = 0; i < IDS.size(); i++) {
             DATA_MAP.put(IDS.get(i), VALUES.get(i));
@@ -70,11 +53,11 @@ class InMemoryColumnDataCacheTest extends AbstractTest {
     @Test
     void getOrLoadExceptionTest() {
         final ColumnDataCache cache = new InMemoryColumnDataCache();
-        cache.delete(TEST_COLUMN);
-        assertThat(cache.exist(TEST_COLUMN)).isFalse();
+        cache.delete(USERS_USERNAME_COLUMN);
+        assertThat(cache.exist(USERS_USERNAME_COLUMN)).isFalse();
 
         assertThrows(RuntimeException.class, () ->
-                cache.getOrLoad(TEST_COLUMN, () -> {
+                cache.getOrLoad(USERS_USERNAME_COLUMN, () -> {
                     throw new RuntimeException("test exception");
                 }));
 
@@ -85,13 +68,13 @@ class InMemoryColumnDataCacheTest extends AbstractTest {
     @Test
     void getOrLoadTest() {
         final ColumnDataCache cache = new InMemoryColumnDataCache();
-        cache.delete(TEST_COLUMN);
-        assertThat(cache.exist(TEST_COLUMN)).isFalse();
+        cache.delete(USERS_USERNAME_COLUMN);
+        assertThat(cache.exist(USERS_USERNAME_COLUMN)).isFalse();
 
-        ColumnData<Integer, ?> data = cache.getOrLoad(TEST_COLUMN, () -> TEST_DATA);
+        ColumnData<Integer, ?> data = cache.getOrLoad(USERS_USERNAME_COLUMN, () -> TEST_DATA);
         assertThat(data).isNotNull();
-        assertThat(data.getKeyColumn()).isEqualTo(PK);
-        assertThat(data.getDataColumn()).isEqualTo(TEST_COLUMN);
+        assertThat(data.getKeyColumn()).isEqualTo(USERS_ID_COLUMN);
+        assertThat(data.getDataColumn()).isEqualTo(USERS_USERNAME_COLUMN);
         assertThat(data.getKeys().stream().sorted().collect(toList())).isEqualTo(IDS);
         for (int id : IDS) {
             assertThat(data.getValueByKey(id)).isEqualTo(DATA_MAP.get(id));
@@ -103,13 +86,13 @@ class InMemoryColumnDataCacheTest extends AbstractTest {
     @Test
     void putAndGetTest() {
         final ColumnDataCache cache = new InMemoryColumnDataCache();
-        cache.put(TEST_COLUMN, TEST_DATA);
+        cache.put(USERS_USERNAME_COLUMN, TEST_DATA);
 
-        final Optional<ColumnData<Integer, String>> optionalData = cache.get(TEST_COLUMN);
+        final Optional<ColumnData<Integer, String>> optionalData = cache.get(USERS_USERNAME_COLUMN);
         assertThat(optionalData).isNotEmpty();
         optionalData.ifPresent(data -> {
-            assertThat(data.getKeyColumn()).isEqualTo(PK);
-            assertThat(data.getDataColumn()).isEqualTo(TEST_COLUMN);
+            assertThat(data.getKeyColumn()).isEqualTo(USERS_ID_COLUMN);
+            assertThat(data.getDataColumn()).isEqualTo(USERS_USERNAME_COLUMN);
             assertThat(data.getKeys().stream().sorted().collect(toList())).isEqualTo(IDS);
             for (int id : IDS) {
                 assertThat(data.getValueByKey(id)).isEqualTo(DATA_MAP.get(id));
@@ -123,16 +106,16 @@ class InMemoryColumnDataCacheTest extends AbstractTest {
     @Test
     void putIfNotExistAndGetTest() {
         final ColumnDataCache cache = new InMemoryColumnDataCache();
-        cache.delete(TEST_COLUMN);
-        assertThat(cache.exist(TEST_COLUMN)).isFalse();
+        cache.delete(USERS_USERNAME_COLUMN);
+        assertThat(cache.exist(USERS_USERNAME_COLUMN)).isFalse();
 
-        cache.putIfNotExist(TEST_COLUMN, () -> TEST_DATA);
+        cache.putIfNotExist(USERS_USERNAME_COLUMN, () -> TEST_DATA);
 
-        final Optional<ColumnData<Integer, String>> optionalData = cache.get(TEST_COLUMN);
+        final Optional<ColumnData<Integer, String>> optionalData = cache.get(USERS_USERNAME_COLUMN);
         assertThat(optionalData).isNotEmpty();
         optionalData.ifPresent(data -> {
-            assertThat(data.getKeyColumn()).isEqualTo(PK);
-            assertThat(data.getDataColumn()).isEqualTo(TEST_COLUMN);
+            assertThat(data.getKeyColumn()).isEqualTo(USERS_ID_COLUMN);
+            assertThat(data.getDataColumn()).isEqualTo(USERS_USERNAME_COLUMN);
             assertThat(data.getKeys().stream().sorted().collect(toList())).isEqualTo(IDS);
             for (int id : IDS) {
                 assertThat(data.getValueByKey(id)).isEqualTo(DATA_MAP.get(id));
@@ -146,10 +129,10 @@ class InMemoryColumnDataCacheTest extends AbstractTest {
     @Test
     void isCacheExistTest() {
         final ColumnDataCache cache = new InMemoryColumnDataCache();
-        cache.delete(TEST_COLUMN);
-        assertThat(cache.exist(TEST_COLUMN)).isFalse();
-        cache.put(TEST_COLUMN, TEST_DATA);
-        assertThat(cache.exist(TEST_COLUMN)).isTrue();
+        cache.delete(USERS_USERNAME_COLUMN);
+        assertThat(cache.exist(USERS_USERNAME_COLUMN)).isFalse();
+        cache.put(USERS_USERNAME_COLUMN, TEST_DATA);
+        assertThat(cache.exist(USERS_USERNAME_COLUMN)).isTrue();
 
         cache.cleanUp();
         cache.close();
@@ -158,15 +141,30 @@ class InMemoryColumnDataCacheTest extends AbstractTest {
     @Test
     void deleteCacheTest() {
         final ColumnDataCache cache = new InMemoryColumnDataCache();
-        if (!cache.exist(TEST_COLUMN)) {
-            cache.put(TEST_COLUMN, TEST_DATA);
+        if (!cache.exist(USERS_USERNAME_COLUMN)) {
+            cache.put(USERS_USERNAME_COLUMN, TEST_DATA);
         }
-        assertThat(cache.exist(TEST_COLUMN)).isTrue();
-        cache.delete(TEST_COLUMN);
-        assertThat(cache.exist(TEST_COLUMN)).isFalse();
-        assertThat(cache.get(TEST_COLUMN)).isEmpty();
+        assertThat(cache.exist(USERS_USERNAME_COLUMN)).isTrue();
+        cache.delete(USERS_USERNAME_COLUMN);
+        assertThat(cache.exist(USERS_USERNAME_COLUMN)).isFalse();
+        assertThat(cache.get(USERS_USERNAME_COLUMN)).isEmpty();
 
-        cache.flush();
+        cache.cleanUp();
+        cache.close();
+    }
+
+    @Test
+    void getColumnCacheDetailsTest() {
+        final ColumnDataCache cache = new InMemoryColumnDataCache();
+        if (!cache.exist(USERS_USERNAME_COLUMN)) {
+            cache.put(USERS_USERNAME_COLUMN, TEST_DATA);
+        }
+
+        final ColumnDataInfo columnCacheDetails = cache.getColumnCacheDetails(USERS_USERNAME_COLUMN);
+        assertThat(columnCacheDetails).isNotNull();
+        assertThat(columnCacheDetails.isCached()).isTrue();
+        assertThat(columnCacheDetails.getDate()).isNotNull();
+
         cache.cleanUp();
         cache.close();
     }

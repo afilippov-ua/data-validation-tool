@@ -34,16 +34,19 @@ import java.util.Map;
 @Slf4j
 public class JsonDatasource implements Datasource {
     private final JsonDatasourceConfig datasourceConfig;
-    private final DatasourceMetadata metadata;
-    private final Map<DatasourceColumn, ColumnData<?, ?>> dataMap = new HashMap<>();
+
+    private DatasourceMetadata metadata;
+    private Map<DatasourceColumn, ColumnData<?, ?>> dataMap;
 
     public JsonDatasource(JsonDatasourceConfig datasourceConfig) {
         this.datasourceConfig = datasourceConfig;
-        this.metadata = loadMetadata();
     }
 
     @Override
     public DatasourceMetadata getMetadata() {
+        if (metadata == null) {
+            metadata = loadMetadata(); // TODO: not thread-safe. Fix before release
+        }
         return metadata;
     }
 
@@ -51,8 +54,8 @@ public class JsonDatasource implements Datasource {
     @SuppressWarnings("unchecked")
     public <K, V> ColumnData<K, V> getColumnData(DatasourceQuery query) {
         log.debug("Loading data from JSON-datasource with query: {}", query);
-        if (dataMap.isEmpty()) {
-            loadData();
+        if (dataMap == null) {
+            dataMap = loadData(); // TODO: not thread-safe. Fix before release
         }
         final ColumnData<K, V> result = (ColumnData<K, V>) dataMap.get(query.getDataColumn());
         log.debug("Data from JSON-datasource has been successfully loaded with query: {}", query);
@@ -64,7 +67,9 @@ public class JsonDatasource implements Datasource {
         return datasourceConfig;
     }
 
-    private void loadData() {
+    private Map<DatasourceColumn, ColumnData<?, ?>> loadData() {
+        final Map<DatasourceColumn, ColumnData<?, ?>> result = new HashMap<>();
+
         final Map<String, Map<String, ColumnData<?, ?>>> data = new JsonDataLoader()
                 .loadData(datasourceConfig.getDataFilePath(), new TypeReference<>() {
                 });
@@ -75,7 +80,7 @@ public class JsonDatasource implements Datasource {
                 for (String columnName : table.getColumns()) {
                     DatasourceColumn column = getMetadata().getColumnByName(table.getName(), columnName);
                     if (columnDataMap.containsKey(column.getName())) {
-                        dataMap.put(column, columnDataMap.get(column.getName()));
+                        result.put(column, columnDataMap.get(column.getName()));
                     } else {
                         throw new IllegalArgumentException("Incorrect json data for the table: " + table + " and column: " + column);
                     }
@@ -84,6 +89,7 @@ public class JsonDatasource implements Datasource {
                 throw new IllegalArgumentException("Incorrect json data for the table: " + table);
             }
         }
+        return result;
     }
 
     @Override
@@ -94,7 +100,6 @@ public class JsonDatasource implements Datasource {
                 .dataColumn(query.getColumnPair().getColumnFor(relationType))
                 .build();
     }
-
 
     private DatasourceMetadata loadMetadata() {
         return new JsonDataLoader().loadData(datasourceConfig.getMetadataFilePath(), new TypeReference<>() {

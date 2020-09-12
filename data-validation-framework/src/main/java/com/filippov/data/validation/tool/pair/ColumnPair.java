@@ -22,6 +22,7 @@ import com.filippov.data.validation.tool.validation.transformer.Transformer;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.apache.commons.lang3.StringUtils;
 
 import static com.filippov.data.validation.tool.datastorage.RelationType.LEFT;
 import static com.filippov.data.validation.tool.datastorage.RelationType.RIGHT;
@@ -39,6 +40,39 @@ public class ColumnPair {
     private final Transformer leftTransformer; // TODO: generics
     private final Transformer rightTransformer; // TODO: generics
 
+    public ColumnPair(String id, String name, TablePair tablePair,
+                      DatasourceColumn leftDatasourceColumn, DatasourceColumn rightDatasourceColumn,
+                      Transformer leftTransformer, Transformer rightTransformer) {
+        if (StringUtils.isEmpty(id)) {
+            throw new IllegalArgumentException("Incorrect input: id is null or empty");
+        }
+        if (StringUtils.isEmpty(name)) {
+            throw new IllegalArgumentException("Incorrect input: name is null or empty");
+        }
+        if (tablePair == null) {
+            throw new IllegalArgumentException("Incorrect input: tablePair is null");
+        }
+        if (leftDatasourceColumn == null) {
+            throw new IllegalArgumentException("Incorrect input: leftDatasourceColumn is null");
+        }
+        if (rightDatasourceColumn == null) {
+            throw new IllegalArgumentException("Incorrect input: rightDatasourceColumn is null");
+        }
+        if (leftTransformer == null) {
+            throw new IllegalArgumentException("Incorrect input: leftTransformer is null");
+        }
+        if (rightTransformer == null) {
+            throw new IllegalArgumentException("Incorrect input: rightTransformer is null");
+        }
+        this.id = id;
+        this.name = name;
+        this.tablePair = tablePair;
+        this.leftDatasourceColumn = leftDatasourceColumn;
+        this.rightDatasourceColumn = rightDatasourceColumn;
+        this.leftTransformer = leftTransformer;
+        this.rightTransformer = rightTransformer;
+    }
+
     public DatasourceColumn getColumnFor(RelationType relationType) {
         if (relationType == LEFT) {
             return leftDatasourceColumn;
@@ -48,7 +82,6 @@ public class ColumnPair {
             throw new IllegalArgumentException("Incorrect relation type: " + relationType);
         }
     }
-
 
     public String toString() {
         return "ColumnPair(" + this.getName() + ")";

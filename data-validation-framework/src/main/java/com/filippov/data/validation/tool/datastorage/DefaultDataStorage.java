@@ -45,6 +45,15 @@ public class DefaultDataStorage implements DataStorage {
 
     @Builder
     public DefaultDataStorage(DataStorageConfig config, Datasource datasource, ColumnDataCache cache) {
+        if (config == null) {
+            throw new IllegalArgumentException("Incorrect input: data storage config is null");
+        }
+        if (datasource == null) {
+            throw new IllegalArgumentException("Incorrect input: datasource is null");
+        }
+        if (cache == null) {
+            throw new IllegalArgumentException("Incorrect input: column data cache is null");
+        }
         this.config = config;
         this.datasource = datasource;
         this.cache = cache;
