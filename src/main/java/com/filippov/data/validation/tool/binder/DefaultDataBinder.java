@@ -28,6 +28,16 @@ public class DefaultDataBinder implements DataBinder {
 
     @Override
     public DataRowDto bind(ColumnDataPair<Object, Object, Object> columnDataPair, ColumnPair columnPair, Object key) {
+        if (columnDataPair == null) {
+            throw new IllegalArgumentException("Incorrect input: column data pair is null");
+        }
+        if (columnPair == null) {
+            throw new IllegalArgumentException("Incorrect input: column pair is null");
+        }
+        if (key == null) {
+            throw new IllegalArgumentException("Incorrect input: key is null");
+        }
+
         final Object left = columnDataPair.getLeftColumnData().getValueByKey(key);
         final Object right = columnDataPair.getRightColumnData().getValueByKey(key);
         return DataRowDto.builder()
