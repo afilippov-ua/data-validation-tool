@@ -34,8 +34,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -51,9 +52,10 @@ public class RuntimeMetadataBinder implements MetadataBinder {
         final List<ColumnPair> columnPairs = new ArrayList<>();
         final List<TablePair> tablePairs = new ArrayList<>();
 
-        final Set<String> allTableNames = new HashSet<>(); // TODO merge streams
-        allTableNames.addAll(leftMetadata.getTables().stream().map(DatasourceTable::getName).collect(toList()));
-        allTableNames.addAll(rightMetadata.getTables().stream().map(DatasourceTable::getName).collect(toList()));
+        final Set<String> allTableNames = Stream.concat(
+                leftMetadata.getTables().stream().map(DatasourceTable::getName),
+                rightMetadata.getTables().stream().map(DatasourceTable::getName))
+                .collect(toSet());
 
         for (String tableName : allTableNames) {
             final boolean leftTableExist = leftMetadata.isTableExist(tableName);

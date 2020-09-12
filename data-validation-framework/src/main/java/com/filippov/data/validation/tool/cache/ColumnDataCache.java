@@ -59,9 +59,4 @@ public interface ColumnDataCache {
     void close();
 
     ColumnDataInfo getColumnCacheDetails(DatasourceColumn column);
-
-    // TODO:
-    // smth like that
-    // dvt-instance-id/workspace-id/left/table-name/column-name/
-    //                             /right/table-name/column-name/
 }
