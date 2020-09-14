@@ -16,7 +16,7 @@
 
 package com.filippov.data.validation.tool.model;
 
-import com.filippov.data.validation.tool.datasource.config.DatasourceConfig;
+import com.filippov.data.validation.tool.datasource.DatasourceConfig;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

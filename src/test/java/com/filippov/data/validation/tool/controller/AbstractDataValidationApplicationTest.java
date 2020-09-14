@@ -59,12 +59,12 @@ public abstract class AbstractDataValidationApplicationTest {
             .left(DatasourceDefinitionDto.builder()
                     .datasourceType(TEST_IN_MEMORY_DATASOURCE)
                     .maxConnections(1)
-                    .configParams(Map.of("relation", "LEFT"))
+                    .configParams(Map.of("relationType", "LEFT"))
                     .build())
             .right(DatasourceDefinitionDto.builder()
                     .datasourceType(TEST_IN_MEMORY_DATASOURCE)
                     .maxConnections(2)
-                    .configParams(Map.of("relation", "RIGHT"))
+                    .configParams(Map.of("relationType", "RIGHT"))
                     .build())
             .build();
 

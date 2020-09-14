@@ -16,7 +16,6 @@
 
 package com.filippov.data.validation.tool.datasource;
 
-import com.filippov.data.validation.tool.datasource.config.DatasourceConfig;
 import com.filippov.data.validation.tool.datasource.model.DatasourceMetadata;
 import com.filippov.data.validation.tool.datasource.query.DatasourceQuery;
 import com.filippov.data.validation.tool.datastorage.Query;

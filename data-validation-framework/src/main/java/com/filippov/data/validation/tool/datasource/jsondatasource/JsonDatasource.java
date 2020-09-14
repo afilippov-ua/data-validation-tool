@@ -14,11 +14,11 @@
  *   limitations under the License.
  */
 
-package com.filippov.data.validation.tool.datasource;
+package com.filippov.data.validation.tool.datasource.jsondatasource;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.filippov.data.validation.tool.JsonDataLoader;
-import com.filippov.data.validation.tool.datasource.config.JsonDatasourceConfig;
+import com.filippov.data.validation.tool.datasource.Datasource;
 import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
 import com.filippov.data.validation.tool.datasource.model.DatasourceMetadata;
 import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
@@ -26,21 +26,19 @@ import com.filippov.data.validation.tool.datasource.query.DatasourceQuery;
 import com.filippov.data.validation.tool.datastorage.Query;
 import com.filippov.data.validation.tool.datastorage.RelationType;
 import com.filippov.data.validation.tool.model.ColumnData;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
+@RequiredArgsConstructor
 public class JsonDatasource implements Datasource {
     private final JsonDatasourceConfig datasourceConfig;
 
     private DatasourceMetadata metadata;
-    private Map<DatasourceColumn, ColumnData<?, ?>> dataMap;
-
-    public JsonDatasource(JsonDatasourceConfig datasourceConfig) {
-        this.datasourceConfig = datasourceConfig;
-    }
+    private Map<DatasourceColumn, ColumnData<?, ?>> dataMap; // TODO : how and where to store the loaded data?
 
     @Override
     public DatasourceMetadata getMetadata() {
@@ -67,6 +65,24 @@ public class JsonDatasource implements Datasource {
         return datasourceConfig;
     }
 
+    @Override
+    public DatasourceQuery toDatasourceQuery(Query query, RelationType relationType) {
+        return DatasourceQuery.builder()
+                .table(query.getTablePair().getDatasourceTableFor(relationType))
+                .keyColumn(query.getTablePair().getKeyColumnPair().getColumnFor(relationType))
+                .dataColumn(query.getColumnPair().getColumnFor(relationType))
+                .build();
+    }
+
+    public String toString() {
+        return "JsonDatasource(datasourceConfig=" + this.datasourceConfig + ")";
+    }
+
+    private DatasourceMetadata loadMetadata() {
+        return new JsonDataLoader().loadData(datasourceConfig.getMetadataFilePath(), new TypeReference<>() {
+        });
+    }
+
     private Map<DatasourceColumn, ColumnData<?, ?>> loadData() {
         final Map<DatasourceColumn, ColumnData<?, ?>> result = new HashMap<>();
 
@@ -90,23 +106,5 @@ public class JsonDatasource implements Datasource {
             }
         }
         return result;
-    }
-
-    @Override
-    public DatasourceQuery toDatasourceQuery(Query query, RelationType relationType) {
-        return DatasourceQuery.builder()
-                .table(query.getTablePair().getDatasourceTableFor(relationType))
-                .keyColumn(query.getTablePair().getKeyColumnPair().getColumnFor(relationType))
-                .dataColumn(query.getColumnPair().getColumnFor(relationType))
-                .build();
-    }
-
-    private DatasourceMetadata loadMetadata() {
-        return new JsonDataLoader().loadData(datasourceConfig.getMetadataFilePath(), new TypeReference<>() {
-        });
-    }
-
-    public String toString() {
-        return "JsonDatasource(datasourceConfig=" + this.datasourceConfig + ")";
     }
 }

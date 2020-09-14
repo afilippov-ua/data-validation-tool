@@ -17,11 +17,11 @@
 package com.filippov.data.validation.tool.factory;
 
 import com.filippov.data.validation.tool.datasource.Datasource;
-import com.filippov.data.validation.tool.datasource.JsonDatasource;
-import com.filippov.data.validation.tool.datasource.TestInMemoryDatasource;
-import com.filippov.data.validation.tool.datasource.config.DatasourceConfig;
-import com.filippov.data.validation.tool.datasource.config.JsonDatasourceConfig;
-import com.filippov.data.validation.tool.datasource.config.TestInMemoryDatasourceConfig;
+import com.filippov.data.validation.tool.datasource.jsondatasource.JsonDatasource;
+import com.filippov.data.validation.tool.datasource.testinmemorydatasource.TestInMemoryDatasource;
+import com.filippov.data.validation.tool.datasource.DatasourceConfig;
+import com.filippov.data.validation.tool.datasource.jsondatasource.JsonDatasourceConfig;
+import com.filippov.data.validation.tool.datasource.testinmemorydatasource.TestInMemoryDatasourceConfig;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

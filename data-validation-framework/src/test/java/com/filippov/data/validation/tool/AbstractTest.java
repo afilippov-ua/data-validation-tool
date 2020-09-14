@@ -18,8 +18,8 @@ package com.filippov.data.validation.tool;
 
 import com.filippov.data.validation.tool.cache.InMemoryColumnDataCache;
 import com.filippov.data.validation.tool.datasource.Datasource;
-import com.filippov.data.validation.tool.datasource.JsonDatasource;
-import com.filippov.data.validation.tool.datasource.config.JsonDatasourceConfig;
+import com.filippov.data.validation.tool.datasource.jsondatasource.JsonDatasource;
+import com.filippov.data.validation.tool.datasource.jsondatasource.JsonDatasourceConfig;
 import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
 import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
 import com.filippov.data.validation.tool.datastorage.DataStorageConfig;

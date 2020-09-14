@@ -14,12 +14,13 @@
  *   limitations under the License.
  */
 
-package com.filippov.data.validation.tool.factory;
+package com.filippov.data.validation.tool.datasource;
 
-import com.filippov.data.validation.tool.datasource.Datasource;
-import com.filippov.data.validation.tool.datasource.DatasourceConfig;
+import com.filippov.data.validation.tool.datasource.model.DatasourceType;
 
-public interface DatasourceFactory {
+public interface DatasourceConfig {
 
-    Datasource create(DatasourceConfig datasourceConfig);
+    DatasourceType getDatasourceType();
+
+    int getMaxConnections();
 }

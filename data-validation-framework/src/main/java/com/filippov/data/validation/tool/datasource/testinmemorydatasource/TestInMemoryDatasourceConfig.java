@@ -14,23 +14,26 @@
  *   limitations under the License.
  */
 
-package com.filippov.data.validation.tool.datasource.config;
+package com.filippov.data.validation.tool.datasource.testinmemorydatasource;
 
+import com.filippov.data.validation.tool.datasource.DatasourceConfig;
+import com.filippov.data.validation.tool.datasource.model.DatasourceConfigParamsDefinition;
 import com.filippov.data.validation.tool.datasource.model.DatasourceType;
 import com.filippov.data.validation.tool.datastorage.RelationType;
-import lombok.Builder;
 import lombok.ToString;
+
+import java.util.Map;
 
 import static com.filippov.data.validation.tool.datasource.model.DatasourceType.TEST_IN_MEMORY_DATASOURCE;
 
 @ToString
-@Builder
 public class TestInMemoryDatasourceConfig implements DatasourceConfig {
+    public static final String RELATION_TYPE = "relationType";
 
     private final RelationType relationType;
     private final Integer maxConnections;
 
-    public TestInMemoryDatasourceConfig(RelationType relationType, Integer maxConnections) {
+    TestInMemoryDatasourceConfig(RelationType relationType, Integer maxConnections) {
         if (relationType == null) {
             throw new IllegalArgumentException("Incorrect input: relation type is null");
         }
@@ -41,6 +44,16 @@ public class TestInMemoryDatasourceConfig implements DatasourceConfig {
         this.maxConnections = maxConnections;
     }
 
+    public static TestInMemoryDatasourceConfigBuilder builder() {
+        return new TestInMemoryDatasourceConfigBuilder();
+    }
+
+    public static DatasourceConfigParamsDefinition getDatasourceConfigParamsDefinition() {
+        return DatasourceConfigParamsDefinition.builder()
+                .paramsDefinition(Map.of(
+                        RELATION_TYPE, "Relation type of the datasource. For details, see the TestInMemoryDatasource docs. Possible values: ['LEFT', 'RIGHT']"))
+                .build();
+    }
 
     @Override
     public DatasourceType getDatasourceType() {

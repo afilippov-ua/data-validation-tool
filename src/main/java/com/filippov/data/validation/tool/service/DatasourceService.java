@@ -16,6 +16,9 @@
 
 package com.filippov.data.validation.tool.service;
 
+import com.filippov.data.validation.tool.datasource.model.DatasourceConfigParamsDefinition;
+import com.filippov.data.validation.tool.datasource.jsondatasource.JsonDatasourceConfig;
+import com.filippov.data.validation.tool.datasource.testinmemorydatasource.TestInMemoryDatasourceConfig;
 import com.filippov.data.validation.tool.datasource.model.DatasourceType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -33,5 +36,16 @@ public class DatasourceService {
         return Arrays.stream(DatasourceType.values())
                 .sorted()
                 .collect(Collectors.toList());
+    }
+
+    public DatasourceConfigParamsDefinition getDatasourceConfigParamsDefinition(DatasourceType datasourceType) {
+        switch (datasourceType) {
+            case JSON_DATASOURCE:
+                return JsonDatasourceConfig.getDatasourceConfigParamsDefinition();
+            case TEST_IN_MEMORY_DATASOURCE:
+                return TestInMemoryDatasourceConfig.getDatasourceConfigParamsDefinition();
+            default:
+                throw new UnsupportedOperationException("Unsupported datasource type: " + datasourceType);
+        }
     }
 }

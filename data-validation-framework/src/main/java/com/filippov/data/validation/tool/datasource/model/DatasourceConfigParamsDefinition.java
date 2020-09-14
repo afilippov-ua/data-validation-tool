@@ -14,12 +14,17 @@
  *   limitations under the License.
  */
 
-package com.filippov.data.validation.tool.factory;
+package com.filippov.data.validation.tool.datasource.model;
 
-import com.filippov.data.validation.tool.datasource.Datasource;
-import com.filippov.data.validation.tool.datasource.DatasourceConfig;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
-public interface DatasourceFactory {
+import java.util.Map;
 
-    Datasource create(DatasourceConfig datasourceConfig);
+@Getter
+@Builder
+@EqualsAndHashCode
+public class DatasourceConfigParamsDefinition {
+    private final Map<String, String> paramsDefinition;
 }

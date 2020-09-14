@@ -16,7 +16,10 @@
 
 package com.filippov.data.validation.tool.controller;
 
+import com.filippov.data.validation.tool.datasource.jsondatasource.JsonDatasourceConfig;
 import com.filippov.data.validation.tool.datasource.model.DatasourceType;
+import com.filippov.data.validation.tool.datasource.testinmemorydatasource.TestInMemoryDatasourceConfig;
+import com.filippov.data.validation.tool.dto.datasource.DatasourceConfigParamsDefinitionDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
@@ -40,5 +43,31 @@ public class DatasourceControllerTest extends AbstractDataValidationApplicationT
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody())
                 .isEqualTo(Arrays.stream(DatasourceType.values()).collect(toList()));
+    }
+
+    @Test
+    public void getDatasourceConfigParamsForTestInMemoryDatasourceTest() {
+        final ResponseEntity<DatasourceConfigParamsDefinitionDto> response =
+                restTemplate.getForEntity(buildUrl(DATASOURCES_PATH + "/" + DatasourceType.TEST_IN_MEMORY_DATASOURCE.toString() + "/configParams"), DatasourceConfigParamsDefinitionDto.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        final DatasourceConfigParamsDefinitionDto paramsDefinition = response.getBody();
+        assertThat(paramsDefinition).isNotNull();
+        assertThat(paramsDefinition.getParamsDefinition()).isNotNull();
+        assertThat(paramsDefinition.getParamsDefinition().containsKey(TestInMemoryDatasourceConfig.RELATION_TYPE)).isTrue();
+        assertThat(paramsDefinition.getParamsDefinition().get(TestInMemoryDatasourceConfig.RELATION_TYPE)).isNotNull().isNotEmpty();
+    }
+
+    @Test
+    public void getDatasourceConfigParamsForJsonDatasourceTest() {
+        final ResponseEntity<DatasourceConfigParamsDefinitionDto> response =
+                restTemplate.getForEntity(buildUrl(DATASOURCES_PATH + "/" + DatasourceType.JSON_DATASOURCE.toString() + "/configParams"), DatasourceConfigParamsDefinitionDto.class);
+        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+        final DatasourceConfigParamsDefinitionDto paramsDefinition = response.getBody();
+        assertThat(paramsDefinition).isNotNull();
+        assertThat(paramsDefinition.getParamsDefinition()).isNotNull();
+        assertThat(paramsDefinition.getParamsDefinition().containsKey(JsonDatasourceConfig.METADATA_FILE_PATH)).isTrue();
+        assertThat(paramsDefinition.getParamsDefinition().get(JsonDatasourceConfig.METADATA_FILE_PATH)).isNotNull().isNotEmpty();
+        assertThat(paramsDefinition.getParamsDefinition().containsKey(JsonDatasourceConfig.DATA_FILE_PATH)).isTrue();
+        assertThat(paramsDefinition.getParamsDefinition().get(JsonDatasourceConfig.DATA_FILE_PATH)).isNotNull().isNotEmpty();
     }
 }

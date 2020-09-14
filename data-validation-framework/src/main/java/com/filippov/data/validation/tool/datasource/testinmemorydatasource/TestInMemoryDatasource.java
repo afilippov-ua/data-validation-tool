@@ -14,10 +14,10 @@
  *   limitations under the License.
  */
 
-package com.filippov.data.validation.tool.datasource;
+package com.filippov.data.validation.tool.datasource.testinmemorydatasource;
 
-import com.filippov.data.validation.tool.datasource.config.DatasourceConfig;
-import com.filippov.data.validation.tool.datasource.config.TestInMemoryDatasourceConfig;
+import com.filippov.data.validation.tool.datasource.Datasource;
+import com.filippov.data.validation.tool.datasource.DatasourceConfig;
 import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
 import com.filippov.data.validation.tool.datasource.model.DatasourceMetadata;
 import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
