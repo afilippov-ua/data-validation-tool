@@ -19,14 +19,15 @@ package com.filippov.data.validation.tool.controller;
 import com.filippov.data.validation.tool.Timer;
 import com.filippov.data.validation.tool.datasource.model.DatasourceType;
 import com.filippov.data.validation.tool.dto.DtoMapper;
+import com.filippov.data.validation.tool.dto.datasource.DatasourceConfigParamsDefinitionDto;
 import com.filippov.data.validation.tool.repository.DataStoragePairRepository;
 import com.filippov.data.validation.tool.service.DatasourceService;
 import com.filippov.data.validation.tool.service.MetadataService;
 import com.filippov.data.validation.tool.service.WorkspaceService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -54,5 +55,10 @@ public class DatasourceController extends AbstractController {
 
         log.debug("Returning datasource types list. Execution time: {}", timer.stop());
         return result;
+    }
+
+    @GetMapping(path = "/{datasourceType}/configParams", produces = MediaType.APPLICATION_JSON_VALUE)
+    public DatasourceConfigParamsDefinitionDto getDatasourceConfigParams(@PathVariable("datasourceType") DatasourceType datasourceType) {
+        return dtoMapper.toDto(datasourceService.getDatasourceConfigParamsDefinition(datasourceType));
     }
 }

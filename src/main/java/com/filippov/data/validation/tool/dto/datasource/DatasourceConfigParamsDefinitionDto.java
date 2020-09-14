@@ -14,12 +14,25 @@
  *   limitations under the License.
  */
 
-package com.filippov.data.validation.tool.datasource.config;
+package com.filippov.data.validation.tool.dto.datasource;
 
-import com.filippov.data.validation.tool.datasource.model.DatasourceType;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 
-public interface DatasourceConfig {
-    DatasourceType getDatasourceType();
+import java.util.Map;
 
-    int getMaxConnections();
+@Getter
+@Builder
+@EqualsAndHashCode
+@ToString
+public class DatasourceConfigParamsDefinitionDto {
+    private final Map<String, String> paramsDefinition;
+
+    @JsonCreator
+    public DatasourceConfigParamsDefinitionDto(Map<String, String> paramsDefinition) {
+        this.paramsDefinition = paramsDefinition;
+    }
 }

@@ -14,16 +14,23 @@
  *   limitations under the License.
  */
 
-package com.filippov.data.validation.tool.datasource.config;
+package com.filippov.data.validation.tool.datasource.jsondatasource;
 
+import com.filippov.data.validation.tool.datasource.DatasourceConfig;
+import com.filippov.data.validation.tool.datasource.model.DatasourceConfigParamsDefinition;
 import com.filippov.data.validation.tool.datasource.model.DatasourceType;
 import lombok.Getter;
 import lombok.ToString;
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.Map;
+
 @Getter
 @ToString
 public class JsonDatasourceConfig implements DatasourceConfig {
+    public static final String METADATA_FILE_PATH = "metadataFilePath";
+    public static final String DATA_FILE_PATH = "dataFilePath";
+
     private final String metadataFilePath;
     private final String dataFilePath;
     private final int maxConnections;
@@ -43,6 +50,15 @@ public class JsonDatasourceConfig implements DatasourceConfig {
         this.maxConnections = maxConnections;
     }
 
+    public static DatasourceConfigParamsDefinition getDatasourceConfigParamsDefinition() {
+        return DatasourceConfigParamsDefinition.builder()
+                .paramsDefinition(Map.of(
+                        METADATA_FILE_PATH, "Metadata file path. Data type: String",
+                        DATA_FILE_PATH, "Data file path. Data type: String"
+                ))
+                .build();
+    }
+
     public static JsonDatasourceConfigBuilder builder() {
         return new JsonDatasourceConfigBuilder();
     }
@@ -55,38 +71,5 @@ public class JsonDatasourceConfig implements DatasourceConfig {
     @Override
     public int getMaxConnections() {
         return maxConnections;
-    }
-
-
-    public static class JsonDatasourceConfigBuilder {
-        private String metadataFilePath;
-        private String dataFilePath;
-        private int maxConnections;
-
-        JsonDatasourceConfigBuilder() {
-        }
-
-        public JsonDatasourceConfigBuilder metadataFilePath(String metadataFilePath) {
-            this.metadataFilePath = metadataFilePath;
-            return this;
-        }
-
-        public JsonDatasourceConfigBuilder dataFilePath(String dataFilePath) {
-            this.dataFilePath = dataFilePath;
-            return this;
-        }
-
-        public JsonDatasourceConfigBuilder maxConnections(int maxConnections) {
-            this.maxConnections = maxConnections;
-            return this;
-        }
-
-        public JsonDatasourceConfig build() {
-            return new JsonDatasourceConfig(metadataFilePath, dataFilePath, maxConnections);
-        }
-
-        public String toString() {
-            return "JsonDatasourceConfig.JsonDatasourceConfigBuilder(metadataFilePath=" + this.metadataFilePath + ", dataFilePath=" + this.dataFilePath + ", maxConnections=" + this.maxConnections + ")";
-        }
     }
 }

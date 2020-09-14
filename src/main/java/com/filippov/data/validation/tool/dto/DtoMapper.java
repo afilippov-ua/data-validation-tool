@@ -16,15 +16,16 @@
 
 package com.filippov.data.validation.tool.dto;
 
-import com.filippov.data.validation.tool.datasource.config.DatasourceConfig;
-import com.filippov.data.validation.tool.datasource.config.JsonDatasourceConfig;
-import com.filippov.data.validation.tool.datasource.config.TestInMemoryDatasourceConfig;
+import com.filippov.data.validation.tool.datasource.DatasourceConfig;
+import com.filippov.data.validation.tool.datasource.jsondatasource.JsonDatasourceConfig;
 import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
+import com.filippov.data.validation.tool.datasource.model.DatasourceConfigParamsDefinition;
 import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
-import com.filippov.data.validation.tool.datastorage.RelationType;
+import com.filippov.data.validation.tool.datasource.testinmemorydatasource.TestInMemoryDatasourceConfig;
 import com.filippov.data.validation.tool.dto.cache.ColumnCacheDetailsDto;
 import com.filippov.data.validation.tool.dto.cache.ColumnPairCacheDetailsDto;
 import com.filippov.data.validation.tool.dto.datasource.DatasourceColumnDto;
+import com.filippov.data.validation.tool.dto.datasource.DatasourceConfigParamsDefinitionDto;
 import com.filippov.data.validation.tool.dto.datasource.DatasourceDefinitionDto;
 import com.filippov.data.validation.tool.dto.datasource.DatasourceTableDto;
 import com.filippov.data.validation.tool.dto.validation.TransformerDto;
@@ -32,8 +33,8 @@ import com.filippov.data.validation.tool.dto.workspace.WorkspaceDto;
 import com.filippov.data.validation.tool.dto.workspace.WorkspaceMetadataDto;
 import com.filippov.data.validation.tool.metadata.Metadata;
 import com.filippov.data.validation.tool.model.ColumnDataInfo;
-import com.filippov.data.validation.tool.pair.ColumnDataInfoPair;
 import com.filippov.data.validation.tool.model.Workspace;
+import com.filippov.data.validation.tool.pair.ColumnDataInfoPair;
 import com.filippov.data.validation.tool.pair.ColumnPair;
 import com.filippov.data.validation.tool.pair.TablePair;
 import com.filippov.data.validation.tool.validation.transformer.Transformer;
@@ -50,9 +51,6 @@ import static java.util.stream.Collectors.toMap;
 // TODO: decompose to a set of separate mappers: too large
 @Component
 public class DtoMapper {
-    private static final String METADATA_FILE_PATH = "metadataFilePath";
-    private static final String DATA_FILE_PATH = "dataFilePath";
-    private static final String RELATION = "relation";
 
     public WorkspaceDto toDto(Workspace workspace) {
         return WorkspaceDto.builder()
@@ -67,15 +65,15 @@ public class DtoMapper {
         final Map<String, Object> configParams = new HashMap<>();
         switch (datasourceConfig.getDatasourceType()) {
             case JSON_DATASOURCE:
-                configParams.put(METADATA_FILE_PATH, ((JsonDatasourceConfig) datasourceConfig).getMetadataFilePath());
-                configParams.put(DATA_FILE_PATH, ((JsonDatasourceConfig) datasourceConfig).getDataFilePath());
+                configParams.put(JsonDatasourceConfig.METADATA_FILE_PATH, ((JsonDatasourceConfig) datasourceConfig).getMetadataFilePath());
+                configParams.put(JsonDatasourceConfig.DATA_FILE_PATH, ((JsonDatasourceConfig) datasourceConfig).getDataFilePath());
                 return DatasourceDefinitionDto.builder()
                         .datasourceType(datasourceConfig.getDatasourceType())
                         .maxConnections(datasourceConfig.getMaxConnections())
                         .configParams(configParams)
                         .build();
             case TEST_IN_MEMORY_DATASOURCE:
-                configParams.put(RELATION, ((TestInMemoryDatasourceConfig) datasourceConfig).getRelation());
+                configParams.put(TestInMemoryDatasourceConfig.RELATION_TYPE, ((TestInMemoryDatasourceConfig) datasourceConfig).getRelation());
                 return DatasourceDefinitionDto.builder()
                         .datasourceType(datasourceConfig.getDatasourceType())
                         .maxConnections(datasourceConfig.getMaxConnections())
@@ -99,15 +97,14 @@ public class DtoMapper {
         switch (datasourceDefinitionDto.getDatasourceType()) {
             case JSON_DATASOURCE:
                 return JsonDatasourceConfig.builder()
-                        .metadataFilePath((String) datasourceDefinitionDto.getConfigParams().get(METADATA_FILE_PATH))
-                        .dataFilePath((String) datasourceDefinitionDto.getConfigParams().get(DATA_FILE_PATH))
                         .maxConnections(datasourceDefinitionDto.getMaxConnections())
+                        .configParams(datasourceDefinitionDto.getConfigParams())
                         .build();
             case TEST_IN_MEMORY_DATASOURCE:
-                return new TestInMemoryDatasourceConfig(
-                        RelationType.parse((String) datasourceDefinitionDto
-                                .getConfigParams().get("relation")),
-                        datasourceDefinitionDto.getMaxConnections());
+                return TestInMemoryDatasourceConfig.builder()
+                        .maxConnections(datasourceDefinitionDto.getMaxConnections())
+                        .configParams(datasourceDefinitionDto.getConfigParams())
+                        .build();
             default:
                 throw new UnsupportedOperationException("Unsupported datasource type: " + datasourceDefinitionDto.getDatasourceType());
         }
@@ -199,5 +196,19 @@ public class DtoMapper {
                 .leftCacheInfo(toDto(columnDataInfoPair.getLeftColumnDataInfo()))
                 .rightCacheInfo(toDto(columnDataInfoPair.getRightColumnDataInfo()))
                 .build();
+    }
+
+    public DatasourceConfigParamsDefinitionDto toDto(DatasourceConfigParamsDefinition datasourceConfigParamsDefinition) {
+        return DatasourceConfigParamsDefinitionDto.builder()
+                .paramsDefinition(datasourceConfigParamsDefinition.getParamsDefinition())
+                .build();
+
+    }
+
+    public DatasourceConfigParamsDefinition fromDto(DatasourceConfigParamsDefinitionDto datasourceConfigParamsDefinitionDto) {
+        return DatasourceConfigParamsDefinition.builder()
+                .paramsDefinition(datasourceConfigParamsDefinitionDto.getParamsDefinition())
+                .build();
+
     }
 }
