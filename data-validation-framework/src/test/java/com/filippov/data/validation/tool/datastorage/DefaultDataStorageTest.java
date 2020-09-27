@@ -31,6 +31,7 @@ import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToSt
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,7 @@ import static com.filippov.data.validation.tool.datastorage.RelationType.LEFT;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 class DefaultDataStorageTest extends AbstractTest {
 
@@ -187,6 +189,40 @@ class DefaultDataStorageTest extends AbstractTest {
 
     @Test
     void deleteCacheTest() {
+        final InMemoryColumnDataCache cacheMock = Mockito.spy(InMemoryColumnDataCache.class);
+        final DefaultDataStorage storage = new DefaultDataStorage(
+                DataStorageConfig.builder()
+                        .relationType(LEFT)
+                        .maxConnections(1)
+                        .build(),
+                LEFT_DATASOURCE,
+                cacheMock);
+
+        final Query usernameQuery = Query.builder()
+                .tablePair(USERS_TABLE_PAIR)
+                .columnPair(USERS_USERNAME_COLUMN_PAIR)
+                .build();
+        final Query passwordQuery = Query.builder()
+                .tablePair(USERS_TABLE_PAIR)
+                .columnPair(USERS_PASSWORD_COLUMN_PAIR)
+                .build();
+
+        storage.getData(usernameQuery);
+        storage.getData(passwordQuery);
+
+        assertThat(storage.getColumnDataInfo(usernameQuery).isCached()).isTrue();
+        assertThat(storage.getColumnDataInfo(passwordQuery).isCached()).isTrue();
+
+        storage.deleteCache();
+
+        assertThat(storage.getColumnDataInfo(usernameQuery).isCached()).isFalse();
+        assertThat(storage.getColumnDataInfo(passwordQuery).isCached()).isFalse();
+
+        Mockito.verify(cacheMock, times(1)).cleanUp();
+    }
+
+    @Test
+    void deleteColumnCacheTest() {
         final DefaultDataStorage storage = new DefaultDataStorage(
                 DataStorageConfig.builder()
                         .relationType(LEFT)
@@ -201,8 +237,8 @@ class DefaultDataStorageTest extends AbstractTest {
                 .build();
 
         storage.getData(query);
-
         assertThat(storage.getColumnDataInfo(query).isCached()).isTrue();
+
         storage.deleteCache(query);
         assertThat(storage.getColumnDataInfo(query).isCached()).isFalse();
     }

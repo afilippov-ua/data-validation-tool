@@ -154,4 +154,10 @@ public class DefaultDataStorage implements DataStorage {
         log.debug("Deleting cache from {} storage, datasource: {} and config: {} with query: {}", config.getRelationType(), datasource, config, query);
         cache.delete(query.getColumnPair().getColumnFor(config.getRelationType()));
     }
+
+    @Override
+    public void deleteCache() {
+        log.debug("Deleting cache from {} storage, datasource: {} and config: {}", config.getRelationType(), datasource, config);
+        cache.cleanUp();
+    }
 }

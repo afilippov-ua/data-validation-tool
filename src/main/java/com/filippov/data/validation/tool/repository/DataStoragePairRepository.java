@@ -24,7 +24,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static com.filippov.data.validation.tool.datastorage.RelationType.LEFT;
 import static com.filippov.data.validation.tool.datastorage.RelationType.RIGHT;
@@ -36,10 +35,10 @@ public class DataStoragePairRepository {
     private final DataStorageFactory dataStorageFactory;
     private final DatasourceFactory datasourceFactory;
 
-    public DataStoragePairRepository(DataStorageFactory dataStorageFactory, DatasourceFactory datasourceFactory) {
+    public DataStoragePairRepository(DataStorageFactory dataStorageFactory, DatasourceFactory datasourceFactory, Map<Workspace, DataStoragePair> cache) {
         this.dataStorageFactory = dataStorageFactory;
         this.datasourceFactory = datasourceFactory;
-        this.cache = new ConcurrentHashMap<>();
+        this.cache = cache;
     }
 
     public DataStoragePair getOrLoad(Workspace workspace) {
@@ -54,5 +53,14 @@ public class DataStoragePairRepository {
                                 RIGHT,
                                 ws.getRightDatasourceConfig().getMaxConnections()))
                         .build());
+    }
+
+    public void removeByWorkspace(Workspace workspace) {
+        if (cache.containsKey(workspace)) {
+            final DataStoragePair dsPair = cache.get(workspace);
+            dsPair.getLeftDataStorage().deleteCache();
+            dsPair.getRightDataStorage().deleteCache();
+            cache.remove(workspace);
+        }
     }
 }

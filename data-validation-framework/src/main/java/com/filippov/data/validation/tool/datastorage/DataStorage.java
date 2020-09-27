@@ -38,4 +38,6 @@ public interface DataStorage {
     CachingStatus getCachingStatus(Query query);
 
     void deleteCache(Query query);
+
+    void deleteCache();
 }

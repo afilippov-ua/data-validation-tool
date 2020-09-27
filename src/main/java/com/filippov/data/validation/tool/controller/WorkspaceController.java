@@ -105,6 +105,7 @@ public class WorkspaceController extends AbstractController {
                 .validate();
 
         final Workspace workspace = getWorkspaceByIdOrName(workspaceId);
+        metadataService.deleteMetadata(workspace);
         workspaceService.delete(workspace.getId());
 
         log.debug("Workspace with id: {} has been successfully deleted. Execution time: {}", workspaceId, timer.stop());
