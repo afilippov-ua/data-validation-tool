@@ -48,6 +48,8 @@ public interface ColumnDataCache {
         }
     }
 
+    ColumnDataInfo getColumnCacheDetails(DatasourceColumn column);
+
     boolean exist(DatasourceColumn column);
 
     void delete(DatasourceColumn column);
@@ -57,6 +59,4 @@ public interface ColumnDataCache {
     void cleanUp();
 
     void close();
-
-    ColumnDataInfo getColumnCacheDetails(DatasourceColumn column);
 }

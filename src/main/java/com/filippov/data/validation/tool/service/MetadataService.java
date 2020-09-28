@@ -23,23 +23,22 @@ import com.filippov.data.validation.tool.pair.ColumnPair;
 import com.filippov.data.validation.tool.pair.DataStoragePair;
 import com.filippov.data.validation.tool.pair.TablePair;
 import com.filippov.data.validation.tool.repository.DataStoragePairRepository;
+import com.filippov.data.validation.tool.service.cache.MetadataServiceCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Component
 public class MetadataService {
-    private final Map<Workspace, Metadata> cache;
+    private final MetadataServiceCache cache;
     private final MetadataBinder metadataBinder;
     private final DataStoragePairRepository dataStoragePairRepository;
 
-    public MetadataService(MetadataBinder metadataBinder, DataStoragePairRepository dataStoragePairRepository) {
-        this.cache = new ConcurrentHashMap<>();
+    public MetadataService(MetadataBinder metadataBinder, DataStoragePairRepository dataStoragePairRepository, MetadataServiceCache cache) {
+        this.cache = cache;
         this.metadataBinder = metadataBinder;
         this.dataStoragePairRepository = dataStoragePairRepository;
     }
@@ -52,6 +51,11 @@ public class MetadataService {
                                 dsPair.getLeftDataStorage().getDatasource().getMetadata(),
                                 dsPair.getRightDataStorage().getDatasource().getMetadata()));
         return result;
+    }
+
+    public void deleteMetadata(Workspace workspace) {
+        cache.remove(workspace);
+        dataStoragePairRepository.removeByWorkspace(workspace);
     }
 
     public List<TablePair> getTablePairs(Workspace workspace) {

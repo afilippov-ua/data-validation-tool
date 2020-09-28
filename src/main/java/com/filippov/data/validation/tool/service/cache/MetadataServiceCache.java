@@ -14,15 +14,12 @@
  *   limitations under the License.
  */
 
-package com.filippov.data.validation.tool.repository.data;
+package com.filippov.data.validation.tool.service.cache;
 
+import com.filippov.data.validation.tool.metadata.Metadata;
 import com.filippov.data.validation.tool.model.Workspace;
-import org.springframework.data.mongodb.repository.MongoRepository;
 
-import java.util.Optional;
+import java.util.Map;
 
-public interface WorkspaceRepository extends MongoRepository<Workspace, String> {
-
-    Optional<Workspace> findByName(String name);
-
+public interface MetadataServiceCache extends Map<Workspace, Metadata> {
 }
