@@ -29,12 +29,11 @@ import com.filippov.data.validation.tool.factory.DataStorageFactory;
 import com.filippov.data.validation.tool.factory.DatasourceFactory;
 import com.filippov.data.validation.tool.model.Workspace;
 import com.filippov.data.validation.tool.pair.DataStoragePair;
+import com.filippov.data.validation.tool.repository.cache.InMemoryWorkspaceRepositoryCache;
+import com.filippov.data.validation.tool.repository.cache.WorkspaceRepositoryCache;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doNothing;
@@ -97,7 +96,7 @@ public class DataStoragePairRepositoryTest {
         when(datasourceFactoryMock.create(LEFT_DS_CONFIG)).thenReturn(LEFT_DS);
         when(datasourceFactoryMock.create(RIGHT_DS_CONFIG)).thenReturn(RIGHT_DS);
 
-        final DataStoragePair dsPair = new DataStoragePairRepository(dataStorageFactoryMock, datasourceFactoryMock, new ConcurrentHashMap<>())
+        final DataStoragePair dsPair = new DataStoragePairRepository(dataStorageFactoryMock, datasourceFactoryMock, new InMemoryWorkspaceRepositoryCache())
                 .getOrLoad(Workspace.builder()
                         .id("test-id")
                         .name("test-name")
@@ -134,7 +133,7 @@ public class DataStoragePairRepositoryTest {
         when(datasourceFactoryMock.create(LEFT_DS_CONFIG)).thenReturn(LEFT_DS);
         when(datasourceFactoryMock.create(RIGHT_DS_CONFIG)).thenReturn(RIGHT_DS);
 
-        final DataStoragePairRepository repository = new DataStoragePairRepository(dataStorageFactoryMock, datasourceFactoryMock, new ConcurrentHashMap<>());
+        final DataStoragePairRepository repository = new DataStoragePairRepository(dataStorageFactoryMock, datasourceFactoryMock, new InMemoryWorkspaceRepositoryCache());
         final Workspace workspace = Workspace.builder()
                 .id("test-id")
                 .name("test-name")
@@ -194,14 +193,13 @@ public class DataStoragePairRepositoryTest {
         final DataStorageFactory dataStorageFactoryMock = Mockito.mock(DataStorageFactory.class);
         final DatasourceFactory datasourceFactoryMock = Mockito.mock(DatasourceFactory.class);
 
-        final Map<Workspace, DataStoragePair> cacheMock = Mockito.mock(Map.class);
+        final WorkspaceRepositoryCache cacheMock = Mockito.mock(WorkspaceRepositoryCache.class);
         when(cacheMock.containsKey(workspace)).thenReturn(true);
         when(cacheMock.get(workspace)).thenReturn(dsPair);
         when(cacheMock.remove(workspace)).thenReturn(dsPair);
 
         final DataStoragePairRepository repository = new DataStoragePairRepository(dataStorageFactoryMock, datasourceFactoryMock, cacheMock);
         repository.removeByWorkspace(workspace);
-
 
         verify(cacheMock, times(1)).containsKey(workspace);
         verify(cacheMock, times(1)).get(workspace);

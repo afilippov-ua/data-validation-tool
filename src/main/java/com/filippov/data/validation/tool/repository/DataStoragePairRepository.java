@@ -20,10 +20,9 @@ import com.filippov.data.validation.tool.factory.DataStorageFactory;
 import com.filippov.data.validation.tool.factory.DatasourceFactory;
 import com.filippov.data.validation.tool.model.Workspace;
 import com.filippov.data.validation.tool.pair.DataStoragePair;
+import com.filippov.data.validation.tool.repository.cache.WorkspaceRepositoryCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 import static com.filippov.data.validation.tool.datastorage.RelationType.LEFT;
 import static com.filippov.data.validation.tool.datastorage.RelationType.RIGHT;
@@ -31,11 +30,11 @@ import static com.filippov.data.validation.tool.datastorage.RelationType.RIGHT;
 @Slf4j
 @Component
 public class DataStoragePairRepository {
-    private final Map<Workspace, DataStoragePair> cache;
+    private final WorkspaceRepositoryCache cache;
     private final DataStorageFactory dataStorageFactory;
     private final DatasourceFactory datasourceFactory;
 
-    public DataStoragePairRepository(DataStorageFactory dataStorageFactory, DatasourceFactory datasourceFactory, Map<Workspace, DataStoragePair> cache) {
+    public DataStoragePairRepository(DataStorageFactory dataStorageFactory, DatasourceFactory datasourceFactory, WorkspaceRepositoryCache cache) {
         this.dataStorageFactory = dataStorageFactory;
         this.datasourceFactory = datasourceFactory;
         this.cache = cache;

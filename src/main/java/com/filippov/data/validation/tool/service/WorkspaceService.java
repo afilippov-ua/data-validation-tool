@@ -17,7 +17,7 @@
 package com.filippov.data.validation.tool.service;
 
 import com.filippov.data.validation.tool.model.Workspace;
-import com.filippov.data.validation.tool.repository.data.WorkspaceRepository;
+import com.filippov.data.validation.tool.repository.WorkspaceRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

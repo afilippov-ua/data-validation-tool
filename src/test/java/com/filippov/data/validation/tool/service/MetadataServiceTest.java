@@ -20,6 +20,7 @@ import com.filippov.data.validation.tool.metadata.Metadata;
 import com.filippov.data.validation.tool.metadata.MetadataBinder;
 import com.filippov.data.validation.tool.model.Workspace;
 import com.filippov.data.validation.tool.repository.DataStoragePairRepository;
+import com.filippov.data.validation.tool.service.cache.InMemoryMetadataServiceCache;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -44,7 +45,7 @@ public class MetadataServiceTest {
         final MetadataBinder metadataBinderMock = Mockito.mock(MetadataBinder.class);
         final DataStoragePairRepository dataStoragePairRepositoryMock = Mockito.mock(DataStoragePairRepository.class);
         doNothing().when(dataStoragePairRepositoryMock).removeByWorkspace(workspace);
-        final Map<Workspace, Metadata> cacheMock = Mockito.mock(Map.class);
+        final InMemoryMetadataServiceCache cacheMock = Mockito.mock(InMemoryMetadataServiceCache.class);
         when(cacheMock.remove(workspace)).thenReturn(null);
 
 
