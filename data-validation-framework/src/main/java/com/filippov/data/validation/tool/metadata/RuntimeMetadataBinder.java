@@ -24,9 +24,7 @@ import com.filippov.data.validation.tool.pair.ColumnPair;
 import com.filippov.data.validation.tool.pair.TablePair;
 import com.filippov.data.validation.tool.utils.uuid.UuidGenerator;
 import com.filippov.data.validation.tool.validation.transformer.Transformer;
-import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToDoubleTransformer;
-import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToIntegerTransformer;
-import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToStringTransformer;
+import com.filippov.data.validation.tool.validation.transformer.datatype.obj.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -124,8 +122,22 @@ public class RuntimeMetadataBinder implements MetadataBinder {
                 return new ObjectToDoubleTransformer();
             case INTEGER:
                 return new ObjectToIntegerTransformer();
+            case BOOLEAN:
+                return new ObjectToBooleanTransformer(asSet(true), asSet(false), asSet(null));
+            case INSTANT:
+                return new ObjectToInstantTransformer();
+            case OBJECT:
+                return new IdentityTransformer();
+            case LIST:
+
             default:
                 throw new UnsupportedOperationException("Unsupported data type: '" + column.getDataType() + "'");
         }
+    }
+
+    private Set<Object> asSet(Boolean val) {
+        final Set<Object> set = new HashSet<>();
+        set.add(val);
+        return set;
     }
 }

@@ -14,26 +14,34 @@
  *   limitations under the License.
  */
 
-package com.filippov.data.validation.tool.validation.transformer.basic;
+package com.filippov.data.validation.tool.validation.transformer.datatype.obj;
 
 import com.filippov.data.validation.tool.model.DataType;
 import com.filippov.data.validation.tool.validation.transformer.AbstractTransformer;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-public class ObjectToIntegerTransformer extends AbstractTransformer {
+import java.util.Set;
+
+@RequiredArgsConstructor
+public class ObjectToBooleanTransformer extends AbstractTransformer {
+    @NonNull
+    private final Set<Object> trueValues;
+    @NonNull
+    private final Set<Object> falseValues;
+    @NonNull
+    private final Set<Object> nullValues;
 
     @Override
-    public Integer transform(Object value) {
-        if (value == null) {
+    public Boolean transform(Object value) {
+        if (nullValues.contains(value)) {
             return null;
-        } else if (value instanceof Integer) {
-            return (Integer) value;
-        } else if (value instanceof String) {
-            return Integer.parseInt((String) value);
-        } else if (value instanceof Double) {
-            return ((Double) value).intValue(); // TODO?
-        } else {
-            throw new IllegalArgumentException("Unsupported data type: " + value.getClass().getSimpleName());
+        } else if (trueValues.contains(value)) {
+            return true;
+        } else if (falseValues.contains(value)) {
+            return false;
         }
+        throw new IllegalArgumentException("Value: '" + value + "' cannot be converted to boolean!");
     }
 
     @Override
@@ -43,6 +51,6 @@ public class ObjectToIntegerTransformer extends AbstractTransformer {
 
     @Override
     public DataType getOutputDataType() {
-        return DataType.INTEGER;
+        return DataType.BOOLEAN;
     }
 }

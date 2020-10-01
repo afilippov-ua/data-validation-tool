@@ -14,24 +14,23 @@
  *   limitations under the License.
  */
 
-package com.filippov.data.validation.tool.validation.transformer.basic;
+package com.filippov.data.validation.tool.validation.transformer.datatype.lst;
 
 import com.filippov.data.validation.tool.model.DataType;
 import com.filippov.data.validation.tool.validation.transformer.AbstractTransformer;
 
-import java.util.Objects;
+import java.util.List;
 
-public class ObjectToStringTransformer extends AbstractTransformer {
+public class ToListTransformer extends AbstractTransformer {
 
     @Override
-    public String transform(Object value) {
+    public List<Object> transform(Object value) {
         if (value == null) {
             return null;
-        } else if (value instanceof String) {
-            return (String) value;
-        } else {
-            return Objects.toString(value);
+        } else if (value instanceof List) {
+            return ((List<Object>) value);
         }
+        throw new IllegalArgumentException("Unsupported data type: " + value.getClass().getSimpleName());
     }
 
     @Override
@@ -41,6 +40,6 @@ public class ObjectToStringTransformer extends AbstractTransformer {
 
     @Override
     public DataType getOutputDataType() {
-        return DataType.STRING;
+        return DataType.LIST;
     }
 }

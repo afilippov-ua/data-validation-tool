@@ -14,20 +14,30 @@
  *   limitations under the License.
  */
 
-package com.filippov.data.validation.tool.validation.transformer.specific.string;
+package com.filippov.data.validation.tool.validation.transformer.datatype.str;
 
 import com.filippov.data.validation.tool.model.DataType;
 import com.filippov.data.validation.tool.validation.transformer.AbstractTransformer;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 
-public class TrimStringTransformer extends AbstractTransformer {
+import java.util.Arrays;
+import java.util.List;
+
+@RequiredArgsConstructor
+public class StringToListSplitByRegexTransformer extends AbstractTransformer {
+
+    @NonNull
+    private final String regex;
 
     @Override
-    public String transform(Object value) {
+    public List<String> transform(Object value) {
         if (value == null) {
             return null;
-        } else {
-            return ((String) value).trim(); // TODO: add generic
+        } else if (value instanceof String) {
+            return Arrays.asList(((String) value).split(regex));
         }
+        throw new IllegalArgumentException("Unsupported data type: " + value.getClass().getSimpleName());
     }
 
     @Override
@@ -37,6 +47,6 @@ public class TrimStringTransformer extends AbstractTransformer {
 
     @Override
     public DataType getOutputDataType() {
-        return DataType.STRING;
+        return DataType.LIST;
     }
 }

@@ -14,8 +14,25 @@
  *   limitations under the License.
  */
 
-package com.filippov.data.validation.tool.model;
+package com.filippov.data.validation.tool.validation.transformer.datatype.obj;
 
-public enum DataType {
-    STRING, INTEGER, DOUBLE, OBJECT, BOOLEAN, INSTANT, LIST
+import com.filippov.data.validation.tool.model.DataType;
+import com.filippov.data.validation.tool.validation.transformer.AbstractTransformer;
+
+public class IdentityTransformer extends AbstractTransformer {
+
+    @Override
+    public Object transform(Object value) {
+        return value;
+    }
+
+    @Override
+    public DataType getInputDataType() {
+        return DataType.OBJECT;
+    }
+
+    @Override
+    public DataType getOutputDataType() {
+        return DataType.OBJECT;
+    }
 }
