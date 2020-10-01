@@ -14,12 +14,17 @@
  *   limitations under the License.
  */
 
-package com.filippov.data.validation.tool.validation.transformer.specific.string;
+package com.filippov.data.validation.tool.validation.transformer.datatype.str;
 
+import com.filippov.data.validation.tool.model.DataType;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.time.Instant;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class TrimStringTransformerTest {
 
@@ -27,6 +32,7 @@ public class TrimStringTransformerTest {
         return new Object[][]{
                 {"table1", "table1"},
                 {"", ""},
+                {" ", ""},
                 {" value", "value"},
                 {"value ", "value"},
                 {" value ", "value"},
@@ -37,7 +43,29 @@ public class TrimStringTransformerTest {
     @ParameterizedTest()
     @MethodSource("valueProvider")
     void transformerTest(String value, String expectedValue) {
-        TrimStringTransformer transformer = new TrimStringTransformer();
+        final TrimStringTransformer transformer = new TrimStringTransformer();
         assertThat(transformer.transform(value)).isEqualTo(expectedValue);
+    }
+
+    @Test
+    void incorrectDataTypeTransformationMustThrowAnException() {
+        final TrimStringTransformer transformer = new TrimStringTransformer();
+        assertThatThrownBy(() -> transformer.transform(Instant.now()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Unsupported data type");
+    }
+
+    @Test
+    void getInputDataTypeTest() {
+        assertThat(new TrimStringTransformer().getInputDataType())
+                .isNotNull()
+                .isEqualTo(DataType.STRING);
+    }
+
+    @Test
+    void getOutputDataTypeTest() {
+        assertThat(new TrimStringTransformer().getOutputDataType())
+                .isNotNull()
+                .isEqualTo(DataType.STRING);
     }
 }

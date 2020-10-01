@@ -16,8 +16,8 @@
 
 package com.filippov.data.validation.tool.validation.transformer;
 
-import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToStringTransformer;
-import com.filippov.data.validation.tool.validation.transformer.specific.string.TrimStringTransformer;
+import com.filippov.data.validation.tool.validation.transformer.datatype.obj.ObjectToStringTransformer;
+import com.filippov.data.validation.tool.validation.transformer.datatype.str.TrimStringTransformer;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

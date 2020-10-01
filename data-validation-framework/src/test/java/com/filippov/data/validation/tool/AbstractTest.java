@@ -31,8 +31,8 @@ import com.filippov.data.validation.tool.pair.DataStoragePair;
 import com.filippov.data.validation.tool.pair.TablePair;
 import com.filippov.data.validation.tool.utils.uuid.RandomUuidRuntimeGenerator;
 import com.filippov.data.validation.tool.utils.uuid.UuidGenerator;
-import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToIntegerTransformer;
-import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToStringTransformer;
+import com.filippov.data.validation.tool.validation.transformer.datatype.obj.ObjectToIntegerTransformer;
+import com.filippov.data.validation.tool.validation.transformer.datatype.obj.ObjectToStringTransformer;
 
 import static com.filippov.data.validation.tool.datastorage.RelationType.LEFT;
 import static com.filippov.data.validation.tool.datastorage.RelationType.RIGHT;

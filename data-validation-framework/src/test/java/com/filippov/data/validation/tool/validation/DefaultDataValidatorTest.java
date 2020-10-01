@@ -23,8 +23,8 @@ import com.filippov.data.validation.tool.datastorage.Query;
 import com.filippov.data.validation.tool.pair.ColumnDataPair;
 import com.filippov.data.validation.tool.pair.ColumnPair;
 import com.filippov.data.validation.tool.pair.TablePair;
-import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToIntegerTransformer;
-import com.filippov.data.validation.tool.validation.transformer.basic.ObjectToStringTransformer;
+import com.filippov.data.validation.tool.validation.transformer.datatype.obj.ObjectToIntegerTransformer;
+import com.filippov.data.validation.tool.validation.transformer.datatype.obj.ObjectToStringTransformer;
 import org.junit.jupiter.api.Test;
 
 import static java.util.Arrays.asList;
