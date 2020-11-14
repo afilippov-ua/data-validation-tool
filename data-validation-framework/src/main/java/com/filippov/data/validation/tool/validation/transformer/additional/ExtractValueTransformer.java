@@ -22,12 +22,12 @@ import lombok.NonNull;
 
 import java.util.function.Function;
 
-public class ExtractValueTransformer extends AbstractTransformer {
+public class ExtractValueTransformer extends AbstractTransformer<Object, Object> {
     private final Function<Object, Object> extractor;
 
     @SuppressWarnings("unchecked")
     public ExtractValueTransformer(@NonNull Function<?, ?> extractor) {
-        this.extractor = (Function<Object, Object>) extractor; // TODO: generify
+        this.extractor = (Function<Object, Object>) extractor;
     }
 
     @Override

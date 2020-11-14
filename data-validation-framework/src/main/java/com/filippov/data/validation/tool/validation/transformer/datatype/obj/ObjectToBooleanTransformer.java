@@ -24,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 import java.util.Set;
 
 @RequiredArgsConstructor
-public class ObjectToBooleanTransformer extends AbstractTransformer {
+public class ObjectToBooleanTransformer extends AbstractTransformer<Object, Boolean> {
     @NonNull
     private final Set<Object> trueValues;
     @NonNull

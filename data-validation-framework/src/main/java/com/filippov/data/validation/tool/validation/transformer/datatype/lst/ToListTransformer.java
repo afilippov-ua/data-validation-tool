@@ -21,9 +21,10 @@ import com.filippov.data.validation.tool.validation.transformer.AbstractTransfor
 
 import java.util.List;
 
-public class ToListTransformer extends AbstractTransformer {
+public class ToListTransformer extends AbstractTransformer<Object, List<Object>> {
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Object> transform(Object value) {
         if (value == null) {
             return null;

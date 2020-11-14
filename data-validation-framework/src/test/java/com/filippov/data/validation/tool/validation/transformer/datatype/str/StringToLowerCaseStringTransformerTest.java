@@ -21,40 +21,39 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.time.Instant;
-import java.util.List;
-
-import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class StringToListSplitByRegexTransformerTest {
+public class StringToLowerCaseStringTransformerTest {
 
     static Object[][] valueProvider() {
         return new Object[][]{
-                {"it is a good test", " ", asList("it", "is", "a", "good", "test")},
-                {null, "", null}
+                {"table1", "table1"},
+                {"Table1", "table1"},
+                {"TABLE1", "table1"},
+                {" ", " "},
+                {null, null}
         };
     }
 
     @ParameterizedTest()
     @MethodSource("valueProvider")
-    void transformerTest(String src, String regexp, List<String> expectedValue) {
-        final StringToListSplitByRegexTransformer transformer = new StringToListSplitByRegexTransformer(regexp);
-        assertThat(transformer.transform(src)).isEqualTo(expectedValue);
+    void transformerTest(String value, String expectedValue) {
+        final StringToLowerCaseStringTransformer transformer = new StringToLowerCaseStringTransformer();
+        assertThat(transformer.transform(value)).isEqualTo(expectedValue);
     }
 
     @Test
     void getInputDataTypeTest() {
-        assertThat(new StringToListSplitByRegexTransformer("").getInputDataType())
+        assertThat(new StringToLowerCaseStringTransformer().getInputDataType())
                 .isNotNull()
                 .isEqualTo(DataType.STRING);
     }
 
     @Test
     void getOutputDataTypeTest() {
-        assertThat(new StringToListSplitByRegexTransformer("").getOutputDataType())
+        assertThat(new StringToLowerCaseStringTransformer().getOutputDataType())
                 .isNotNull()
-                .isEqualTo(DataType.LIST);
+                .isEqualTo(DataType.STRING);
     }
 }

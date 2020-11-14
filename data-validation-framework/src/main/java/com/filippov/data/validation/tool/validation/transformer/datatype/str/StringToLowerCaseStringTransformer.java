@@ -19,16 +19,15 @@ package com.filippov.data.validation.tool.validation.transformer.datatype.str;
 import com.filippov.data.validation.tool.model.DataType;
 import com.filippov.data.validation.tool.validation.transformer.AbstractTransformer;
 
-public class StringToUpperCaseTransformer extends AbstractTransformer {
+public class StringToLowerCaseStringTransformer extends AbstractTransformer<String, String> {
 
     @Override
-    public Object transform(Object value) {
+    public String transform(String value) {
         if (value == null) {
             return null;
-        } else if (value instanceof String) {
-            return ((String) value).toUpperCase();
+        } else {
+            return value.toLowerCase();
         }
-        throw new IllegalArgumentException("Unsupported data type: " + value.getClass().getSimpleName());
     }
 
     @Override

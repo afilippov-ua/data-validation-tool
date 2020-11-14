@@ -19,7 +19,7 @@ package com.filippov.data.validation.tool.validation.transformer.datatype.obj;
 import com.filippov.data.validation.tool.model.DataType;
 import com.filippov.data.validation.tool.validation.transformer.AbstractTransformer;
 
-public class ObjectToIntegerTransformer extends AbstractTransformer {
+public class ObjectToIntegerTransformer extends AbstractTransformer<Object, Integer> {
 
     @Override
     public Integer transform(Object value) {

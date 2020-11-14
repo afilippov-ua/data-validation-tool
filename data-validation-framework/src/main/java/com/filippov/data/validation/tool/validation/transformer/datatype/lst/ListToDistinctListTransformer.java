@@ -14,30 +14,34 @@
  *   limitations under the License.
  */
 
-package com.filippov.data.validation.tool.validation.transformer.datatype.str;
+package com.filippov.data.validation.tool.validation.transformer.datatype.lst;
 
 import com.filippov.data.validation.tool.model.DataType;
 import com.filippov.data.validation.tool.validation.transformer.AbstractTransformer;
 
-public class StringToLowerCaseTransformer extends AbstractTransformer {
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static com.filippov.data.validation.tool.model.DataType.LIST;
+
+public class ListToDistinctListTransformer extends AbstractTransformer<List<?>, List<?>> {
 
     @Override
-    public Object transform(Object value) {
-        if (value == null) {
+    public List<?> transform(List<?> lst) {
+        if (lst == null) {
             return null;
-        } else if (value instanceof String) {
-            return ((String) value).toLowerCase();
         }
-        throw new IllegalArgumentException("Unsupported data type: " + value.getClass().getSimpleName());
+        // TODO: may slow down the performance on big datasets. Need to be tested
+        return lst.stream().distinct().collect(Collectors.toList());
     }
 
     @Override
     public DataType getInputDataType() {
-        return DataType.STRING;
+        return LIST;
     }
 
     @Override
     public DataType getOutputDataType() {
-        return DataType.STRING;
+        return LIST;
     }
 }

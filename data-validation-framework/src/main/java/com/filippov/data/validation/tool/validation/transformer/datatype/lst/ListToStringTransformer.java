@@ -14,38 +14,42 @@
  *   limitations under the License.
  */
 
-package com.filippov.data.validation.tool.validation.transformer.datatype.str;
+package com.filippov.data.validation.tool.validation.transformer.datatype.lst;
 
 import com.filippov.data.validation.tool.model.DataType;
 import com.filippov.data.validation.tool.validation.transformer.AbstractTransformer;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static com.filippov.data.validation.tool.model.DataType.LIST;
+import static com.filippov.data.validation.tool.model.DataType.STRING;
 
 @RequiredArgsConstructor
-public class StringToListSplitByRegexTransformer extends AbstractTransformer<String, List<String>> {
-
-    @NonNull
-    private final String regex;
+public class ListToStringTransformer extends AbstractTransformer<List<?>, String> {
+    private final String delimiter;
+    private final String prefix;
+    private final String suffix;
 
     @Override
-    public List<String> transform(String value) {
-        if (value == null) {
+    public String transform(List<?> lst) {
+        if (lst == null) {
             return null;
-        } else {
-            return Arrays.asList(value.split(regex));
         }
+        return lst.stream()
+                .map(Objects::toString)
+                .collect(Collectors.joining(delimiter, prefix, suffix));
     }
 
     @Override
     public DataType getInputDataType() {
-        return DataType.STRING;
+        return LIST;
     }
 
     @Override
     public DataType getOutputDataType() {
-        return DataType.LIST;
+        return STRING;
     }
 }

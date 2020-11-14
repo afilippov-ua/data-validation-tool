@@ -14,56 +14,47 @@
  *   limitations under the License.
  */
 
-package com.filippov.data.validation.tool.validation.transformer.datatype.str;
+package com.filippov.data.validation.tool.validation.transformer.datatype.lst;
 
 import com.filippov.data.validation.tool.model.DataType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.time.Instant;
+import java.util.List;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class StringToUpperCaseTransformerTest {
+public class ListToDistinctListTransformerTest {
 
     static Object[][] valueProvider() {
         return new Object[][]{
-                {"table1", "TABLE1"},
-                {"Table1", "TABLE1"},
-                {"TABLE1", "TABLE1"},
-                {" ", " "},
+                {asList("str1", "str1", "str2", "str3", "str1", "str3"), asList("str1", "str2", "str3")},
+                {asList(1, 1, 2, 3, 1, 3), asList(1, 2, 3)},
+                {asList(1.0, 1.0, 2.0, 3.0, 1.0, 3.0), asList(1.0, 2.0, 3.0)},
                 {null, null}
         };
     }
 
     @ParameterizedTest()
     @MethodSource("valueProvider")
-    void transformerTest(String value, String expectedValue) {
-        final StringToUpperCaseTransformer transformer = new StringToUpperCaseTransformer();
-        assertThat(transformer.transform(value)).isEqualTo(expectedValue);
-    }
-
-    @Test
-    void incorrectDataTypeTransformationMustThrowAnException() {
-        final StringToUpperCaseTransformer transformer = new StringToUpperCaseTransformer();
-        assertThatThrownBy(() -> transformer.transform(Instant.now()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Unsupported data type");
+    void transformerTest(List<?> lst, List<?> expectedList) {
+        final ListToDistinctListTransformer transformer = new ListToDistinctListTransformer();
+        assertThat(transformer.transform(lst)).isEqualTo(expectedList);
     }
 
     @Test
     void getInputDataTypeTest() {
-        assertThat(new StringToUpperCaseTransformer().getInputDataType())
+        assertThat(new ListToDistinctListTransformer().getInputDataType())
                 .isNotNull()
-                .isEqualTo(DataType.STRING);
+                .isEqualTo(DataType.LIST);
     }
 
     @Test
     void getOutputDataTypeTest() {
-        assertThat(new StringToUpperCaseTransformer().getOutputDataType())
+        assertThat(new ListToDistinctListTransformer().getOutputDataType())
                 .isNotNull()
-                .isEqualTo(DataType.STRING);
+                .isEqualTo(DataType.LIST);
     }
 }

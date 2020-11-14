@@ -48,14 +48,6 @@ public class TrimStringTransformerTest {
     }
 
     @Test
-    void incorrectDataTypeTransformationMustThrowAnException() {
-        final TrimStringTransformer transformer = new TrimStringTransformer();
-        assertThatThrownBy(() -> transformer.transform(Instant.now()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Unsupported data type");
-    }
-
-    @Test
     void getInputDataTypeTest() {
         assertThat(new TrimStringTransformer().getInputDataType())
                 .isNotNull()

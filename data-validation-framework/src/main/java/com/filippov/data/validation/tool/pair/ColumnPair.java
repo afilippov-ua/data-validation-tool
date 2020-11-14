@@ -37,12 +37,12 @@ public class ColumnPair {
     private final DatasourceColumn leftDatasourceColumn;
     private final DatasourceColumn rightDatasourceColumn;
 
-    private final Transformer leftTransformer; // TODO: generics
-    private final Transformer rightTransformer; // TODO: generics
+    private final Transformer<Object, ?> leftTransformer; // TODO: generics
+    private final Transformer<Object, ?> rightTransformer; // TODO: generics
 
     public ColumnPair(String id, String name, TablePair tablePair,
                       DatasourceColumn leftDatasourceColumn, DatasourceColumn rightDatasourceColumn,
-                      Transformer leftTransformer, Transformer rightTransformer) {
+                      Transformer<Object, ?> leftTransformer, Transformer<Object, ?> rightTransformer) {
         if (StringUtils.isEmpty(id)) {
             throw new IllegalArgumentException("Incorrect input: id is null or empty");
         }
