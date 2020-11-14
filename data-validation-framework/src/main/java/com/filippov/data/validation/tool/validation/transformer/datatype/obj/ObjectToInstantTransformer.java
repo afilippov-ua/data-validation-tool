@@ -22,7 +22,7 @@ import com.filippov.data.validation.tool.validation.transformer.AbstractTransfor
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
 
-public class ObjectToInstantTransformer extends AbstractTransformer {
+public class ObjectToInstantTransformer extends AbstractTransformer<Object, Instant> {
 
     @Override
     public Instant transform(Object value) {

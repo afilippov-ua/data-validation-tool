@@ -16,24 +16,24 @@
 
 package com.filippov.data.validation.tool.validation.transformer;
 
-public abstract class AbstractTransformer implements Transformer {
-    private Transformer next;
+public abstract class AbstractTransformer<Input, Output> implements Transformer<Input, Output> {
+    private Transformer<Output, ?> next;
 
     public AbstractTransformer() {
     }
 
     @Override
-    public Transformer getNext() {
+    public Transformer<Output, ?> getNext() {
         return next;
     }
 
     @Override
-    public void setNext(Transformer nextTransformer) {
+    public void setNext(Transformer<Output, ?> nextTransformer) {
         this.next = nextTransformer;
     }
 
     @Override
-    public Transformer getLastTransformer() {
+    public Transformer<?, ?> getLastTransformer() {
         if (next == null) {
             return this;
         } else {

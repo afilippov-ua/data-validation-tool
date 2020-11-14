@@ -21,18 +21,16 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.time.Instant;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class StringToLowerCaseTransformerTest {
+public class StringToUpperCaseStringTransformerTest {
 
     static Object[][] valueProvider() {
         return new Object[][]{
-                {"table1", "table1"},
-                {"Table1", "table1"},
-                {"TABLE1", "table1"},
+                {"table1", "TABLE1"},
+                {"Table1", "TABLE1"},
+                {"TABLE1", "TABLE1"},
                 {" ", " "},
                 {null, null}
         };
@@ -41,28 +39,20 @@ public class StringToLowerCaseTransformerTest {
     @ParameterizedTest()
     @MethodSource("valueProvider")
     void transformerTest(String value, String expectedValue) {
-        final StringToLowerCaseTransformer transformer = new StringToLowerCaseTransformer();
+        final StringToUpperCaseStringTransformer transformer = new StringToUpperCaseStringTransformer();
         assertThat(transformer.transform(value)).isEqualTo(expectedValue);
     }
 
     @Test
-    void incorrectDataTypeTransformationMustThrowAnException() {
-        final StringToLowerCaseTransformer transformer = new StringToLowerCaseTransformer();
-        assertThatThrownBy(() -> transformer.transform(Instant.now()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Unsupported data type");
-    }
-
-    @Test
     void getInputDataTypeTest() {
-        assertThat(new StringToLowerCaseTransformer().getInputDataType())
+        assertThat(new StringToUpperCaseStringTransformer().getInputDataType())
                 .isNotNull()
                 .isEqualTo(DataType.STRING);
     }
 
     @Test
     void getOutputDataTypeTest() {
-        assertThat(new StringToLowerCaseTransformer().getOutputDataType())
+        assertThat(new StringToUpperCaseStringTransformer().getOutputDataType())
                 .isNotNull()
                 .isEqualTo(DataType.STRING);
     }

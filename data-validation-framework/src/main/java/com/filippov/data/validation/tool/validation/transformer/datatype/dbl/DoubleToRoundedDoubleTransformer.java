@@ -25,20 +25,19 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 @RequiredArgsConstructor
-public class DoubleToRoundedDoubleTransformer extends AbstractTransformer {
+public class DoubleToRoundedDoubleTransformer extends AbstractTransformer<Double, Double> {
 
     @NonNull
     private final RoundingMode roundingMode;
     private final int places;
 
     @Override
-    public Object transform(Object value) {
+    public Double transform(Double value) {
         if (value == null) {
             return null;
-        } else if (value instanceof Double) {
-            return roundDouble((Double) value);
+        } else {
+            return roundDouble(value);
         }
-        throw new IllegalArgumentException("Value: '" + value + "' is not a Double value!");
     }
 
     @Override

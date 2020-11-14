@@ -14,47 +14,50 @@
  *   limitations under the License.
  */
 
-package com.filippov.data.validation.tool.validation.transformer.datatype.str;
+package com.filippov.data.validation.tool.validation.transformer.datatype.lst;
 
 import com.filippov.data.validation.tool.model.DataType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.time.Instant;
 import java.util.List;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class StringToListSplitByRegexTransformerTest {
+public class ListToStringTransformerTest {
 
     static Object[][] valueProvider() {
         return new Object[][]{
-                {"it is a good test", " ", asList("it", "is", "a", "good", "test")},
-                {null, "", null}
+                {asList("a", "b", "c", "a", "b"), ", ", "", "", "a, b, c, a, b"},
+                {asList("a", "b", "c", "a", "b"), ", ", "(", ")", "(a, b, c, a, b)"},
+                {asList(1, 1, 2, 3, 1, 3), ", ", "", "", "1, 1, 2, 3, 1, 3"},
+                {asList(1, 1, 2, 3, 1, 3), ", ", "(", ")", "(1, 1, 2, 3, 1, 3)"},
+                {asList(1.0, 1.0, 2.0, 3.0, 1.0, 3.0), ", ", "", "", "1.0, 1.0, 2.0, 3.0, 1.0, 3.0"},
+                {asList(1.0, 1.0, 2.0, 3.0, 1.0, 3.0), ", ", "(", ")", "(1.0, 1.0, 2.0, 3.0, 1.0, 3.0)"},
+                {null, ", ", "", "", null}
         };
     }
 
     @ParameterizedTest()
     @MethodSource("valueProvider")
-    void transformerTest(String src, String regexp, List<String> expectedValue) {
-        final StringToListSplitByRegexTransformer transformer = new StringToListSplitByRegexTransformer(regexp);
-        assertThat(transformer.transform(src)).isEqualTo(expectedValue);
+    void transformerTest(List<?> lst, String delimiter, String prefix, String suffix, String expectedString) {
+        final ListToStringTransformer transformer = new ListToStringTransformer(delimiter, prefix, suffix);
+        assertThat(transformer.transform(lst)).isEqualTo(expectedString);
     }
 
     @Test
     void getInputDataTypeTest() {
-        assertThat(new StringToListSplitByRegexTransformer("").getInputDataType())
+        assertThat(new ListToStringTransformer("", "", "").getInputDataType())
                 .isNotNull()
-                .isEqualTo(DataType.STRING);
+                .isEqualTo(DataType.LIST);
     }
 
     @Test
     void getOutputDataTypeTest() {
-        assertThat(new StringToListSplitByRegexTransformer("").getOutputDataType())
+        assertThat(new ListToStringTransformer("", "", "").getOutputDataType())
                 .isNotNull()
-                .isEqualTo(DataType.LIST);
+                .isEqualTo(DataType.STRING);
     }
 }

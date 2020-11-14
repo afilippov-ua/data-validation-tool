@@ -18,24 +18,15 @@ package com.filippov.data.validation.tool.validation.transformer.datatype.str;
 
 import com.filippov.data.validation.tool.model.DataType;
 import com.filippov.data.validation.tool.validation.transformer.AbstractTransformer;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 
-import java.util.Arrays;
-import java.util.List;
-
-@RequiredArgsConstructor
-public class StringToListSplitByRegexTransformer extends AbstractTransformer<String, List<String>> {
-
-    @NonNull
-    private final String regex;
+public class StringToUpperCaseStringTransformer extends AbstractTransformer<String, String> {
 
     @Override
-    public List<String> transform(String value) {
+    public String transform(String value) {
         if (value == null) {
             return null;
         } else {
-            return Arrays.asList(value.split(regex));
+            return value.toUpperCase();
         }
     }
 
@@ -46,6 +37,6 @@ public class StringToListSplitByRegexTransformer extends AbstractTransformer<Str
 
     @Override
     public DataType getOutputDataType() {
-        return DataType.LIST;
+        return DataType.STRING;
     }
 }

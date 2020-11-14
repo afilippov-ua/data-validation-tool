@@ -22,7 +22,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class ReplaceByRegexTransformer extends AbstractTransformer {
+public class ReplaceByRegexTransformer extends AbstractTransformer<String, String> {
 
     @NonNull
     private final String regex;
@@ -30,13 +30,12 @@ public class ReplaceByRegexTransformer extends AbstractTransformer {
     private final String replacement;
 
     @Override
-    public Object transform(Object value) {
+    public String transform(String value) {
         if (value == null) {
             return null;
-        } else if (value instanceof String) {
-            return ((String) value).replaceAll(regex, replacement);
+        } else {
+            return value.replaceAll(regex, replacement);
         }
-        throw new IllegalArgumentException("Unsupported data type: " + value.getClass().getSimpleName());
     }
 
     @Override

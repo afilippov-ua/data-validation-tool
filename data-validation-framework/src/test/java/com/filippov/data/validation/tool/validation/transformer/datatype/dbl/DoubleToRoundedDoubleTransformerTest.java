@@ -68,15 +68,6 @@ public class DoubleToRoundedDoubleTransformerTest {
     }
 
     @Test
-    void incorrectValueTransformationMustThrowAnException() {
-        final DoubleToRoundedDoubleTransformer transformer = new DoubleToRoundedDoubleTransformer(RoundingMode.HALF_UP, 2);
-        assertThatThrownBy(() -> transformer.transform("incorrect_value"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Value")
-                .hasMessageContaining("is not a Double value");
-    }
-
-    @Test
     void getInputDataTypeTest() {
         assertThat(new DoubleToRoundedDoubleTransformer(RoundingMode.HALF_UP, 2).getInputDataType())
                 .isNotNull()

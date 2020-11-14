@@ -18,14 +18,14 @@ package com.filippov.data.validation.tool.validation.transformer;
 
 import com.filippov.data.validation.tool.model.DataType;
 
-public interface Transformer {
-    Object transform(Object value);
+public interface Transformer<Input, Output> {
+    Output transform(Input value);
 
-    Transformer getNext();
+    Transformer<Output, ?> getNext();
 
-    void setNext(Transformer nextTransformer);
+    void setNext(Transformer<Output, ?> nextTransformer);
 
-    Transformer getLastTransformer();
+    Transformer<?, ?> getLastTransformer();
 
     DataType getInputDataType();
 

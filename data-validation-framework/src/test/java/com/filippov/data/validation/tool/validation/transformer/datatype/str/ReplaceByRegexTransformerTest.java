@@ -43,14 +43,6 @@ public class ReplaceByRegexTransformerTest {
     }
 
     @Test
-    void incorrectDataTypeTransformationMustThrowAnException() {
-        final ReplaceByRegexTransformer transformer = new ReplaceByRegexTransformer("", "");
-        assertThatThrownBy(() -> transformer.transform(Instant.now()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Unsupported data type");
-    }
-
-    @Test
     void getInputDataTypeTest() {
         assertThat(new ReplaceByRegexTransformer("", "").getInputDataType())
                 .isNotNull()

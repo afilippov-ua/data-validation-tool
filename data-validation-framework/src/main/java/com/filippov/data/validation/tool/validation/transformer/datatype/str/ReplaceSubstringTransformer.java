@@ -22,7 +22,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class ReplaceSubstringTransformer extends AbstractTransformer {
+public class ReplaceSubstringTransformer extends AbstractTransformer<String, String> {
 
     @NonNull
     private final String oldStr;
@@ -30,13 +30,12 @@ public class ReplaceSubstringTransformer extends AbstractTransformer {
     private final String newStr;
 
     @Override
-    public Object transform(Object value) {
+    public String transform(String value) {
         if (value == null) {
             return null;
-        } else if (value instanceof String) {
-            return ((String) value).replace(oldStr, newStr);
+        } else {
+            return value.replace(oldStr, newStr);
         }
-        throw new IllegalArgumentException("Unsupported data type: " + value.getClass().getSimpleName());
     }
 
     @Override

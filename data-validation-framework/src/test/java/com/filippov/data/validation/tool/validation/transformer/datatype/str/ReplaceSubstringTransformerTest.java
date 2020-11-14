@@ -21,10 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.time.Instant;
-
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class ReplaceSubstringTransformerTest {
 
@@ -42,14 +39,6 @@ public class ReplaceSubstringTransformerTest {
     void transformerTest(String src, String oldStr, String newStr, String expectedValue) {
         final ReplaceSubstringTransformer transformer = new ReplaceSubstringTransformer(oldStr, newStr);
         assertThat(transformer.transform(src)).isEqualTo(expectedValue);
-    }
-
-    @Test
-    void incorrectDataTypeTransformationMustThrowAnException() {
-        final ReplaceSubstringTransformer transformer = new ReplaceSubstringTransformer("", "");
-        assertThatThrownBy(() -> transformer.transform(Instant.now()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("Unsupported data type");
     }
 
     @Test

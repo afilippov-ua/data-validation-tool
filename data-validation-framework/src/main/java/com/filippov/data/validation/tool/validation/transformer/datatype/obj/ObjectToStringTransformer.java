@@ -21,7 +21,7 @@ import com.filippov.data.validation.tool.validation.transformer.AbstractTransfor
 
 import java.util.Objects;
 
-public class ObjectToStringTransformer extends AbstractTransformer {
+public class ObjectToStringTransformer extends AbstractTransformer<Object, String> {
 
     @Override
     public String transform(Object value) {
