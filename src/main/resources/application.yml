@@ -1,0 +1,17 @@
+server:
+  port: 8090
+  error:
+    include-message: always
+
+spring:
+  data:
+  mongodb:
+    host: localhost
+    port: 27017
+    database: dvt
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
