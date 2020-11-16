@@ -1,0 +1,9 @@
+anagement:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+server:
+  error:
+    include-message: always

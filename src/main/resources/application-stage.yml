@@ -1,0 +1,15 @@
+server:
+  port: 8092
+
+spring:
+  data:
+    mongodb:
+      host: homeserver-docker
+      port: 27017
+      database: dvt
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
