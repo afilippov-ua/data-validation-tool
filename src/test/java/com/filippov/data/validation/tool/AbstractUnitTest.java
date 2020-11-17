@@ -16,6 +16,8 @@
 
 package com.filippov.data.validation.tool;
 
+import com.filippov.data.validation.tool.cache.CacheConfig;
+import com.filippov.data.validation.tool.cache.EvictionStrategy;
 import com.filippov.data.validation.tool.cache.InMemoryColumnDataCache;
 import com.filippov.data.validation.tool.datasource.Datasource;
 import com.filippov.data.validation.tool.datasource.testinmemorydatasource.TestInMemoryDatasource;
@@ -111,7 +113,10 @@ public class AbstractUnitTest {
                     .maxConnections(1)
                     .build())
             .datasource(LEFT_DATASOURCE)
-            .cache(new InMemoryColumnDataCache())
+            .cache(new InMemoryColumnDataCache(CacheConfig.builder()
+                    .evictionStrategy(EvictionStrategy.FIFO)
+                    .maxNumberOfElementsInCache(1000)
+                    .build()))
             .build();
     protected static final DefaultDataStorage RIGHT_STORAGE = DefaultDataStorage.builder()
             .config(DataStorageConfig.builder()
@@ -119,7 +124,10 @@ public class AbstractUnitTest {
                     .maxConnections(1)
                     .build())
             .datasource(RIGHT_DATASOURCE)
-            .cache(new InMemoryColumnDataCache())
+            .cache(new InMemoryColumnDataCache(CacheConfig.builder()
+                    .evictionStrategy(EvictionStrategy.FIFO)
+                    .maxNumberOfElementsInCache(1000)
+                    .build()))
             .build();
 
     protected static final DatasourceTable LEFT_USERS_TABLE = LEFT_DATASOURCE.getMetadata().getTableByName(USERS);

@@ -16,13 +16,21 @@
 
 package com.filippov.data.validation.tool.factory;
 
+import com.filippov.data.validation.tool.cache.CacheConfig;
 import com.filippov.data.validation.tool.cache.ColumnDataCache;
 import com.filippov.data.validation.tool.cache.InMemoryColumnDataCache;
 import com.filippov.data.validation.tool.datasource.Datasource;
+import com.filippov.data.validation.tool.datasource.model.DatasourceType;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Map;
+
 @Slf4j
+@RequiredArgsConstructor
 public class DefaultColumnDataCacheFactory implements ColumnDataCacheFactory {
+
+    private final Map<DatasourceType, CacheConfig> cacheConfigs;
 
     @Override
     public ColumnDataCache getOrCreateForDatasource(Datasource datasource) {
@@ -30,6 +38,7 @@ public class DefaultColumnDataCacheFactory implements ColumnDataCacheFactory {
             throw new IllegalArgumentException("Incorrect input: datasource is null");
         }
         log.debug("Creating column data cache for datasource: {}. Using: InMemoryColumnDataCache", datasource);
-        return new InMemoryColumnDataCache(); // TODO: use in-memory only for now
+        // TODO: use in-memory until another caches will be implemented
+        return new InMemoryColumnDataCache(cacheConfigs.get(datasource.getConfig().getDatasourceType()));
     }
 }

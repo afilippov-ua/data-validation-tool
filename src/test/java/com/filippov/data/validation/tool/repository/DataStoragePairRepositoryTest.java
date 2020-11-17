@@ -16,7 +16,9 @@
 
 package com.filippov.data.validation.tool.repository;
 
+import com.filippov.data.validation.tool.cache.CacheConfig;
 import com.filippov.data.validation.tool.cache.ColumnDataCache;
+import com.filippov.data.validation.tool.cache.EvictionStrategy;
 import com.filippov.data.validation.tool.cache.InMemoryColumnDataCache;
 import com.filippov.data.validation.tool.datasource.Datasource;
 import com.filippov.data.validation.tool.datasource.testinmemorydatasource.TestInMemoryDatasource;
@@ -44,8 +46,14 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 public class DataStoragePairRepositoryTest {
-    private static final ColumnDataCache LEFT_COLUMN_DATA_CACHE = new InMemoryColumnDataCache();
-    private static final ColumnDataCache RIGHT_COLUMN_DATA_CACHE = new InMemoryColumnDataCache();
+    private static final ColumnDataCache LEFT_COLUMN_DATA_CACHE = new InMemoryColumnDataCache(CacheConfig.builder()
+            .evictionStrategy(EvictionStrategy.FIFO)
+            .maxNumberOfElementsInCache(1000)
+            .build());
+    private static final ColumnDataCache RIGHT_COLUMN_DATA_CACHE = new InMemoryColumnDataCache(CacheConfig.builder()
+            .evictionStrategy(EvictionStrategy.FIFO)
+            .maxNumberOfElementsInCache(1000)
+            .build());
 
     private static final TestInMemoryDatasourceConfig LEFT_DS_CONFIG = TestInMemoryDatasourceConfig.builder()
             .relationType(RelationType.LEFT)

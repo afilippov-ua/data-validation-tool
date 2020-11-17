@@ -7,3 +7,14 @@ anagement:
 server:
   error:
     include-message: always
+
+data-validation-tool:
+  datasources:
+    TEST_IN_MEMORY_DATASOURCE:
+      cache-config:
+        eviction-strategy: FIFO
+        max-number-of-elements-in-cache: 1000
+    JSON_DATASOURCE:
+      cache-config:
+        eviction-strategy: FIFO
+        max-number-of-elements-in-cache: 1000
