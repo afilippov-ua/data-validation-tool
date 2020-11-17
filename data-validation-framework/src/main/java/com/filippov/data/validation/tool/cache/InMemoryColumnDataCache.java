@@ -22,15 +22,32 @@ import com.filippov.data.validation.tool.model.ColumnDataInfo;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.Instant;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
 public class InMemoryColumnDataCache implements ColumnDataCache {
 
-    private final Map<DatasourceColumn, ColumnData<?, ?>> dataMap = new HashMap<>();
-    private final Map<DatasourceColumn, Instant> cachingDates = new HashMap<>();
+    private final Map<DatasourceColumn, ColumnData<?, ?>> dataMap;
+    private final Map<DatasourceColumn, Instant> cacheDates;
+    private final CacheConfig cacheConfig;
+
+    public InMemoryColumnDataCache(CacheConfig cacheConfig) {
+        this.cacheConfig = cacheConfig;
+        this.dataMap = new LinkedHashMap<>() {
+            @Override
+            protected boolean removeEldestEntry(final Map.Entry eldest) {
+                return size() > cacheConfig.getMaxNumberOfElementsInCache();
+            }
+        };
+        this.cacheDates = new LinkedHashMap<>() {
+            @Override
+            protected boolean removeEldestEntry(final Map.Entry eldest) {
+                return size() > cacheConfig.getMaxNumberOfElementsInCache();
+            }
+        };
+    }
 
     @Override
     @SuppressWarnings("unchecked")
@@ -43,7 +60,7 @@ public class InMemoryColumnDataCache implements ColumnDataCache {
     public <K, V> void put(DatasourceColumn column, ColumnData<K, V> columnData) {
         log.debug("Putting column data to in-memory column data cache for column: {}", column);
         dataMap.put(column, columnData);
-        cachingDates.put(column, Instant.now());
+        cacheDates.put(column, Instant.now());
     }
 
     @Override
@@ -55,7 +72,7 @@ public class InMemoryColumnDataCache implements ColumnDataCache {
     public void delete(DatasourceColumn column) {
         log.debug("Deleting data from in-memory column data cache for column: {}", column);
         dataMap.remove(column);
-        cachingDates.remove(column);
+        cacheDates.remove(column);
         log.debug("Data from in-memory column data cache has been successfully deleted for column: {}", column);
     }
 
@@ -79,7 +96,7 @@ public class InMemoryColumnDataCache implements ColumnDataCache {
         log.debug("Getting column cache details from in-memory column data cache for column: {}", column);
         return ColumnDataInfo.builder()
                 .cached(dataMap.containsKey(column))
-                .date(cachingDates.get(column))
+                .date(cacheDates.get(column))
                 .build();
     }
 }

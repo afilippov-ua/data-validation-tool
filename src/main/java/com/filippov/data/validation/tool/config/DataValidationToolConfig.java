@@ -16,8 +16,6 @@
 
 package com.filippov.data.validation.tool.config;
 
-import com.filippov.data.validation.tool.cache.ColumnDataCache;
-import com.filippov.data.validation.tool.cache.InMemoryColumnDataCache;
 import com.filippov.data.validation.tool.factory.ColumnDataCacheFactory;
 import com.filippov.data.validation.tool.factory.DataStorageFactory;
 import com.filippov.data.validation.tool.factory.DatasourceFactory;
@@ -53,18 +51,13 @@ public class DataValidationToolConfig {
     }
 
     @Bean
-    ColumnDataCacheFactory columnDataCacheFactory() {
-        return new DefaultColumnDataCacheFactory();
+    ColumnDataCacheFactory columnDataCacheFactory(DataValidationToolProperties properties) {
+        return new DefaultColumnDataCacheFactory(properties.getCacheConfiguration());
     }
 
     @Bean
     DataStorageFactory dataStorageFactory(ColumnDataCacheFactory columnDataCacheFactory) {
         return new DefaultDataStorageFactory(columnDataCacheFactory);
-    }
-
-    @Bean
-    ColumnDataCache columnDataCache() {
-        return new InMemoryColumnDataCache();
     }
 
     @Bean

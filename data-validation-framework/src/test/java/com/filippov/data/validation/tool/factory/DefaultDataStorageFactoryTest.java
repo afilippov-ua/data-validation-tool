@@ -53,7 +53,7 @@ public class DefaultDataStorageFactoryTest extends AbstractTest {
     private static final ColumnDataCacheFactory COLUMN_DATA_CACHE_FACTORY_MOCK = Mockito.mock(ColumnDataCacheFactory.class);
 
     static {
-        when(COLUMN_DATA_CACHE_FACTORY_MOCK.getOrCreateForDatasource(any())).thenReturn(new InMemoryColumnDataCache());
+        when(COLUMN_DATA_CACHE_FACTORY_MOCK.getOrCreateForDatasource(any())).thenReturn(new InMemoryColumnDataCache(DEFAULT_CACHE_CONFIG));
     }
 
     static Object[][] correctInputProvider() {

@@ -61,8 +61,8 @@ class DefaultDataStorageTest extends AbstractTest {
 
     static Object[][] incorrectInputProvider() {
         return new Object[][]{
-                {null, LEFT_DATASOURCE, new InMemoryColumnDataCache()},
-                {DATA_STORAGE_CONFIG, null, new InMemoryColumnDataCache()},
+                {null, LEFT_DATASOURCE, new InMemoryColumnDataCache(DEFAULT_CACHE_CONFIG)},
+                {DATA_STORAGE_CONFIG, null, new InMemoryColumnDataCache(DEFAULT_CACHE_CONFIG)},
                 {DATA_STORAGE_CONFIG, LEFT_DATASOURCE, null},
         };
     }
@@ -74,7 +74,7 @@ class DefaultDataStorageTest extends AbstractTest {
                 .maxConnections(1)
                 .build();
         ;
-        final DefaultDataStorage storage = new DefaultDataStorage(expectedConfig, LEFT_DATASOURCE, new InMemoryColumnDataCache());
+        final DefaultDataStorage storage = new DefaultDataStorage(expectedConfig, LEFT_DATASOURCE, new InMemoryColumnDataCache(DEFAULT_CACHE_CONFIG));
 
         assertThat(storage.getConfig()).isEqualTo(expectedConfig);
     }
@@ -87,7 +87,7 @@ class DefaultDataStorageTest extends AbstractTest {
                         .maxConnections(1)
                         .build(),
                 LEFT_DATASOURCE,
-                new InMemoryColumnDataCache());
+                new InMemoryColumnDataCache(DEFAULT_CACHE_CONFIG));
 
         assertThat(storage.getDatasource()).isEqualTo(LEFT_DATASOURCE);
     }
@@ -101,7 +101,7 @@ class DefaultDataStorageTest extends AbstractTest {
                         .maxConnections(1)
                         .build(),
                 LEFT_DATASOURCE,
-                new InMemoryColumnDataCache());
+                new InMemoryColumnDataCache(DEFAULT_CACHE_CONFIG));
 
         final DatasourceTable leftTable = LEFT_DATASOURCE.getMetadata().getTableByName(USERS);
         final DatasourceTable rightTable = RIGHT_DATASOURCE.getMetadata().getTableByName(USERS);
@@ -167,7 +167,7 @@ class DefaultDataStorageTest extends AbstractTest {
                         .maxConnections(1)
                         .build(),
                 LEFT_DATASOURCE,
-                new InMemoryColumnDataCache());
+                new InMemoryColumnDataCache(DEFAULT_CACHE_CONFIG));
 
         final Query query = Query.builder()
                 .tablePair(USERS_TABLE_PAIR)
@@ -189,7 +189,7 @@ class DefaultDataStorageTest extends AbstractTest {
 
     @Test
     void deleteCacheTest() {
-        final InMemoryColumnDataCache cacheMock = Mockito.spy(InMemoryColumnDataCache.class);
+        final InMemoryColumnDataCache cacheMock = Mockito.spy(new InMemoryColumnDataCache(DEFAULT_CACHE_CONFIG));
         final DefaultDataStorage storage = new DefaultDataStorage(
                 DataStorageConfig.builder()
                         .relationType(LEFT)
@@ -229,7 +229,7 @@ class DefaultDataStorageTest extends AbstractTest {
                         .maxConnections(1)
                         .build(),
                 LEFT_DATASOURCE,
-                new InMemoryColumnDataCache());
+                new InMemoryColumnDataCache(DEFAULT_CACHE_CONFIG));
 
         final Query query = Query.builder()
                 .tablePair(USERS_TABLE_PAIR)

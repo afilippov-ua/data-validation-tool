@@ -16,6 +16,8 @@
 
 package com.filippov.data.validation.tool;
 
+import com.filippov.data.validation.tool.cache.CacheConfig;
+import com.filippov.data.validation.tool.cache.EvictionStrategy;
 import com.filippov.data.validation.tool.cache.InMemoryColumnDataCache;
 import com.filippov.data.validation.tool.datasource.Datasource;
 import com.filippov.data.validation.tool.datasource.jsondatasource.JsonDatasource;
@@ -111,13 +113,18 @@ public class AbstractTest {
                     .maxConnections(1)
                     .build());
 
+    protected static final CacheConfig DEFAULT_CACHE_CONFIG = CacheConfig.builder()
+            .evictionStrategy(EvictionStrategy.FIFO)
+                    .maxNumberOfElementsInCache(1000)
+                    .build();
+
     protected static final DefaultDataStorage LEFT_STORAGE = DefaultDataStorage.builder()
             .config(DataStorageConfig.builder()
                     .relationType(LEFT)
                     .maxConnections(1)
                     .build())
             .datasource(LEFT_DATASOURCE)
-            .cache(new InMemoryColumnDataCache())
+            .cache(new InMemoryColumnDataCache(DEFAULT_CACHE_CONFIG))
             .build();
     protected static final DefaultDataStorage RIGHT_STORAGE = DefaultDataStorage.builder()
             .config(DataStorageConfig.builder()
@@ -125,7 +132,7 @@ public class AbstractTest {
                     .maxConnections(1)
                     .build())
             .datasource(RIGHT_DATASOURCE)
-            .cache(new InMemoryColumnDataCache())
+            .cache(new InMemoryColumnDataCache(DEFAULT_CACHE_CONFIG))
             .build();
 
     protected static final DatasourceTable LEFT_USERS_TABLE = LEFT_DATASOURCE.getMetadata().getTableByName(USERS);
