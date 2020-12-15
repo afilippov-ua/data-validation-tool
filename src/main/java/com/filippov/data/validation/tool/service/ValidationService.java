@@ -16,13 +16,13 @@
 
 package com.filippov.data.validation.tool.service;
 
-import com.filippov.data.validation.tool.datastorage.Query;
-import com.filippov.data.validation.tool.pair.ColumnDataPair;
-import com.filippov.data.validation.tool.model.Workspace;
-import com.filippov.data.validation.tool.pair.DataStoragePair;
+import com.filippov.data.validation.tool.model.datastorage.Query;
+import com.filippov.data.validation.tool.model.pair.ColumnDataPair;
+import com.filippov.data.validation.tool.model.pair.DataStoragePair;
+import com.filippov.data.validation.tool.model.validation.ValidationResult;
+import com.filippov.data.validation.tool.model.workspace.Workspace;
 import com.filippov.data.validation.tool.repository.DataStoragePairRepository;
 import com.filippov.data.validation.tool.validation.DefaultDataValidator;
-import com.filippov.data.validation.tool.validation.ValidationResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

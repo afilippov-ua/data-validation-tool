@@ -16,16 +16,16 @@
 
 package com.filippov.data.validation.tool.repository;
 
-import com.filippov.data.validation.tool.factory.DataStorageFactory;
-import com.filippov.data.validation.tool.factory.DatasourceFactory;
-import com.filippov.data.validation.tool.model.Workspace;
-import com.filippov.data.validation.tool.pair.DataStoragePair;
+import com.filippov.data.validation.tool.model.DataStorageFactory;
+import com.filippov.data.validation.tool.model.DatasourceFactory;
+import com.filippov.data.validation.tool.model.pair.DataStoragePair;
+import com.filippov.data.validation.tool.model.workspace.Workspace;
 import com.filippov.data.validation.tool.repository.cache.WorkspaceRepositoryCache;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import static com.filippov.data.validation.tool.datastorage.RelationType.LEFT;
-import static com.filippov.data.validation.tool.datastorage.RelationType.RIGHT;
+import static com.filippov.data.validation.tool.model.datastorage.RelationType.LEFT;
+import static com.filippov.data.validation.tool.model.datastorage.RelationType.RIGHT;
 
 @Slf4j
 @Component
@@ -44,10 +44,12 @@ public class DataStoragePairRepository {
         return cache.computeIfAbsent(workspace, (ws) ->
                 DataStoragePair.builder()
                         .leftDataStorage(dataStorageFactory.create(
+                                ws,
                                 datasourceFactory.create(ws.getLeftDatasourceConfig()),
                                 LEFT,
                                 ws.getLeftDatasourceConfig().getMaxConnections()))
                         .rightDataStorage(dataStorageFactory.create(
+                                ws,
                                 datasourceFactory.create(ws.getRightDatasourceConfig()),
                                 RIGHT,
                                 ws.getRightDatasourceConfig().getMaxConnections()))

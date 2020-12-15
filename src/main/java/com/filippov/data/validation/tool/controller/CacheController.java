@@ -16,19 +16,19 @@
 
 package com.filippov.data.validation.tool.controller;
 
-import com.filippov.data.validation.tool.Timer;
 import com.filippov.data.validation.tool.controller.validation.InputValidator;
 import com.filippov.data.validation.tool.dto.DtoMapper;
 import com.filippov.data.validation.tool.dto.cache.CacheRequestDto;
 import com.filippov.data.validation.tool.dto.cache.ColumnPairCacheDetailsDto;
-import com.filippov.data.validation.tool.model.CachingStatus;
-import com.filippov.data.validation.tool.model.Workspace;
-import com.filippov.data.validation.tool.pair.ColumnPair;
-import com.filippov.data.validation.tool.pair.TablePair;
+import com.filippov.data.validation.tool.model.cache.CachingStatus;
+import com.filippov.data.validation.tool.model.pair.ColumnPair;
+import com.filippov.data.validation.tool.model.pair.TablePair;
+import com.filippov.data.validation.tool.model.workspace.Workspace;
 import com.filippov.data.validation.tool.repository.DataStoragePairRepository;
 import com.filippov.data.validation.tool.service.CacheService;
 import com.filippov.data.validation.tool.service.MetadataService;
 import com.filippov.data.validation.tool.service.WorkspaceService;
+import com.filippov.data.validation.tool.utils.other.Timer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;

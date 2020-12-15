@@ -9,12 +9,20 @@ server:
     include-message: always
 
 data-validation-tool:
+
+  default-column-data-cache-config:
+    cache-type: IN-MEMORY
+    eviction-strategy: FIFO
+    max-number-of-elements-in-cache: 1000
+
   datasources:
     TEST_IN_MEMORY_DATASOURCE:
       cache-config:
+        cache-type: IN-MEMORY
         eviction-strategy: FIFO
         max-number-of-elements-in-cache: 1000
     JSON_DATASOURCE:
       cache-config:
+        cache-type: IN-MEMORY
         eviction-strategy: FIFO
         max-number-of-elements-in-cache: 1000

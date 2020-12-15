@@ -16,8 +16,8 @@
 
 package com.filippov.data.validation.tool.service.cache;
 
-import com.filippov.data.validation.tool.metadata.Metadata;
-import com.filippov.data.validation.tool.model.Workspace;
+import com.filippov.data.validation.tool.model.metadata.Metadata;
+import com.filippov.data.validation.tool.model.workspace.Workspace;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.ConcurrentHashMap;

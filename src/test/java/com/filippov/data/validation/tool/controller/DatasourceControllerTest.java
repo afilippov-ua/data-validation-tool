@@ -16,10 +16,10 @@
 
 package com.filippov.data.validation.tool.controller;
 
-import com.filippov.data.validation.tool.datasource.jsondatasource.JsonDatasourceConfig;
-import com.filippov.data.validation.tool.datasource.model.DatasourceType;
-import com.filippov.data.validation.tool.datasource.testinmemorydatasource.TestInMemoryDatasourceConfig;
+import com.filippov.data.validation.tool.datasource.JsonDatasourceConfig;
+import com.filippov.data.validation.tool.datasource.TestInMemoryDatasourceConfig;
 import com.filippov.data.validation.tool.dto.datasource.DatasourceConfigParamsDefinitionDto;
+import com.filippov.data.validation.tool.model.datasource.DatasourceType;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;

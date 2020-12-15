@@ -16,10 +16,10 @@
 
 package com.filippov.data.validation.tool.service;
 
-import com.filippov.data.validation.tool.datasource.model.DatasourceConfigParamsDefinition;
-import com.filippov.data.validation.tool.datasource.jsondatasource.JsonDatasourceConfig;
-import com.filippov.data.validation.tool.datasource.testinmemorydatasource.TestInMemoryDatasourceConfig;
-import com.filippov.data.validation.tool.datasource.model.DatasourceType;
+import com.filippov.data.validation.tool.datasource.JsonDatasourceConfig;
+import com.filippov.data.validation.tool.datasource.TestInMemoryDatasourceConfig;
+import com.filippov.data.validation.tool.model.datasource.DatasourceConfigParamsDefinition;
+import com.filippov.data.validation.tool.model.datasource.DatasourceType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

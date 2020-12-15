@@ -17,10 +17,10 @@
 package com.filippov.data.validation.tool.controller;
 
 import com.filippov.data.validation.tool.dto.DtoMapper;
-import com.filippov.data.validation.tool.metadata.Metadata;
-import com.filippov.data.validation.tool.model.Workspace;
-import com.filippov.data.validation.tool.pair.ColumnPair;
-import com.filippov.data.validation.tool.pair.TablePair;
+import com.filippov.data.validation.tool.model.metadata.Metadata;
+import com.filippov.data.validation.tool.model.pair.ColumnPair;
+import com.filippov.data.validation.tool.model.pair.TablePair;
+import com.filippov.data.validation.tool.model.workspace.Workspace;
 import com.filippov.data.validation.tool.repository.DataStoragePairRepository;
 import com.filippov.data.validation.tool.service.MetadataService;
 import com.filippov.data.validation.tool.service.WorkspaceService;

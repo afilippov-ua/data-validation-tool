@@ -21,7 +21,7 @@ import com.filippov.data.validation.tool.dto.cache.CacheRequestDto;
 import com.filippov.data.validation.tool.dto.datasource.DatasourceDefinitionDto;
 import com.filippov.data.validation.tool.dto.workspace.WorkspaceDto;
 import com.filippov.data.validation.tool.model.CacheFetchingCommand;
-import com.filippov.data.validation.tool.model.CachingStatus;
+import com.filippov.data.validation.tool.model.cache.CachingStatus;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -33,7 +33,7 @@ import org.springframework.http.ResponseEntity;
 import javax.annotation.Resource;
 import java.util.Map;
 
-import static com.filippov.data.validation.tool.datasource.model.DatasourceType.TEST_IN_MEMORY_DATASOURCE;
+import static com.filippov.data.validation.tool.model.datasource.DatasourceType.TEST_IN_MEMORY_DATASOURCE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = TestDataValidationToolApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
