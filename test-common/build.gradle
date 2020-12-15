@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+}
+
+group 'com.filippov.data.validation.tool'
+version '0.0.1-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(':model')
+
+    implementation('com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.11.2')
+    implementation('org.apache.commons:commons-lang3:3.11');
+    implementation('ch.qos.logback:logback-classic:1.2.3')
+
+    implementation('org.projectlombok:lombok:1.18.4')
+    annotationProcessor('org.projectlombok:lombok:1.18.4')
+}

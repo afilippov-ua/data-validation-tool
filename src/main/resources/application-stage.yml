@@ -1,5 +1,7 @@
 server:
   port: 8092
+  error:
+    include-message: always
 
 spring:
   data:
@@ -13,3 +15,26 @@ management:
     web:
       exposure:
         include: "*"
+
+data-validation-tool:
+
+  default-column-data-cache-config:
+    cache-type: IN-MEMORY
+    eviction-strategy: FIFO
+    max-number-of-elements-in-cache: 1000
+
+  datasources:
+    TEST_IN_MEMORY_DATASOURCE:
+      cache-config:
+        cache-type: IN-MEMORY
+        eviction-strategy: FIFO
+        max-number-of-elements-in-cache: 1000
+    JSON_DATASOURCE:
+      cache-config:
+        cache-type: REDIS
+        eviction-strategy: FIFO
+        max-number-of-elements-in-cache: 1000
+
+  redis-config:
+    host: homeserver-docker
+    port: 6379

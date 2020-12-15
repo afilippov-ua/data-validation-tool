@@ -16,21 +16,21 @@
 
 package com.filippov.data.validation.tool.controller;
 
-import com.filippov.data.validation.tool.Timer;
-import com.filippov.data.validation.tool.binder.DataBinder;
 import com.filippov.data.validation.tool.controller.validation.InputValidator;
-import com.filippov.data.validation.tool.datastorage.Query;
 import com.filippov.data.validation.tool.dto.DtoMapper;
 import com.filippov.data.validation.tool.dto.validation.ValidationDataDto;
-import com.filippov.data.validation.tool.pair.ColumnDataPair;
-import com.filippov.data.validation.tool.model.Workspace;
-import com.filippov.data.validation.tool.pair.ColumnPair;
-import com.filippov.data.validation.tool.pair.TablePair;
+import com.filippov.data.validation.tool.model.DataBinder;
+import com.filippov.data.validation.tool.model.datastorage.Query;
+import com.filippov.data.validation.tool.model.pair.ColumnDataPair;
+import com.filippov.data.validation.tool.model.pair.ColumnPair;
+import com.filippov.data.validation.tool.model.pair.TablePair;
+import com.filippov.data.validation.tool.model.validation.ValidationResult;
+import com.filippov.data.validation.tool.model.workspace.Workspace;
 import com.filippov.data.validation.tool.repository.DataStoragePairRepository;
 import com.filippov.data.validation.tool.service.MetadataService;
 import com.filippov.data.validation.tool.service.ValidationService;
 import com.filippov.data.validation.tool.service.WorkspaceService;
-import com.filippov.data.validation.tool.validation.ValidationResult;
+import com.filippov.data.validation.tool.utils.other.Timer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -96,7 +96,7 @@ public class ValidationController extends AbstractController {
                 .keyColumnPair(dtoMapper.toDto(validationResult.getKeyColumnPair()))
                 .dataColumnPair(dtoMapper.toDto(validationResult.getDataColumnPair()))
                 .failedRows(validationResult.getFailedKeys().stream()
-                        .map(id -> dataBinder.bind(columnDataPair, columnPair, id))
+                        .map(id -> dtoMapper.toDto(dataBinder.bind(columnDataPair, columnPair, id)))
                         .skip(offset)
                         .limit(limit)
                         .collect(toList()))

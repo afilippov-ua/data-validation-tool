@@ -16,12 +16,12 @@
 
 package com.filippov.data.validation.tool.service;
 
-import com.filippov.data.validation.tool.metadata.Metadata;
-import com.filippov.data.validation.tool.metadata.MetadataBinder;
-import com.filippov.data.validation.tool.model.Workspace;
-import com.filippov.data.validation.tool.pair.ColumnPair;
-import com.filippov.data.validation.tool.pair.DataStoragePair;
-import com.filippov.data.validation.tool.pair.TablePair;
+import com.filippov.data.validation.tool.model.MetadataBinder;
+import com.filippov.data.validation.tool.model.metadata.Metadata;
+import com.filippov.data.validation.tool.model.pair.ColumnPair;
+import com.filippov.data.validation.tool.model.pair.DataStoragePair;
+import com.filippov.data.validation.tool.model.pair.TablePair;
+import com.filippov.data.validation.tool.model.workspace.Workspace;
 import com.filippov.data.validation.tool.repository.DataStoragePairRepository;
 import com.filippov.data.validation.tool.service.cache.MetadataServiceCache;
 import lombok.extern.slf4j.Slf4j;

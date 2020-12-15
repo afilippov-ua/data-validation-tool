@@ -16,28 +16,30 @@
 
 package com.filippov.data.validation.tool.dto;
 
-import com.filippov.data.validation.tool.datasource.DatasourceConfig;
-import com.filippov.data.validation.tool.datasource.jsondatasource.JsonDatasourceConfig;
-import com.filippov.data.validation.tool.datasource.model.DatasourceColumn;
-import com.filippov.data.validation.tool.datasource.model.DatasourceConfigParamsDefinition;
-import com.filippov.data.validation.tool.datasource.model.DatasourceTable;
-import com.filippov.data.validation.tool.datasource.testinmemorydatasource.TestInMemoryDatasourceConfig;
-import com.filippov.data.validation.tool.dto.cache.ColumnCacheDetailsDto;
+import com.filippov.data.validation.tool.datasource.JsonDatasourceConfig;
+import com.filippov.data.validation.tool.datasource.TestInMemoryDatasourceConfig;
+import com.filippov.data.validation.tool.dto.cache.CacheInfoDto;
 import com.filippov.data.validation.tool.dto.cache.ColumnPairCacheDetailsDto;
 import com.filippov.data.validation.tool.dto.datasource.DatasourceColumnDto;
 import com.filippov.data.validation.tool.dto.datasource.DatasourceConfigParamsDefinitionDto;
 import com.filippov.data.validation.tool.dto.datasource.DatasourceDefinitionDto;
 import com.filippov.data.validation.tool.dto.datasource.DatasourceTableDto;
+import com.filippov.data.validation.tool.dto.validation.DataRowDto;
 import com.filippov.data.validation.tool.dto.validation.TransformerDto;
 import com.filippov.data.validation.tool.dto.workspace.WorkspaceDto;
 import com.filippov.data.validation.tool.dto.workspace.WorkspaceMetadataDto;
-import com.filippov.data.validation.tool.metadata.Metadata;
-import com.filippov.data.validation.tool.model.ColumnDataInfo;
-import com.filippov.data.validation.tool.model.Workspace;
-import com.filippov.data.validation.tool.pair.ColumnDataInfoPair;
-import com.filippov.data.validation.tool.pair.ColumnPair;
-import com.filippov.data.validation.tool.pair.TablePair;
-import com.filippov.data.validation.tool.validation.transformer.Transformer;
+import com.filippov.data.validation.tool.model.DatasourceConfig;
+import com.filippov.data.validation.tool.model.Transformer;
+import com.filippov.data.validation.tool.model.binder.DataRow;
+import com.filippov.data.validation.tool.model.cache.CacheInfo;
+import com.filippov.data.validation.tool.model.datasource.DatasourceColumn;
+import com.filippov.data.validation.tool.model.datasource.DatasourceConfigParamsDefinition;
+import com.filippov.data.validation.tool.model.datasource.DatasourceTable;
+import com.filippov.data.validation.tool.model.metadata.Metadata;
+import com.filippov.data.validation.tool.model.pair.ColumnDataInfoPair;
+import com.filippov.data.validation.tool.model.pair.ColumnPair;
+import com.filippov.data.validation.tool.model.pair.TablePair;
+import com.filippov.data.validation.tool.model.workspace.Workspace;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -183,18 +185,18 @@ public class DtoMapper {
                 .build();
     }
 
-    public ColumnCacheDetailsDto toDto(ColumnDataInfo columnDataInfo) {
-        return ColumnCacheDetailsDto.builder()
-                .cached(columnDataInfo.isCached())
-                .date(columnDataInfo.getDate())
+    public CacheInfoDto toDto(CacheInfo cacheInfo) {
+        return CacheInfoDto.builder()
+                .cached(cacheInfo.isCached())
+                .date(cacheInfo.getDate())
                 .build();
     }
 
     public ColumnPairCacheDetailsDto toDto(ColumnDataInfoPair columnDataInfoPair) {
         return ColumnPairCacheDetailsDto.builder()
                 .columnPair(toDto(columnDataInfoPair.getColumnPair()))
-                .leftCacheInfo(toDto(columnDataInfoPair.getLeftColumnDataInfo()))
-                .rightCacheInfo(toDto(columnDataInfoPair.getRightColumnDataInfo()))
+                .leftCacheInfo(toDto(columnDataInfoPair.getLeftCacheInfo()))
+                .rightCacheInfo(toDto(columnDataInfoPair.getRightCacheInfo()))
                 .build();
     }
 
@@ -210,5 +212,15 @@ public class DtoMapper {
                 .paramsDefinition(datasourceConfigParamsDefinitionDto.getParamsDefinition())
                 .build();
 
+    }
+
+    public DataRowDto toDto(DataRow dataRow) {
+        return DataRowDto.builder()
+                .key(dataRow.getKey())
+                .leftOriginalValue(dataRow.getLeftOriginalValue())
+                .rightOriginalValue(dataRow.getRightOriginalValue())
+                .leftTransformedValue(dataRow.getLeftTransformedValue())
+                .rightTransformedValue(dataRow.getRightTransformedValue())
+                .build();
     }
 }

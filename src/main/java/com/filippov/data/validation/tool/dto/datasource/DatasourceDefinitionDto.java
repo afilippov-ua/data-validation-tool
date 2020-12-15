@@ -17,7 +17,7 @@
 package com.filippov.data.validation.tool.dto.datasource;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
-import com.filippov.data.validation.tool.datasource.model.DatasourceType;
+import com.filippov.data.validation.tool.model.datasource.DatasourceType;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

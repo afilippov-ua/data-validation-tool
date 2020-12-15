@@ -53,10 +53,13 @@ allprojects {
 
 dependencies {
     // MAIN
-    compile project(':data-validation-framework')
+    compile project(':model')
+    compile project(':datasource-in-memory-test')
+    compile project(':datasource-json')
 
     implementation('org.projectlombok:lombok:1.18.4')
     annotationProcessor('org.projectlombok:lombok:1.18.4')
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
     implementation('org.springframework.boot:spring-boot-starter-web') {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
@@ -65,10 +68,16 @@ dependencies {
     implementation('org.springframework.boot:spring-boot-starter-data-mongodb')
     implementation('org.springframework.boot:spring-boot-starter-actuator')
 
+//    implementation('org.springframework.data:spring-data-redis:2.4.1')
+    implementation('redis.clients:jedis:3.3.0')
+    implementation('org.springframework.boot:spring-boot-starter-data-redis')
+
     implementation('io.springfox:springfox-swagger2:2.9.2')
     implementation('io.springfox:springfox-swagger-ui:2.9.2')
 
     // TEST
+    testCompile project(':test-common')
+
     testImplementation('org.assertj:assertj-core:3.11.1')
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'junit', module: 'junit'

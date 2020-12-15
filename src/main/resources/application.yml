@@ -5,10 +5,10 @@ server:
 
 spring:
   data:
-  mongodb:
-    host: localhost
-    port: 27017
-    database: dvt
+    mongodb:
+      host: localhost
+      port: 27017
+      database: dvt
 
 management:
   endpoints:
@@ -17,12 +17,24 @@ management:
         include: "*"
 
 data-validation-tool:
+
+  default-column-data-cache-config:
+    cache-type: IN-MEMORY
+    eviction-strategy: FIFO
+    max-number-of-elements-in-cache: 1000
+
   datasources:
     TEST_IN_MEMORY_DATASOURCE:
       cache-config:
+        cache-type: IN-MEMORY
         eviction-strategy: FIFO
         max-number-of-elements-in-cache: 1000
     JSON_DATASOURCE:
       cache-config:
+        cache-type: REDIS
         eviction-strategy: FIFO
         max-number-of-elements-in-cache: 1000
+
+  redis-config:
+    host: localhost
+    port: 6379

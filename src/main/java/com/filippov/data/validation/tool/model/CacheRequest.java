@@ -16,8 +16,9 @@
 
 package com.filippov.data.validation.tool.model;
 
-import com.filippov.data.validation.tool.pair.ColumnPair;
-import com.filippov.data.validation.tool.pair.TablePair;
+import com.filippov.data.validation.tool.model.pair.ColumnPair;
+import com.filippov.data.validation.tool.model.pair.TablePair;
+import com.filippov.data.validation.tool.model.workspace.Workspace;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

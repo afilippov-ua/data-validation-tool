@@ -16,8 +16,8 @@
 
 package com.filippov.data.validation.tool.repository.cache;
 
-import com.filippov.data.validation.tool.model.Workspace;
-import com.filippov.data.validation.tool.pair.DataStoragePair;
+import com.filippov.data.validation.tool.model.pair.DataStoragePair;
+import com.filippov.data.validation.tool.model.workspace.Workspace;
 
 import java.util.Map;
 
