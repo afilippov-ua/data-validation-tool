@@ -16,14 +16,14 @@
 
 package com.filippov.data.validation.tool.service;
 
-import com.filippov.data.validation.tool.datastorage.Query;
 import com.filippov.data.validation.tool.model.CacheFetchingCommand;
-import com.filippov.data.validation.tool.model.CachingStatus;
-import com.filippov.data.validation.tool.model.Workspace;
-import com.filippov.data.validation.tool.pair.ColumnDataInfoPair;
-import com.filippov.data.validation.tool.pair.ColumnPair;
-import com.filippov.data.validation.tool.pair.DataStoragePair;
-import com.filippov.data.validation.tool.pair.TablePair;
+import com.filippov.data.validation.tool.model.cache.CachingStatus;
+import com.filippov.data.validation.tool.model.datastorage.Query;
+import com.filippov.data.validation.tool.model.pair.ColumnDataInfoPair;
+import com.filippov.data.validation.tool.model.pair.ColumnPair;
+import com.filippov.data.validation.tool.model.pair.DataStoragePair;
+import com.filippov.data.validation.tool.model.pair.TablePair;
+import com.filippov.data.validation.tool.model.workspace.Workspace;
 import com.filippov.data.validation.tool.repository.DataStoragePairRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,9 +33,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static com.filippov.data.validation.tool.model.CachingStatus.FINISHED;
-import static com.filippov.data.validation.tool.model.CachingStatus.NON_DEFINED;
-import static com.filippov.data.validation.tool.model.CachingStatus.RUNNING;
+import static com.filippov.data.validation.tool.model.cache.CachingStatus.FINISHED;
+import static com.filippov.data.validation.tool.model.cache.CachingStatus.NON_DEFINED;
+import static com.filippov.data.validation.tool.model.cache.CachingStatus.RUNNING;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
@@ -66,13 +66,13 @@ public class CacheService {
         final ColumnDataInfoPair result = ColumnDataInfoPair.builder()
                 .tablePair(tablePair)
                 .columnPair(columnPair)
-                .leftColumnDataInfo(
+                .leftCacheInfo(
                         dataStoragePair.getLeftDataStorage().getColumnDataInfo(
                                 Query.builder()
                                         .tablePair(tablePair)
                                         .columnPair(columnPair)
                                         .build()))
-                .rightColumnDataInfo(
+                .rightCacheInfo(
                         dataStoragePair.getRightDataStorage().getColumnDataInfo(
                                 Query.builder()
                                         .tablePair(tablePair)

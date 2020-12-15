@@ -30,7 +30,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 import java.util.Map;
 
-import static com.filippov.data.validation.tool.datasource.model.DatasourceType.TEST_IN_MEMORY_DATASOURCE;
+import static com.filippov.data.validation.tool.model.datasource.DatasourceType.TEST_IN_MEMORY_DATASOURCE;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;

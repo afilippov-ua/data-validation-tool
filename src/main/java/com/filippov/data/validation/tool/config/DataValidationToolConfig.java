@@ -16,16 +16,9 @@
 
 package com.filippov.data.validation.tool.config;
 
-import com.filippov.data.validation.tool.factory.ColumnDataCacheFactory;
-import com.filippov.data.validation.tool.factory.DataStorageFactory;
-import com.filippov.data.validation.tool.factory.DatasourceFactory;
-import com.filippov.data.validation.tool.factory.DefaultColumnDataCacheFactory;
 import com.filippov.data.validation.tool.factory.DefaultDataStorageFactory;
-import com.filippov.data.validation.tool.factory.DefaultDatasourceFactory;
-import com.filippov.data.validation.tool.metadata.MetadataBinder;
-import com.filippov.data.validation.tool.metadata.RuntimeMetadataBinder;
-import com.filippov.data.validation.tool.utils.uuid.RandomUuidRuntimeGenerator;
-import com.filippov.data.validation.tool.utils.uuid.UuidGenerator;
+import com.filippov.data.validation.tool.model.ColumnDataCacheFactory;
+import com.filippov.data.validation.tool.model.DataStorageFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -41,28 +34,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class DataValidationToolConfig {
 
     @Bean
-    DatasourceFactory datasourceFactory() {
-        return new DefaultDatasourceFactory();
-    }
-
-    @Bean
-    MetadataBinder metadataBinder(UuidGenerator uuidGenerator) {
-        return new RuntimeMetadataBinder(uuidGenerator);
-    }
-
-    @Bean
-    ColumnDataCacheFactory columnDataCacheFactory(DataValidationToolProperties properties) {
-        return new DefaultColumnDataCacheFactory(properties.getCacheConfiguration());
-    }
-
-    @Bean
     DataStorageFactory dataStorageFactory(ColumnDataCacheFactory columnDataCacheFactory) {
         return new DefaultDataStorageFactory(columnDataCacheFactory);
-    }
-
-    @Bean
-    UuidGenerator uuidGenerator() {
-        return new RandomUuidRuntimeGenerator();
     }
 
     @Bean

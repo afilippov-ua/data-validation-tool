@@ -16,9 +16,9 @@
 
 package com.filippov.data.validation.tool.config;
 
-import com.filippov.data.validation.tool.cache.CacheConfig;
-import com.filippov.data.validation.tool.cache.EvictionStrategy;
-import com.filippov.data.validation.tool.datasource.model.DatasourceType;
+import com.filippov.data.validation.tool.model.cache.ColumnDataCacheType;
+import com.filippov.data.validation.tool.model.cache.EvictionStrategy;
+import com.filippov.data.validation.tool.model.datasource.DatasourceType;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -30,35 +30,65 @@ import java.util.Map;
 
 import static java.util.stream.Collectors.toMap;
 
-@Getter
 @Setter
 @Component
 @ConfigurationProperties("data-validation-tool")
 public class DataValidationToolProperties {
 
     @NestedConfigurationProperty
-    private Map<DatasourceType, DatasourceProperties> datasources = new HashMap<>();
+    private Map<DatasourceType, DatasourceConfig> datasources = new HashMap<>();
 
-    public Map<DatasourceType, CacheConfig> getCacheConfiguration() {
+    @NestedConfigurationProperty
+    private CacheConfig defaultColumnDataCacheConfig;
+
+    @NestedConfigurationProperty
+    private RedisConfig redisConfig;
+
+    public Map<DatasourceType, com.filippov.data.validation.tool.model.cache.CacheConfig> getDatasourceCacheConfiguration() {
         return datasources.entrySet().stream()
                 .collect(toMap(
                         Map.Entry::getKey,
-                        entry -> CacheConfig.builder()
+                        entry -> com.filippov.data.validation.tool.model.cache.CacheConfig.builder()
+                                .cacheType(entry.getValue().getCacheConfig().getCacheType())
                                 .evictionStrategy(entry.getValue().getCacheConfig().getEvictionStrategy())
                                 .maxNumberOfElementsInCache(entry.getValue().getCacheConfig().getMaxNumberOfElementsInCache())
                                 .build()));
     }
 
-    @Getter
-    @Setter
-    public static class DatasourceProperties {
-        private CacheConfigProperties cacheConfig;
+    public com.filippov.data.validation.tool.model.cache.CacheConfig getDefaultCacheConfig() {
+        if (defaultColumnDataCacheConfig != null) {
+            return com.filippov.data.validation.tool.model.cache.CacheConfig.builder()
+                    .cacheType(defaultColumnDataCacheConfig.getCacheType())
+                    .evictionStrategy(defaultColumnDataCacheConfig.getEvictionStrategy())
+                    .maxNumberOfElementsInCache(defaultColumnDataCacheConfig.getMaxNumberOfElementsInCache())
+                    .build();
+        } else {
+            return com.filippov.data.validation.tool.model.cache.CacheConfig.DEFAULT_CONFIG;
+        }
+    }
+
+    public RedisConfig getRedisConfig() {
+        return redisConfig;
     }
 
     @Getter
     @Setter
-    public static class CacheConfigProperties {
+    public static class DatasourceConfig {
+        private CacheConfig cacheConfig;
+    }
+
+    @Getter
+    @Setter
+    public static class CacheConfig {
+        private ColumnDataCacheType cacheType;
         private EvictionStrategy evictionStrategy;
         private Integer maxNumberOfElementsInCache;
+    }
+
+    @Getter
+    @Setter
+    public static class RedisConfig {
+        private String host;
+        private Integer port;
     }
 }

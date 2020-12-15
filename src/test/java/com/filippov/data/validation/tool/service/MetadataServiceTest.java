@@ -16,15 +16,12 @@
 
 package com.filippov.data.validation.tool.service;
 
-import com.filippov.data.validation.tool.metadata.Metadata;
-import com.filippov.data.validation.tool.metadata.MetadataBinder;
-import com.filippov.data.validation.tool.model.Workspace;
+import com.filippov.data.validation.tool.model.MetadataBinder;
+import com.filippov.data.validation.tool.model.workspace.Workspace;
 import com.filippov.data.validation.tool.repository.DataStoragePairRepository;
 import com.filippov.data.validation.tool.service.cache.InMemoryMetadataServiceCache;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import java.util.Map;
 
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;

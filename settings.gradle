@@ -1,4 +1,6 @@
 rootProject.name = 'data-validation-tool'
-include 'data-validation-framework'
-include 'utils'
+include 'model'
+include 'datasource-in-memory-test'
+include 'datasource-json'
+include 'test-common'
 

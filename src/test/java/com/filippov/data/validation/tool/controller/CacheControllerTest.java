@@ -17,10 +17,10 @@
 package com.filippov.data.validation.tool.controller;
 
 import com.filippov.data.validation.tool.dto.cache.CacheRequestDto;
-import com.filippov.data.validation.tool.dto.cache.ColumnCacheDetailsDto;
+import com.filippov.data.validation.tool.dto.cache.CacheInfoDto;
 import com.filippov.data.validation.tool.dto.cache.ColumnPairCacheDetailsDto;
 import com.filippov.data.validation.tool.model.CacheFetchingCommand;
-import com.filippov.data.validation.tool.model.CachingStatus;
+import com.filippov.data.validation.tool.model.cache.CachingStatus;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.ParameterizedTypeReference;
@@ -63,7 +63,7 @@ public class CacheControllerTest extends AbstractDataValidationApplicationTest {
                 .isNotEmpty()
                 .hasSize(3);
 
-        final ColumnCacheDetailsDto emptyCacheDetails = ColumnCacheDetailsDto.builder()
+        final CacheInfoDto emptyCacheDetails = CacheInfoDto.builder()
                 .cached(false)
                 .date(null)
                 .build();
@@ -111,7 +111,7 @@ public class CacheControllerTest extends AbstractDataValidationApplicationTest {
         final ColumnPairCacheDetailsDto cacheDetails = response.getBody();
         assertThat(cacheDetails).isNotNull();
 
-        final ColumnCacheDetailsDto emptyCacheDetails = ColumnCacheDetailsDto.builder()
+        final CacheInfoDto emptyCacheDetails = CacheInfoDto.builder()
                 .cached(false)
                 .date(null)
                 .build();

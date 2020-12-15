@@ -18,6 +18,7 @@ package com.filippov.data.validation.tool.controller;
 
 import com.filippov.data.validation.tool.dto.validation.DataRowDto;
 import com.filippov.data.validation.tool.dto.validation.ValidationDataDto;
+import com.filippov.data.validation.tool.model.binder.DataRow;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
